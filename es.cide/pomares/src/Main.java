@@ -10,9 +10,7 @@
 
  */
 
-import EjerciciosDeClase.Bucles.SecondUnitE11;
-import EjerciciosDeClase.Condicionals.ConditionalsE01;
-import EjerciciosDeClase.Condicionals.ConditionalsE02;
+import EjerciciosDeClase.Condicionals.*;
 import Utilitats.ConsoleColors;
 
 public class Main {
@@ -21,7 +19,7 @@ public class Main {
         System.out.println(ConsoleColors.stringColor(ConsoleColors.GREEN,"Debuggin BUCLES"));
 
         // add code here
-        ConditionalsE02.start();
+        ConditionalsE09.start();
 
     }
 }

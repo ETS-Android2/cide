@@ -21,14 +21,16 @@ import java.util.Scanner;
 public class ConditionalsE02 {
     public static void start(){
 
-        final int HORAS = 24;
 
         Scanner userIn = new Scanner(System.in);
+
+        // Variable per enmagatzemar les dades introduides.
         int horaIntroducida = 0;
 
         do {
 
             System.out.print("Introduce una hora: ");
+            // Obtenim dades de l'usuari.
             horaIntroducida = userIn.nextInt();
 
             if (horaIntroducida >= 6 && horaIntroducida <= 12 ){
