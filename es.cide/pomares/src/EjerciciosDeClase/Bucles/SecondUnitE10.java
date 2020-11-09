@@ -43,19 +43,21 @@ public class SecondUnitE10 {
             intermediari = userIn.nextDouble();
 
             // Si l'intermediari detecta un nombre negatiu termina el bucle.
-            if(intermediari < 0 )
+            if(intermediari < 0 ) {
                 terminat = true;
+            } else {
 
-            // Acumula les noves dades amb les anteriors.
-            accumulador += intermediari;
+                // Acumula les noves dades amb les anteriors.
+                accumulador = accumulador + intermediari;
 
-            // Suma +1 al comptador per tenir en recompte quants nombres s'han introduit.
-            comptador++;
+                // Suma +1 al comptador per tenir en recompte quants nombres s'han introduit.
+                comptador++;
+            }
 
         } while (!terminat);
-
+        
         // Retornam la divisió entre la suma de tots els nombres entre la quantitat de nombres introduits.
-        System.out.println("La mitja dels nombres introduits es: " + (accumulador / comptador));
+        System.out.println("La mitja dels nombres introduits es: " + (accumulador / (comptador)));
 
     }
 }
