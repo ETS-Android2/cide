@@ -25,7 +25,7 @@ public class ConditionalsE02 {
         Scanner userIn = new Scanner(System.in);
 
         // Variable per enmagatzemar les dades introduides.
-        int horaIntroducida = 0;
+        int horaIntroducida;
 
         do {
 
