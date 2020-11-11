@@ -11,6 +11,8 @@
  */
 
 import EjerciciosDeClase.Bucles.SecondUnitE10;
+import EjerciciosDeClase.Bucles.SecondUnitE12;
+import EjerciciosDeClase.Bucles.SecondUnitE13;
 import EjerciciosDeClase.Condicionals.*;
 import Utilitats.ConsoleColors;
 
@@ -20,7 +22,7 @@ public class Main {
         System.out.println(ConsoleColors.stringColor(ConsoleColors.GREEN,"Debuggin BUCLES"));
 
         // add code here
-        SecondUnitE10.start();
+        SecondUnitE13.start(args);
 
     }
 }

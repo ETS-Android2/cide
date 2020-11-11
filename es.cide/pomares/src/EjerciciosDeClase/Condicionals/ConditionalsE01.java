@@ -40,22 +40,27 @@ public class ConditionalsE01 {
             System.out.print("Introdueix un día: ");
             assignaturaDia = userIn.nextLine();
 
-            // Sequencia de if / if else per cada un dels dies.
-            if (assignaturaDia.toLowerCase().contains("dilluns")) {
-                System.out.println("Dilluns -- Primera assignatura: " + assignatures[1]);
-                terminat = true;
-            } else if(assignaturaDia.toLowerCase().contains("dimarts")){
-                System.out.println("Dimarts -- Primera assignatura: " + assignatures[1]);
-                terminat = true;
-            } else if(assignaturaDia.toLowerCase().contains("dimecres")){
-                System.out.println("Dimecres -- Primera assignatura: " + assignatures[2]);
-                terminat = true;
-            } else if(assignaturaDia.toLowerCase().contains("dijous")){
-                System.out.println("Dijous -- Primera assignatura: " + assignatures[1]);
-                terminat = true;
-            } else if(assignaturaDia.toLowerCase().contains("divendres")){
-                System.out.println("Divendres -- Primera assignatura: " + assignatures[0]);
-                terminat = true;
+            switch (assignaturaDia.toLowerCase()) {
+                case "dilluns" -> {
+                    System.out.println("Dilluns -- Primera assignatura: " + assignatures[1]);
+                    terminat = true;
+                }
+                case "dimarts" -> {
+                    System.out.println("Dimarts -- Primera assignatura: " + assignatures[1]);
+                    terminat = true;
+                }
+                case "dimecres" -> {
+                    System.out.println("Dimecres -- Primera assignatura: " + assignatures[2]);
+                    terminat = true;
+                }
+                case "dijous" -> {
+                    System.out.println("Dijous -- Primera assignatura: " + assignatures[1]);
+                    terminat = true;
+                }
+                case "divendres" -> {
+                    System.out.println("Divendres -- Primera assignatura: " + assignatures[0]);
+                    terminat = true;
+                }
             }
 
         } while(!terminat);

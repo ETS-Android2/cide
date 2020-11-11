@@ -12,7 +12,7 @@
     
     Description:
     
-    version     #if($version != "")${version}#else 1.0#end
+    version    #if($version != "") ${version}#else 1.0#end
 
     author      ${myName}
     created     ${YEAR}-${MONTH}-${DAY}
