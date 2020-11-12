@@ -13,7 +13,10 @@ package Games.Blackjack.Players;
     
 */
 
+import Games.Blackjack.Blackjack;
 import Games.Blackjack.Deck.Card.Card;
+import Games.Blackjack.Deck.Card.Face;
+import Games.Blackjack.Deck.Card.Suit;
 import Games.Blackjack.Deck.Deck;
 
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
  */
 
 
-public abstract class Player {
+public abstract class Player extends Blackjack {
 
     /*
      * ATTRIBUTES
@@ -32,14 +35,22 @@ public abstract class Player {
     public  String playerName;
     private ArrayList<Card> playerCards;
 
+    private int currentHand;
     private boolean busted;
     private boolean canGetCards;
     private boolean winner;
     private float bet;
 
+    // TEST
+    private boolean hasAce;
+
     /*
      * METHODS
      * */
+
+    public Player(){
+        playerCards = new ArrayList<Card>();
+    }
 
     // Setters
 
@@ -49,6 +60,37 @@ public abstract class Player {
 
     // Updates
 
+    private void checkCardValues(){
+        for (Card playerCard : this.playerCards) {
+            if(playerCard.getCardFace() == Face.ACE.getFaceValue()){
+                if(this.currentHand < 10){
+                    updateHand(10);
+                } else {
+                    updateHand(1);
+                }
+            } else {
+                updateHand(playerCard.getCardFace());
+            }
+        }
+    }
+    
+    public void getCardFromDeck(){
+        // This is the function for obtain next cards and check its values.
+        playerCards.add(gameDeck.obtainNextCard());
+        checkCardValues();
+    }
+
+    public void getCardFromDeck(int numberOfCardsToObtain){
+        for (int i = 1; i <= numberOfCardsToObtain ; i++) {
+            this.playerCards.add(gameDeck.obtainNextCard());
+        }
+        checkCardValues();
+    }
+
+    private void updateHand(int nextCard){
+        this.currentHand += nextCard;
+    }
+    
     private void toBusted(){
         this.busted = true;
     }
@@ -67,21 +109,69 @@ public abstract class Player {
 
     // Getters
 
-    public void getRandomCardFromDeck(Deck gameDeck){
-        // this.playerCards.add(gameDeck);
-        // TODO Enable to add cards to the deck of the player.
+    public int printCurrentHand(){
+        return this.currentHand;
     }
 
-    public boolean isBusted(){
-        return this.busted;
+    @Override
+    public String toString() {
+        return "Player{" +
+                "playerCards=" + this.playerCards +
+                "playerName=" + this.playerName +
+                "currentHand=" + this.currentHand +
+                '}';
     }
 
-    public boolean stillsDeck(){
-        return this.canGetCards;
+    // TESTS
+    /*
+    public void test_addCard(Card newCard){
+        this.playerCards.add(newCard);
     }
 
-    public ArrayList<Card> currentCards(){
-        return playerCards;
+    public void test_checkCardValues() {
+
+        boolean isAce = false;
+        int nextCard = 1;
+        boolean hasNextCard = false;
+
+        for (Card playerCard : this.playerCards) {
+            if (playerCard.getCardFace() == Face.ACE.getFaceValue()) {
+                isAce = true;
+            }
+            if(!hasNextCard && isAce){
+
+                if(isAce && this.currentHand < 10){
+                    updateHand(11);
+                } else if(isAce && this.currentHand > 10){
+                    updateHand(1);
+                }
+                hasNextCard = false;
+            } else if(hasNextCard){
+
+
+
+                nextCard++;
+                if(nextCard == this.playerCards.size()){
+                    hasNextCard = false;
+                }
+            }
+
+
+
+            if (isAce && this.currentHand < 10) {
+                updateHand(11);
+                hasAce = false;
+            } else if (isAce && this.currentHand > 10) {
+                updateHand(1);
+                hasAce = false;
+            } else if (!hasAce && ) {
+                updateHand(playerCard.getCardFace());
+            } else {
+                test_checkCardValues();
+            }
+
+        }
     }
 
+     */
 }

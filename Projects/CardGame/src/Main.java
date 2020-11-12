@@ -11,6 +11,8 @@
     
 */
 
+import Games.Blackjack.Blackjack;
+
 /**
  * @author Carlos Pomares
  */
@@ -18,6 +20,7 @@
 
 public class Main {
     public static void main(String[] args) {
-        
+        Blackjack game = new Blackjack();
+        game.runGame();
     }
 }

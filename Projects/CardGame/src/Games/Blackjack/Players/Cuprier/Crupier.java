@@ -13,27 +13,30 @@ package Games.Blackjack.Players.Cuprier;
     
 */
 
+import Games.Blackjack.Deck.Card.Card;
 import Games.Blackjack.Players.Player;
+
+import java.util.ArrayList;
 
 /**
  * @author Carlos Pomares
  */
 
 
-public class Cuprier extends Player {
+public class Crupier extends Player {
 
     /*
      * ATTRIBUTES
      * */
-
 
     /*
      * METHODS
      * */
 
     // Constructor
-    public Cuprier(){
-
+    public Crupier(){
+        super();
+        this.playerName = "Crupier";
     }
 
 }

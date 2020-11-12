@@ -13,7 +13,10 @@ package Games.Blackjack.Players.Client;
     
 */
 
+import Games.Blackjack.Deck.Card.Card;
 import Games.Blackjack.Players.Player;
+
+import java.util.ArrayList;
 
 /**
  * @author Carlos Pomares
@@ -21,5 +24,10 @@ import Games.Blackjack.Players.Player;
 
 
 public class Client extends Player {
+
+    public Client(String playerName){
+        super();
+        this.playerName = playerName;
+    }
 
 }

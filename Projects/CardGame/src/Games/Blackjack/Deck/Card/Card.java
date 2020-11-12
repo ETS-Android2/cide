@@ -13,10 +13,11 @@ package Games.Blackjack.Deck.Card;
     
 */
 
+import java.util.Random;
+
 /**
  * @author Carlos Pomares
  */
-
 
 public class Card {
 
@@ -26,17 +27,33 @@ public class Card {
      * ATTRIBUTES
      * */
 
-    final private int CARDS = 52;
-
-    private String[] cardSuits = new String[]{"hearts","clubs","diamonds","spades"};
+    private Face cardFace;
+    private Suit cardSuit;
 
     /*
      * METHODS
      * */
 
     // Constructor
-    public Card(){
-
+    public Card(Suit cardSuit, Face cardFace){
+        this.cardFace = cardFace;
+        this.cardSuit = cardSuit;
     }
 
+    // Getters
+    public int getCardFace() {
+        return cardFace.getFaceValue();
+    }
+
+    public String getCardSuit() {
+        return cardSuit.getSuitValue();
+    }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "cardFace=" + cardFace +
+                ", cardSuit=" + cardSuit +
+                '}';
+    }
 }
