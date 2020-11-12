@@ -1,4 +1,4 @@
-package Games.Blackjack.Players.Cuprier;
+package Games.Blackjack.Players.Croupier;
 
 /*
 
@@ -13,17 +13,14 @@ package Games.Blackjack.Players.Cuprier;
     
 */
 
-import Games.Blackjack.Deck.Card.Card;
 import Games.Blackjack.Players.Player;
-
-import java.util.ArrayList;
 
 /**
  * @author Carlos Pomares
  */
 
 
-public class Crupier extends Player {
+public class Croupier extends Player {
 
     /*
      * ATTRIBUTES
@@ -34,9 +31,9 @@ public class Crupier extends Player {
      * */
 
     // Constructor
-    public Crupier(){
+    public Croupier(){
         super();
-        this.playerName = "Crupier";
+        this.playerName = "Croupier";
     }
 
     public void crupierNotSatisfied(){

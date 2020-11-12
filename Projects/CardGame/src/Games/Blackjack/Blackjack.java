@@ -17,11 +17,8 @@ package Games.Blackjack;
 */
 
 // Parent
-import Games.Blackjack.Deck.Card.Card;
-import Games.Blackjack.Deck.Card.Face;
-import Games.Blackjack.Deck.Card.Suit;
 import Games.Blackjack.Players.Client.Client;
-import Games.Blackjack.Players.Cuprier.Crupier;
+import Games.Blackjack.Players.Croupier.Croupier;
 import Games.Game;
 
 // Internal objects
@@ -29,7 +26,7 @@ import Games.Blackjack.Deck.Deck;
 import Games.Blackjack.Players.Player;
 
 // Utilities
-import java.util.ArrayList;
+
 
 /**
  * @author Carlos Pomares
@@ -59,8 +56,8 @@ public class Blackjack extends Game {
     public static Deck gameDeck;
 
     // Players, at version 1.0
-    // 1 Crupier, 1 Client.
-    Crupier crupier;
+    // 1 Croupier, 1 Client.
+    Croupier crupier;
     Player client;
 
     /*
@@ -108,7 +105,7 @@ public class Blackjack extends Game {
         // One Round is a loop, when one of the players wins round this loops ends.
         while(!exit){
 
-            // Crupier gets two cards.
+            // Croupier gets two cards.
             // Clients only can see the second card of the crupier.
             // crupier.getCardFromDeck(2);
             crupier.initialDeck(2);
@@ -149,7 +146,7 @@ public class Blackjack extends Game {
 
         // Once the game is running, client must be created with his name;
         addClient("Carlos");
-        crupier = new Crupier();
+        crupier = new Croupier();
 
         startRound();
 
