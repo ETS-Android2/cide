@@ -19,8 +19,8 @@ and for have all my work in the same place.
 
 * [Pac-man](https://en.wikipedia.org/wiki/Pac-Man)
 * [Graphical Calculator](#)
-* [Star Wars (Arcade)]()
-* [School Management]()
+* [Star Wars (Arcade)](#)
+* [School Management](#)
 
 ## Programming2021
 
