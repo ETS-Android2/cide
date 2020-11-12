@@ -13,6 +13,7 @@ package Games.Blackjack.Deck;
     
 */
 
+import Games.Blackjack.Blackjack;
 import Games.Blackjack.Deck.Card.Card;
 import Games.Blackjack.Deck.Card.Face;
 import Games.Blackjack.Deck.Card.Suit;
@@ -37,7 +38,7 @@ public class Deck {
     private int cardsOnDeck = 52;
     private int currentCardOnDeck;
 
-    private Card[] deck;
+    private ArrayList<Card> deck;
     private Face[] cardFaces;
     private Suit[] cardSuits;
     private Random randomNumber;
@@ -53,7 +54,7 @@ public class Deck {
         this.randomNumber.setSeed(System.currentTimeMillis());
 
         // Initialize deck array.
-        this.deck = new Card[this.cardsOnDeck];
+        this.deck = new ArrayList<Card>(this.cardsOnDeck);
 
         // Initialize face values.
         this.cardFaces = new Face[]{
@@ -73,8 +74,8 @@ public class Deck {
         };
 
         // Put cards into deck
-        for (int i = 0; i < deck.length ; i++) {
-            deck[i] = new Card(cardSuits[i / 13],cardFaces[i % 13]);
+        for (int i = 0; i < cardsOnDeck ; i++) {
+            deck.add(new Card(cardSuits[i / 13],cardFaces[i % 13]));
         }
 
         // Set the current card on deck
@@ -93,12 +94,12 @@ public class Deck {
          */
 
         // This instruction gets the card at the top before decrementing.
-        Card topCard = this.deck[0];
+        Card topCard = this.deck.get(0);
 
         // This loops ensure that the next cards on the deck, update their state to -1, for being
         // the next cards at the future.
         for (int i = 1; i < (this.cardsOnDeck - 1) ; i++) {
-            this.deck[i - 1] = this.deck[i];
+            this.deck.set((i - 1), this.deck.get(i));
         }
 
         // This means, one time you get a card, the number of cards in deck is decremented by 1.
@@ -109,17 +110,10 @@ public class Deck {
 
     // This need to be public for doing the suffle after rounds.
     public void shuffleCards(){
-
         // Reset the currentCardOnDeck, because the order of the deck is rebuilded.
         this.currentCardOnDeck = 0;
 
-        for (int shuffle1 = 0; shuffle1 < deck.length ; shuffle1++) {
-            int randomAccess = this.randomNumber.nextInt(cardsOnDeck);
-            // This means two cards in the deck are unordered and positioned in the deck.
-            Card tmp = this.deck[shuffle1];
-            deck[shuffle1] = deck[randomAccess];
-            deck[randomAccess] = tmp;
-        }
+        Collections.shuffle(this.deck);
     }
 
     // Getters
@@ -128,9 +122,10 @@ public class Deck {
         return "Deck{" +
                 "cardsOnDeck=" + cardsOnDeck +
                 ", currentCardOnDeck=" + currentCardOnDeck +
-                ", deck=" + Arrays.toString(deck) +
                 ", cardFaces=" + Arrays.toString(cardFaces) +
                 ", cardSuits=" + Arrays.toString(cardSuits) +
+                ", deck=" + deck +
+                ", topCard=" + deck.get(0) +
                 '}';
     }
 }

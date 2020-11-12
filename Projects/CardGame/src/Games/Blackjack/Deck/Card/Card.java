@@ -36,12 +36,16 @@ public class Card {
 
     // Constructor
     public Card(Suit cardSuit, Face cardFace){
-        this.cardFace = cardFace;
         this.cardSuit = cardSuit;
+        this.cardFace = cardFace;
     }
 
     // Getters
-    public int getCardFace() {
+    public Face getCardFace() {
+        return cardFace;
+    }
+
+    public int getCardFaceValue() {
         return cardFace.getFaceValue();
     }
 
@@ -51,9 +55,8 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card{" +
-                "cardFace=" + cardFace +
-                ", cardSuit=" + cardSuit +
-                '}';
+        return "[SUIT: " + getCardSuit() +
+                ", FACE: " + getCardFace() +
+                "]";
     }
 }

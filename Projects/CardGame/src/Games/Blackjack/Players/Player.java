@@ -16,7 +16,6 @@ package Games.Blackjack.Players;
 import Games.Blackjack.Blackjack;
 import Games.Blackjack.Deck.Card.Card;
 import Games.Blackjack.Deck.Card.Face;
-import Games.Blackjack.Deck.Card.Suit;
 import Games.Blackjack.Deck.Deck;
 
 import java.util.ArrayList;
@@ -32,70 +31,79 @@ public abstract class Player extends Blackjack {
      * ATTRIBUTES
      * */
 
+    // Player specific
     public  String playerName;
     private ArrayList<Card> playerCards;
-
     private int currentHand;
-    private boolean busted;
-    private boolean canGetCards;
-    private boolean winner;
     private float bet;
 
-    // TEST
-    private boolean hasAce;
+    // Player states
+    private boolean busted;
+    private boolean canGetCards = true;
+    private boolean winner;
 
     /*
      * METHODS
      * */
 
+    // Constructor
     public Player(){
         playerCards = new ArrayList<Card>();
     }
 
     // Setters
-
     public void setBet(float betToSet){
         this.bet = betToSet;
     }
 
     // Updates
+    private void addCardValues() {
 
-    private void checkCardValues(){
+        this.currentHand = 0;
+        boolean hasAce = false;
+        boolean hasSpecialCards = false;
+
         for (Card playerCard : this.playerCards) {
-            if(playerCard.getCardFace() == Face.ACE.getFaceValue()){
-                if(this.currentHand < 10){
-                    updateHand(10);
-                } else {
-                    updateHand(1);
+            switch (playerCard.getCardFace()){
+                case ACE -> {
+                    hasAce = true;
                 }
-            } else {
-                updateHand(playerCard.getCardFace());
+                case JACK, QUEEN, KING -> {
+                    hasSpecialCards = true;
+                }
             }
+            this.currentHand += playerCard.getCardFaceValue();
+        }
+        if(hasAce){
+            if((this.currentHand - 1) <= 10 && !hasSpecialCards){
+                this.currentHand += (10 - 1);
+            } else if(hasSpecialCards){
+                this.currentHand += 10;
+            }
+        }
+        if(this.currentHand > 21){
+            this.toBusted();
+            this.canGetCards = false;
         }
     }
     
     public void getCardFromDeck(){
         // This is the function for obtain next cards and check its values.
-        playerCards.add(gameDeck.obtainNextCard());
-        checkCardValues();
+        if(this.canGetCards){ playerCards.add(gameDeck.obtainNextCard());addCardValues(); }
     }
 
-    public void getCardFromDeck(int numberOfCardsToObtain){
+    public void initialDeck(int numberOfCardsToObtain){
         for (int i = 1; i <= numberOfCardsToObtain ; i++) {
             this.playerCards.add(gameDeck.obtainNextCard());
         }
-        checkCardValues();
+        addCardValues();
     }
 
-    private void updateHand(int nextCard){
-        this.currentHand += nextCard;
-    }
-    
     private void toBusted(){
         this.busted = true;
     }
 
-    private void winsRound(){
+    private void toWinner(){
         this.winner = true;
     }
 
@@ -107,71 +115,49 @@ public abstract class Player extends Blackjack {
         this.bet *= 2;
     }
 
+    // State changers
+
+    public static Player getWinner(Player firstPlayer, Player secondPlayer){
+
+        Player winner = null;
+
+        if(firstPlayer.isBusted() == false && secondPlayer.isBusted() == false){
+            if(firstPlayer.getCurrentHand() > secondPlayer.getCurrentHand()){
+                firstPlayer.toWinner();
+                winner = firstPlayer;
+            } else if(firstPlayer.getCurrentHand() < secondPlayer.getCurrentHand()){
+                secondPlayer.toWinner();
+                winner = secondPlayer;
+            } else if(firstPlayer.getCurrentHand() == secondPlayer.getCurrentHand()) {
+                winner = null;
+            }
+        } else if(firstPlayer.isBusted()){
+            secondPlayer.toWinner();
+            winner = secondPlayer;
+        } else if(secondPlayer.isBusted()) {
+            firstPlayer.toWinner();
+            winner = firstPlayer;
+        } else {
+            winner = null;
+        }
+
+        return winner;
+    }
+
     // Getters
 
-    public int printCurrentHand(){
-        return this.currentHand;
-    }
+    public int printCurrentHand(){return this.currentHand;}
+    public int getCurrentHand(){return this.currentHand;}
+    public boolean isBusted(){return this.busted;}
+    public boolean isWinner(){return this.winner;}
+    public boolean canGetCards(){return this.canGetCards;}
 
     @Override
     public String toString() {
-        return "Player{" +
-                "playerCards=" + this.playerCards +
-                "playerName=" + this.playerName +
-                "currentHand=" + this.currentHand +
-                '}';
+        return "PLAYER: " + this.playerName + "\n" +
+                "CARDS: " + playerCards.toString() + "\n" +
+                "HAND VALUE: " + this.currentHand + "\n" +
+                "BUSTED: " + this.isBusted() + "\n" +
+                "WINNER: " + this.isWinner() + "\n";
     }
-
-    // TESTS
-    /*
-    public void test_addCard(Card newCard){
-        this.playerCards.add(newCard);
-    }
-
-    public void test_checkCardValues() {
-
-        boolean isAce = false;
-        int nextCard = 1;
-        boolean hasNextCard = false;
-
-        for (Card playerCard : this.playerCards) {
-            if (playerCard.getCardFace() == Face.ACE.getFaceValue()) {
-                isAce = true;
-            }
-            if(!hasNextCard && isAce){
-
-                if(isAce && this.currentHand < 10){
-                    updateHand(11);
-                } else if(isAce && this.currentHand > 10){
-                    updateHand(1);
-                }
-                hasNextCard = false;
-            } else if(hasNextCard){
-
-
-
-                nextCard++;
-                if(nextCard == this.playerCards.size()){
-                    hasNextCard = false;
-                }
-            }
-
-
-
-            if (isAce && this.currentHand < 10) {
-                updateHand(11);
-                hasAce = false;
-            } else if (isAce && this.currentHand > 10) {
-                updateHand(1);
-                hasAce = false;
-            } else if (!hasAce && ) {
-                updateHand(playerCard.getCardFace());
-            } else {
-                test_checkCardValues();
-            }
-
-        }
-    }
-
-     */
 }

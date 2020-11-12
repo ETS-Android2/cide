@@ -39,4 +39,10 @@ public class Crupier extends Player {
         this.playerName = "Crupier";
     }
 
+    public void crupierNotSatisfied(){
+        while(this.getCurrentHand() <= 17){
+            this.getCardFromDeck();
+        }
+    }
+
 }

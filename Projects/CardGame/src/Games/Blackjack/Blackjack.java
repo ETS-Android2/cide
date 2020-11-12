@@ -47,16 +47,20 @@ public class Blackjack extends Game {
     final public static String GAME_STAGE = "DEVELOPMENT";
     final public static String GAME_AUTHOR = "(c) Carlos Pomares";
 
+    private int numberOfRounds;
+    private Player lastRoundWinner;
+    public boolean tie;
+
     private double minimumBet = 50; // By default, minimum bet is 50
     private double maximumBet = 500; // By default, maximum bet is 500
     private int numberOfClients = 1; // By default, number of clients in the game is 1
 
     // Deck
-    protected Deck gameDeck;
+    public static Deck gameDeck;
 
     // Players, at version 1.0
     // 1 Crupier, 1 Client.
-    Player crupier;
+    Crupier crupier;
     Player client;
 
     /*
@@ -74,6 +78,8 @@ public class Blackjack extends Game {
 
         // Initialize some objects.
         gameDeck = new Deck();
+
+        // Add static players
 
     }
 
@@ -97,46 +103,57 @@ public class Blackjack extends Game {
         // Shuffle deck.
         gameDeck.shuffleCards();
 
-        // Crupier gets two cards.
-        // Clients only can see the second card of the crupier.
-        // crupier.getCardFromDeck(2);
-        crupier.toString();
+        boolean exit = false;
 
-        // Client gets two topCards cards.
-        // client.getCardFromDeck(2);
-        client.toString();
+        // One Round is a loop, when one of the players wins round this loops ends.
+        while(!exit){
 
-        // Client only can decide obtain new card if is not busted or double his bet and get only one card.
+            // Crupier gets two cards.
+            // Clients only can see the second card of the crupier.
+            // crupier.getCardFromDeck(2);
+            crupier.initialDeck(2);
 
+            // Client gets two topCards cards.
+            // client.getCardFromDeck(2);
+            client.initialDeck(2);
 
-        // If clients stay with his deck, client and crupier hands are showed.
+            // Client only can decide obtain new card if is not busted or double his bet and get only one card.
+            do{
 
+                client.getCardFromDeck();
+
+            } while (client.canGetCards());
+
+            crupier.crupierNotSatisfied();
+
+            /*
+            // If clients stay with his deck, client and crupier hands are showed.
+            if(Player.getWinner(client,crupier) == null){
+                this.tie = true;
+            } else {
+                lastRoundWinner = Player.getWinner(client,crupier);
+            }
+             */
+
+            System.out.println(client.toString());
+            System.out.println(crupier.toString());
+
+            lastRoundWinner = Player.getWinner(client,crupier);
+            exit = true;
+
+        }
     }
 
     @Override
     public void runGame() {
 
-        /*
-        System.out.println("Hello World!");
-
-        this.crupier = new Crupier();
+        // Once the game is running, client must be created with his name;
         addClient("Carlos");
+        crupier = new Crupier();
 
-        // TESTING
+        startRound();
 
-        Card ACE = new Card(Suit.CLUBS, Face.ACE);
-        Card THREE = new Card(Suit.DIAMONDS,Face.THREE);
-        Card SIX = new Card(Suit.HEARTS,Face.SIX);
-        Card FIVE = new Card(Suit.SPADES,Face.FIVE);
-
-        // ADD CARD TO CARLOS
-        client.test_addCard(SIX);
-        client.test_addCard(ACE);
-        client.test_addCard(FIVE);
-        client.test_checkCardValues();
-
-        System.out.println(client.toString());
-         */
+        System.out.println(this.lastRoundWinner.toString());
 
     }
 }
