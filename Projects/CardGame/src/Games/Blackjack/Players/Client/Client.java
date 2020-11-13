@@ -13,18 +13,15 @@ package Games.Blackjack.Players.Client;
     
 */
 
-import Games.Blackjack.Deck.Card.Card;
 import Games.Blackjack.Players.Player;
-
-import java.util.ArrayList;
 
 /**
  * @author Carlos Pomares
  */
 
-
 public class Client extends Player {
 
+    // Constructor
     public Client(String playerName){
         super();
         this.playerName = playerName;

@@ -34,10 +34,7 @@ public class Deck {
      * ATTRIBUTES
      * */
 
-
     private int cardsOnDeck = 52;
-    private int currentCardOnDeck;
-
     private ArrayList<Card> deck;
     private Face[] cardFaces;
     private Suit[] cardSuits;
@@ -77,10 +74,6 @@ public class Deck {
         for (int i = 0; i < cardsOnDeck ; i++) {
             deck.add(new Card(cardSuits[i / 13],cardFaces[i % 13]));
         }
-
-        // Set the current card on deck
-        this.currentCardOnDeck = 0;
-
     }
 
     public Card obtainNextCard(){
@@ -108,20 +101,15 @@ public class Deck {
         return topCard;
     }
 
-    // This need to be public for doing the suffle after rounds.
     public void shuffleCards(){
         // Reset the currentCardOnDeck, because the order of the deck is rebuilded.
-        this.currentCardOnDeck = 0;
-
         Collections.shuffle(this.deck);
     }
 
-    // Getters
     @Override
     public String toString() {
         return "Deck{" +
                 "cardsOnDeck=" + cardsOnDeck +
-                ", currentCardOnDeck=" + currentCardOnDeck +
                 ", cardFaces=" + Arrays.toString(cardFaces) +
                 ", cardSuits=" + Arrays.toString(cardSuits) +
                 ", deck=" + deck +

@@ -26,12 +26,11 @@ import Games.Blackjack.Deck.Deck;
 import Games.Blackjack.Players.Player;
 
 // Utilities
-
+import java.util.Scanner;
 
 /**
  * @author Carlos Pomares
  */
-
 
 public class Blackjack extends Game {
 
@@ -48,6 +47,7 @@ public class Blackjack extends Game {
     private Player lastRoundWinner;
     public boolean tie;
 
+    private String clientName;
     private double minimumBet = 50; // By default, minimum bet is 50
     private double maximumBet = 500; // By default, maximum bet is 500
     private int numberOfClients = 1; // By default, number of clients in the game is 1
@@ -57,8 +57,8 @@ public class Blackjack extends Game {
 
     // Players, at version 1.0
     // 1 Croupier, 1 Client.
-    Croupier crupier;
-    Player client;
+    private Croupier croupier;
+    private Player client;
 
     /*
      * METHODS
@@ -76,8 +76,6 @@ public class Blackjack extends Game {
         // Initialize some objects.
         gameDeck = new Deck();
 
-        // Add static players
-
     }
 
     public Blackjack(double minBet, double maxBet){
@@ -91,66 +89,127 @@ public class Blackjack extends Game {
 
     }
 
+    // For future multiuser functionality.
     private void addClient(String clientName){
         this.client = new Client(clientName);
     }
 
-    private void startRound(){
+    private void startRound(Scanner userIn){
 
         // Shuffle deck.
         gameDeck.shuffleCards();
 
-        boolean exit = false;
+        boolean roundRuntime = false;
 
         // One Round is a loop, when one of the players wins round this loops ends.
-        while(!exit){
+        while(!roundRuntime){
+            try {
 
-            // Croupier gets two cards.
-            // Clients only can see the second card of the crupier.
-            // crupier.getCardFromDeck(2);
-            crupier.initialDeck(2);
+                // Croupier gets two cards.
+                // Clients only can see the second card of the crupier.
+                // crupier.getCardFromDeck(2);
+                System.out.printf("%s gets cards.\n", this.croupier.playerName);
+                croupier.getCard(2);
+                System.out.println("CARDS: [ Hidden ] " + this.croupier.getPlayerCard(1));
 
-            // Client gets two topCards cards.
-            // client.getCardFromDeck(2);
-            client.initialDeck(2);
+                // Client gets two topCards cards.
+                // client.getCardFromDeck(2);
+                System.out.printf("%s gets cards.\n", this.client.playerName);
+                client.getCard(2);
+                System.out.println(this.client.toString());
 
-            // Client only can decide obtain new card if is not busted or double his bet and get only one card.
-            do{
+                boolean exit = false;
 
-                client.getCardFromDeck();
+                // Client only can decide obtain new card if is not busted or double his bet and get only one card.
+                do {
 
-            } while (client.canGetCards());
+                    System.out.printf("%s, still or want one more card?: \n", this.client.playerName);
 
-            crupier.crupierNotSatisfied();
+                    try {
 
-            /*
-            // If clients stay with his deck, client and crupier hands are showed.
-            if(Player.getWinner(client,crupier) == null){
-                this.tie = true;
-            } else {
-                lastRoundWinner = Player.getWinner(client,crupier);
-            }
-             */
+                        String userOrder = userIn.nextLine();
 
-            System.out.println(client.toString());
-            System.out.println(crupier.toString());
+                        if(!this.client.isBusted()){
+                            switch (userOrder.toLowerCase()){
+                                case "still", "wait", "stop" -> {
+                                    this.client.stillsDeck();
+                                    exit = true;
+                                }
+                                case "1", "get", "get one more card", "card", "one more", "one", "take", "want" -> {
+                                    this.client.getCard();
+                                    System.out.println(this.client.toString());
+                                }
+                                default -> {
+                                    System.out.println("Try again!");
+                                }
+                            }
+                        } else {
+                            exit = true;
+                        }
 
-            lastRoundWinner = Player.getWinner(client,crupier);
-            exit = true;
+                    } catch (Exception runtimeError){runtimeError.printStackTrace();}
 
+                } while(!exit);
+
+                // Satisfy croupier
+                System.out.println("Croupier is under 17...");
+                this.croupier.crupierNotSatisfied();
+                System.out.printf("Croupier last hand, %s",this.croupier.toString());
+
+                // Get Winner
+                this.lastRoundWinner = Player.getWinner(client,croupier);
+
+                roundRuntime = true;
+
+            } catch (Exception runtimeError){runtimeError.printStackTrace();}
         }
     }
 
+
+
     @Override
     public void runGame() {
+        mainMenu(new Scanner(System.in));
+    }
 
-        // Once the game is running, client must be created with his name;
-        addClient("Carlos");
-        crupier = new Croupier();
+    // Menus
+    private void mainMenu(Scanner userIn){
 
-        startRound();
+        boolean exitOrder = false;
 
-        System.out.println(this.lastRoundWinner.toString());
+        while(!exitOrder){
 
+            System.out.println("\n---- Blackjack Game ----");
+            System.out.printf("------ By %s ------ \n\n", Blackjack.GAME_AUTHOR);
+
+            System.out.print("Client name: ");
+            this.clientName = userIn.nextLine();
+
+            // Create croupier object
+            croupier = new Croupier();
+
+            // Create client object
+            addClient(this.clientName);
+
+            System.out.printf("\n---- Hello %s, today your Croupier is %s ----\n", this.clientName, this.croupier.playerName);
+            System.out.println("1: Start new game");
+            System.out.println("2: Exit\n");
+
+            System.out.print("Order: ");
+
+            try {
+                String userOrder = userIn.nextLine();
+
+                switch (userOrder.toLowerCase()){
+                    case "start", "start new game", "1", "go", "play" -> {
+                        startRound(userIn);
+                        System.out.println("Winner: " + this.lastRoundWinner.playerName);
+                    }
+                    case "exit", "2", "exit application", "exit blackjack" -> {
+                        exitOrder = true;
+                    }
+                }
+            } catch (Exception error) { error.printStackTrace();}
+        }
     }
 }

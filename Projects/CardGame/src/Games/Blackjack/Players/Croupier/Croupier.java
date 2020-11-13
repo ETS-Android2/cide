@@ -33,12 +33,13 @@ public class Croupier extends Player {
     // Constructor
     public Croupier(){
         super();
-        this.playerName = "Croupier";
+        this.playerName = "James, the Croupier";
     }
 
+    // Update
     public void crupierNotSatisfied(){
         while(this.getCurrentHand() <= 17){
-            this.getCardFromDeck();
+            this.getCard();
         }
     }
 
