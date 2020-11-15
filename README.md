@@ -12,8 +12,8 @@ and for have all my work in the same place.
 
 ## Modules
 
-* [Programming2021](#programming2021)
-* [Card Games](#card-games)
+* [Programming2021](https://github.com/pomaretta/PROG2021/tree/main/es.cide/pomares)
+* [Card Games](https://github.com/pomaretta/PROG2021/tree/main/Projects/CardGame)
 
 ## Future Projects
 
