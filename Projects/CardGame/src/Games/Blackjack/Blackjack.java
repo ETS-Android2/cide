@@ -93,14 +93,11 @@ public class Blackjack extends Game {
     private void addClient(String clientName){
         this.client = new Client(clientName);
     }
-
     private void startRound(Scanner userIn){
-
         // Shuffle deck.
         gameDeck.shuffleCards();
 
         boolean roundRuntime = false;
-
         // One Round is a loop, when one of the players wins round this loops ends.
         while(!roundRuntime){
             try {
@@ -123,7 +120,7 @@ public class Blackjack extends Game {
                 // Client only can decide obtain new card if is not busted or double his bet and get only one card.
                 do {
 
-                    System.out.printf("%s, still or want one more card?: \n", this.client.playerName);
+                    System.out.printf("%s, stay or want one more card?: \n", this.client.playerName);
 
                     try {
 
@@ -131,11 +128,11 @@ public class Blackjack extends Game {
 
                         if(!this.client.isBusted()){
                             switch (userOrder.toLowerCase()){
-                                case "still", "wait", "stop" -> {
+                                case "yes", "still", "wait", "stop" -> {
                                     this.client.stillsDeck();
                                     exit = true;
                                 }
-                                case "1", "get", "get one more card", "card", "one more", "one", "take", "want" -> {
+                                case "no", "1", "get", "get one more card", "card", "one more", "one", "take", "want" -> {
                                     this.client.getCard();
                                     System.out.println(this.client.toString());
                                 }
@@ -145,16 +142,16 @@ public class Blackjack extends Game {
                             }
                         } else {
                             exit = true;
+                            System.out.printf("\nBusted, with hand value: %d", this.client.getCurrentHand());
                         }
 
                     } catch (Exception runtimeError){runtimeError.printStackTrace();}
-
                 } while(!exit);
 
                 // Satisfy croupier
-                System.out.println("Croupier is under 17...");
+                System.out.println("\nCroupier is under 17...");
                 this.croupier.crupierNotSatisfied();
-                System.out.printf("Croupier last hand, %s",this.croupier.toString());
+                System.out.printf("\nCroupier last hand, %s",this.croupier.toString());
 
                 // Get Winner
                 this.lastRoundWinner = Player.getWinner(client,croupier);
@@ -163,13 +160,6 @@ public class Blackjack extends Game {
 
             } catch (Exception runtimeError){runtimeError.printStackTrace();}
         }
-    }
-
-
-
-    @Override
-    public void runGame() {
-        mainMenu(new Scanner(System.in));
     }
 
     // Menus
@@ -203,7 +193,7 @@ public class Blackjack extends Game {
                 switch (userOrder.toLowerCase()){
                     case "start", "start new game", "1", "go", "play" -> {
                         startRound(userIn);
-                        System.out.println("Winner: " + this.lastRoundWinner.playerName);
+                        System.out.println("\nWinner: " + this.lastRoundWinner.playerName);
                     }
                     case "exit", "2", "exit application", "exit blackjack" -> {
                         exitOrder = true;
@@ -211,5 +201,10 @@ public class Blackjack extends Game {
                 }
             } catch (Exception error) { error.printStackTrace();}
         }
+    }
+
+    @Override
+    public void runGame() {
+        mainMenu(new Scanner(System.in));
     }
 }
