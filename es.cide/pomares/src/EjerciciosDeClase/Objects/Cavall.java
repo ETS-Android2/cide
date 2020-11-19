@@ -44,7 +44,9 @@ public class Cavall {
     // Constructor
     public Cavall(String nombre, int edad, String color, String owner, String etnia){
         this.nombre = nombre;
-        this.edad = edad;
+        try {
+            setEdad(edad);
+        } catch (Exception e) { e.getMessage(); }
         this.color = color;
         this.owner = owner;
         this.etnia = etnia;
@@ -57,7 +59,9 @@ public class Cavall {
     public void setColor(String color){
         this.color = color;
     }
-    public void setEdad(int edad){
+    public void setEdad(int edad) throws Exception{
+        if(edad < 0)
+            throw new Exception("Value under 0.");
         this.edad = edad;
     }
     public void setOwner(String owner){
