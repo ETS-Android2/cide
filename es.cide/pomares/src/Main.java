@@ -10,9 +10,8 @@
 
  */
 
-import EjerciciosDeClase.Bucles.*;
-import EjerciciosDeClase.Condicionals.*;
-import EjerciciosDeClase.Objects.*;
+import EjerciciosDeClase.Methods.HypotenuseTest;
+import EjerciciosDeClase.Methods.RoundedNumbers2;
 import Utilitats.ConsoleColors;
 
 public class Main {
@@ -21,8 +20,6 @@ public class Main {
         System.out.println(ConsoleColors.stringColor(ConsoleColors.GREEN,"Debuggin BUCLES"));
 
         // add code here
-        Test myTestObject = new Test();
-        System.out.println(myTestObject.obtainValues());
-
+        HypotenuseTest app = new HypotenuseTest();
     }
 }

@@ -16,7 +16,7 @@ package EjerciciosDeClase.Methods;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-/**
+/**1
  * @author Carlos Pomares
  */
 
