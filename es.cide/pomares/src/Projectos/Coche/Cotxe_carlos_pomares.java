@@ -181,8 +181,8 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
                     case 6 -> {
                         if(this.velocitat <= 80) {
                             decrementarMarxa();
-                            decrementarVelocitat();
                         }
+                        decrementarVelocitat();
                     }
                     case 7 -> {
                         if(this.velocitat <= 110) {
@@ -199,7 +199,7 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             throw new RuntimeException("Ya estas aturat.");
         }
     }
-    private boolean pucPosarMarxaEnrrera() throws Exception {
+    public boolean potsPosarMarxaEnrrera() throws Exception {
         if(this.velocitat <= 5 && this.marxaActual <= 1){
             return true;
         } else {

@@ -35,30 +35,17 @@ public class TestCotxe_carlos_pomares {
 
         boolean exit = false;
 
-        String[] opcions = new String[]{"Crear vehicle","Generar vehicles","Seleccionar vehicle","Conduir vehicle","Sortir"};
+        String[] opcions = new String[]{"Crear vehicle","Generar vehicles","Seleccionar vehicle","Conduir vehicle","Credits","Sortir"};
 
         System.out.printf("\t========= %s =========\n","Bienvenido");
 
         while(!exit){
 
             if(vehicleSeleccionat != null){
-
-                System.out.print("\n\t--------- Vehicle seleccionat ---------\n");
-
-                System.out.printf("\t%-6s %-15s %-10s %-20s %-10s\n",
-                        "Nombre","Marca",
-                        "Model","Tipus canvi",
-                        "Descapotable");
-
-                System.out.printf("\t%-6d %-15s %-10s %-20s %-10b\n",
-                        (COTXES.indexOf(vehicleSeleccionat) + 1),vehicleSeleccionat.getMarca(),
-                        vehicleSeleccionat.getModel(),vehicleSeleccionat.getTipusCanvi(),
-                        vehicleSeleccionat.getSiEsDescapotable());
-
-                System.out.print("\t---------------------------------------\n");
+                informacioVehicle();
             }
 
-            System.out.printf("\n\t%-15s %-30s\n",
+            System.out.printf("\n\n\t%-15s %-30s\n",
                     "Nombre","Opcio");
 
             for (int i = 0; i < opcions.length ; i++) {
@@ -83,7 +70,8 @@ public class TestCotxe_carlos_pomares {
                             conduirVehicle();
                         }
                     }
-                    case 5 -> exit = true;
+                    case 5 -> author();
+                    case 6 -> exit = true;
                     default -> System.out.println("Selecciona una opcio.");
                 }
             } catch (Exception e){
@@ -256,8 +244,14 @@ public class TestCotxe_carlos_pomares {
                         }
                     }
                     case 7 -> {
-                        ORDRES.add("Posar marxa enrrera");
-                        vehicleSeleccionat.decrementarMarxa();
+                        ORDRES.add("Posar/Quitar marxa enrrera");
+                        if(vehicleSeleccionat.potsPosarMarxaEnrrera()){
+                            vehicleSeleccionat.decrementarMarxa();
+                        } else if(vehicleSeleccionat.getSiEsReverse()){
+                            vehicleSeleccionat.incrementarMarxa();
+                        } else {
+                            throw new RuntimeException("No pot posar marxa enrrera.");
+                        }
                     }
                     case 8 -> {
                         ORDRES.add("Configurar vehicle.");
@@ -286,7 +280,7 @@ public class TestCotxe_carlos_pomares {
                 "Aire acondicionat","Capota","Limpia parabrisas","Sortir"
         };
 
-        System.out.print("\n\t========= Conduccio de Vehicle =========\n");
+        System.out.print("\n\t========= Configuracio de Components =========\n");
 
         boolean exit = false;
 
@@ -333,11 +327,54 @@ public class TestCotxe_carlos_pomares {
 
     }
 
+    // TODO Author
+    private static void author(){
+
+        System.out.printf("\n\t========= %s =========\n",ConsoleColorsLite.stringColor(ConsoleColorsLite.CYAN_BOLD,"Credits de l'autor"));
+
+        /*
+
+            Gracias por probar esta aplicacion
+            espero que te haya gustado y te haya
+            servido de inspiracion, lo he hecho
+            con carino y he intentado aplicar
+            nuevos conocimientos.
+
+            Gracias, Carlos Pomares
+
+            github.com/pomaretta
+
+         */
+
+        System.out.print("\t   ______________________________\n" +
+                "\t / \\                             \\.\n" +
+                "\t|   |                            |.\n" +
+                "\t \\_ |  Gracias por probar        |.\n" +
+                "\t    |  esta aplicación,          |.\n" +
+                "\t    |  espero que te haya        |.\n" +
+                "\t    |  gustado y te haya         |.\n" +
+                "\t    |  servido de inspiración,   |.\n" +
+                "\t    |  lo he hecho con cariño    |.\n" +
+                "\t    |  y he intentado aplicar    |.\n" +
+                "\t    |  nuevos conocimientos      |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  Gracias, Carlos Pomares   |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  github.com/pomaretta      |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  https://carlospomares.es  |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |   _________________________|___\n" +
+                "\t    |  /                            /.\n" +
+                "\t    \\_/____________________________/.\n\n");
+
+    }
+
     // TODO INFORMACIONS
     private static void informacioVehicle(){
         // Mostrar vehicle
         // MARCA - MODEL - TIPUS CANVI - DESCAPOTABLE
-        System.out.print("\n\t------------------------ VEHICLE ---------------------------");
+        System.out.printf("\n\t------------------------ %s ---------------------------",ConsoleColorsLite.stringColor(ConsoleColorsLite.GREEN,"VEHICLE"));
 
         System.out.printf("\n\t%-15s %-15s %-15s %-15s",
                 "MARCA","MODEL",
@@ -352,7 +389,7 @@ public class TestCotxe_carlos_pomares {
     private static void informacioVehicle(String marca, String model, TipusCanvi canvi, boolean descapotable){
         // Mostrar vehicle
         // MARCA - MODEL - TIPUS CANVI - DESCAPOTABLE
-        System.out.print("\n\t------------------------ VEHICLE ---------------------------");
+        System.out.printf("\n\t------------------------ %s ---------------------------",ConsoleColorsLite.stringColor(ConsoleColorsLite.GREEN,"VEHICLE"));
 
         System.out.printf("\n\t%-15s %-15s %-15s %-15s",
                 "MARCA","MODEL",
@@ -367,7 +404,8 @@ public class TestCotxe_carlos_pomares {
     private static void informacioEstadistiques(){
         // Mostrar estadisticas
         // VELOCITAT - REVOLUCIONS - MARXA ACTUAL - REVERSE
-        System.out.print("\n\t--------------------- ESTADISTIQUES ------------------------");
+        System.out.printf("\n\t--------------------- %s ------------------------",
+                ConsoleColorsLite.stringColor(ConsoleColorsLite.CYAN,"ESTADISTIQUES"));
 
         System.out.printf("\n\t%-15s %-15s %-15s %-15s",
                 "VELOCITAT","REVOLUCIONS",
@@ -391,7 +429,8 @@ public class TestCotxe_carlos_pomares {
         // AIRE ACON - VELOCITAT
         // CAPOTA - PUESTA
         // LIMPIA - VELOCITAT
-        System.out.print("\n\t---------------------- CONFIGURACIO ------------------------");
+        System.out.printf("\n\t---------------------- %s ------------------------",
+                ConsoleColorsLite.stringColor(ConsoleColorsLite.YELLOW,"CONFIGURACIO"));
 
         System.out.printf("\n\t%-20s %-15s",
                 "COMPONENT","VELOCITAT");
@@ -407,9 +446,9 @@ public class TestCotxe_carlos_pomares {
         // ORDRE ANTERIOR
         System.out.print("\t-------------------------- ORDRES --------------------------");
 
-        for (int i = 0; i < TestCotxe_carlos_pomares.ORDRES.size(); i++) {
+        for (int i = 0; i < ORDRES.size(); i++) {
             System.out.printf("\n\t%-10s %-15s",
-                    (i+1), TestCotxe_carlos_pomares.ORDRES.get(i));
+                    (i+1), ConsoleColorsLite.stringColor(ConsoleColorsLite.GREEN_BOLD,ORDRES.get(i)));
         }
 
         System.out.print("\n\t------------------------------------------------------------\n\n");
@@ -421,7 +460,7 @@ public class TestCotxe_carlos_pomares {
 
         for (int i = 0; i < ERRORS.size(); i++) {
             System.out.printf("\n\t%-10s %-15s",
-                    (i+1), ERRORS.get(i));
+                    (i+1), ConsoleColorsLite.stringColor(ConsoleColorsLite.RED_BOLD,ERRORS.get(i)));
         }
 
         System.out.print("\n\t------------------------------------------------------------\n\n");
