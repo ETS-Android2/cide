@@ -14,6 +14,8 @@ package Projectos.Coche;
 */
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Carlos Pomares
@@ -39,7 +41,7 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
     private int marxaActual = 0;
 
     // Components
-    final private HashMap<String,Integer> components = new HashMap<>();
+    final private LinkedHashMap<String,Integer> components = new LinkedHashMap<>();
 
     public Cotxe_carlos_pomares(String marca, String model, TipusCanvi tipuscanvi, boolean descapotable) {
         super(marca,model,tipuscanvi);
@@ -57,10 +59,10 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             if(this.tipuscanvi == TipusCanvi.CanviManual){
                 switch (this.marxaActual){
                     case 0 -> {
-                        if(this.reverse){
+                        if(this.reverse && this.velocitat <= 5){
                             incrementarVelocitat();
                         } else {
-                            throw new RuntimeException("Necesita poner una marxa.");
+                            throw new RuntimeException("Necesita poner una marxa o Ha superat la maxima velocitat.");
                         }
                     }
                     // First gear
@@ -126,6 +128,9 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
                             case 15, 25, 50, 80, 90, 120 -> {
                                 incrementarMarxa();
                                 incrementarVelocitat();
+                            }
+                            case 250 -> {
+                                throw new RuntimeException("Maxima velocitat.");
                             }
                             default -> incrementarVelocitat();
                         }
@@ -206,6 +211,7 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             if(this.reverse){
                 if(this.velocitat == 0 || (this.velocitat >= 0 && this.velocitat <= 5)){
                     this.marxaActual += 1;
+                    this.reverse = false;
                 }
             } else {
                 switch (this.marxaActual) {
@@ -231,14 +237,14 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
                         }
                     }
                     case 3 -> {
-                        if(this.velocitat >= 35 && this.velocitat <= 50){
+                        if(this.velocitat >= 35 && this.velocitat <= 55){
                             this.marxaActual += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
                         }
                     }
                     case 4 -> {
-                        if(this.velocitat >= 60 && this.velocitat <= 80){
+                        if(this.velocitat >= 60 && this.velocitat <= 85){
                             this.marxaActual += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
@@ -252,7 +258,7 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
                         }
                     }
                     case 6 -> {
-                        if(this.velocitat >= 120 && this.velocitat <= 140){
+                        if(this.velocitat >= 115 && this.velocitat <= 150){
                             this.marxaActual += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
@@ -328,7 +334,7 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
         }
     }
     private void incrementarVelocitat(){
-        if(this.velocitat <= MAX_VELOCITAT){
+        if(this.velocitat <= (MAX_VELOCITAT - 5)){
             this.velocitat += VELOCITAT_INCREMENTADOR;
             this.revolucions = (REVOLUCIONS_ENMARXA + ((this.velocitat / 10) * this.marxaActual));
         }
@@ -336,6 +342,47 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
     private void decrementarVelocitat(){
         if(this.velocitat >= 5){
             this.velocitat -= VELOCITAT_INCREMENTADOR;
+        }
+    }
+    public void posarCapota() throws Exception {
+        if(this.capota){
+            throw new Exception("Ya esta posada.");
+        } else {
+            this.capota = true;
+            this.components.replace("Capota",0,1);
+        }
+    }
+    public void quitarCapota() throws Exception {
+        if(this.capota){
+            this.capota = false;
+            this.components.replace("Capota",1,0);
+        } else {
+            throw new Exception("Ya esta quitada.");
+        }
+    }
+    public void cambiarNivellAire() throws Exception {
+
+        String key = "Aire acondicionat";
+        int component = this.components.get(key);
+
+        if(component == 2){
+            this.components.replace(key,0);
+        } else if(component == 1){
+            this.components.replace(key,2);
+        } else if(component == 0){
+            this.components.replace(key,1);
+        }
+    }
+    public void cambiarNivellLimpia() throws Exception {
+
+        String key = "Limpia parabrisas";
+
+        int component = this.components.get(key);
+
+        if(component == 1){
+            this.components.replace(key,0);
+        } else if(component == 0){
+            this.components.replace(key,1);
         }
     }
     @Override
@@ -376,6 +423,7 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
     public boolean getSiEsDescapotable(){
         return this.DESCAPOTABLE;
     }
+    public boolean getCapotaEstat() { return this.capota; }
     public boolean getSiEsReverse(){
         return this.reverse;
     }

@@ -37,7 +37,7 @@ public class TestCotxe_carlos_pomares {
 
         String[] opcions = new String[]{"Crear vehicle","Generar vehicles","Seleccionar vehicle","Conduir vehicle","Sortir"};
 
-        System.out.printf("========= %s =========\n","Bienvenido");
+        System.out.printf("\t========= %s =========\n","Bienvenido");
 
         while(!exit){
 
@@ -90,12 +90,42 @@ public class TestCotxe_carlos_pomares {
                 System.out.println(e.getMessage());
             }
         }
-        System.out.print("========= END MAIN MENU =========\n");
+        System.out.print("\n\t========= END MAIN MENU =========\n");
     }
 
     // TODO Crear vehicle
     private static void crearVehicle(){
-        System.out.println("No implementat.");
+
+        String marca,model,canvi,descapotable;
+        TipusCanvi tCanvi = TipusCanvi.CanviAutomatic;
+        boolean isDescapotable = false;
+
+        System.out.print("\n\t========= Creacio de vehicle =========\n");
+
+        System.out.print("\tMARCA(String): ");
+        marca = USER_IN.nextLine();
+
+        System.out.print("\tMODEL(String): ");
+        model = USER_IN.nextLine();
+
+        System.out.print("\tCANVI MANUAL/AUTOMATIC: ");
+        canvi = USER_IN.nextLine();
+
+        if ("manual".equalsIgnoreCase(canvi)) {
+            tCanvi = TipusCanvi.CanviManual;
+        }
+
+        System.out.print("\tDESCAPOTABLE SI/NO: ");
+        descapotable = USER_IN.nextLine();
+
+        if ("si".equalsIgnoreCase(descapotable)) {
+            isDescapotable = true;
+        }
+
+        informacioVehicle(marca,model,tCanvi,isDescapotable);
+
+        System.out.print("\n\n\t========= END MODULE =========\n");
+
     }
 
     // TODO Generar vehicles
@@ -112,7 +142,7 @@ public class TestCotxe_carlos_pomares {
     // TODO Seleccio
     private static void seleccionarVehicle(){
 
-        System.out.print("\n========= Seleccio de vehicle =========\n");
+        System.out.print("\n\t========= Seleccio de vehicle =========\n");
 
         System.out.printf("\n\t%-6s %-15s %-10s %-20s %-10s\n",
                 "Nombre","Marca",
@@ -141,19 +171,19 @@ public class TestCotxe_carlos_pomares {
             }
         }
 
-        System.out.print("\n========= END SELECT MENU =========\n");
+        System.out.print("\n\t========= END SELECT MENU =========\n");
     }
 
     // TODO Conduccio
     private static void conduirVehicle(){
 
         String[] opcions = new String[]{
-            "Arrancar","Aturar","Accelerar","Frenar","Pujar marxa","Baixar marxa","Configurar vehicle","Borrar ordres i Errors","Sortir"
+            "Arrancar","Aturar","Accelerar","Frenar","Pujar marxa","Baixar marxa","Posar marxa enrrera","Configurar vehicle","Borrar ordres i Errors","Sortir"
         };
 
         boolean exit = false;
 
-        System.out.print("\n========= Conduccio de Vehicle =========\n");
+        System.out.print("\n\t========= Conduccio de Vehicle =========\n");
 
         while(!exit){
             try {
@@ -210,22 +240,34 @@ public class TestCotxe_carlos_pomares {
                         vehicleSeleccionat.frenar();
                     }
                     case 5 -> {
-                        ORDRES.add("Pujar marxa.");
-                        vehicleSeleccionat.incrementarMarxa();
+                        if(vehicleSeleccionat.tipuscanvi == TipusCanvi.CanviManual){
+                            ORDRES.add("Pujar marxa.");
+                            vehicleSeleccionat.incrementarMarxa();
+                        } else {
+                            throw new RuntimeException("No disponible en automatic.");
+                        }
                     }
                     case 6 -> {
-                        ORDRES.add("Baixar marxa.");
-                        vehicleSeleccionat.decrementarMarxa();
+                        if(vehicleSeleccionat.tipuscanvi == TipusCanvi.CanviManual){
+                            ORDRES.add("Baixar marxa.");
+                            vehicleSeleccionat.decrementarMarxa();
+                        }  else {
+                            throw new RuntimeException("No disponible en automatic.");
+                        }
                     }
                     case 7 -> {
+                        ORDRES.add("Posar marxa enrrera");
+                        vehicleSeleccionat.decrementarMarxa();
+                    }
+                    case 8 -> {
                         ORDRES.add("Configurar vehicle.");
                         configuracioVehicle();
                     }
-                    case 8 -> {
+                    case 9 -> {
                         ORDRES.clear();
                         ERRORS.clear();
                     }
-                    case 9 -> exit = true;
+                    case 10 -> exit = true;
                     default -> System.out.println("Opcio incorrecte.");
                 }
 
@@ -234,12 +276,61 @@ public class TestCotxe_carlos_pomares {
             }
         }
 
-        System.out.print("\n========= END MODULE =========\n");
+        System.out.print("\n\t========= END MODULE =========\n");
     }
 
     // TODO Configuracio
-    private static void configuracioVehicle(){
-        System.out.println("No implementat.");
+    private static void configuracioVehicle() {
+
+        String[] opcions = new String[]{
+                "Aire acondicionat","Capota","Limpia parabrisas","Sortir"
+        };
+
+        System.out.print("\n\t========= Conduccio de Vehicle =========\n");
+
+        boolean exit = false;
+
+        while(!exit) {
+
+
+            informacioComponents();
+            if(ERRORS.size() != 0){
+                informeErrors();
+            }
+
+            for (int i = 0; i < opcions.length; i++) {
+                if(vehicleSeleccionat.getSiEsDescapotable()){
+                    System.out.printf("\t(%d) %s",(i+1),opcions[i]);
+                } else {
+                    if(!"Capota".equals(opcions[i])){
+                        System.out.printf("\t(%d) %s",(i+1),opcions[i]);
+                    }
+                }
+            }
+            
+            System.out.print("\n\n\tOrdre: ");
+
+            try {
+                switch (Integer.parseInt(USER_IN.nextLine())){
+                    case 1 -> vehicleSeleccionat.cambiarNivellAire();
+                    case 2 -> {
+                        if (vehicleSeleccionat.getCapotaEstat()){
+                            vehicleSeleccionat.quitarCapota();
+                        } else {
+                            vehicleSeleccionat.posarCapota();
+                        }
+                    }
+                    case 3 -> vehicleSeleccionat.cambiarNivellLimpia();
+                    case 4 -> exit = true;
+                    default -> System.out.println("Opcio incorrecte.");
+                }
+            } catch (Exception e){
+                ERRORS.add(e.getMessage());
+            }
+        }
+
+        System.out.print("\n\t========= END MODULE =========\n");
+
     }
 
     // TODO INFORMACIONS
@@ -258,6 +349,21 @@ public class TestCotxe_carlos_pomares {
 
         System.out.print("\n\t------------------------------------------------------------");
     }
+    private static void informacioVehicle(String marca, String model, TipusCanvi canvi, boolean descapotable){
+        // Mostrar vehicle
+        // MARCA - MODEL - TIPUS CANVI - DESCAPOTABLE
+        System.out.print("\n\t------------------------ VEHICLE ---------------------------");
+
+        System.out.printf("\n\t%-15s %-15s %-15s %-15s",
+                "MARCA","MODEL",
+                "TIPUS CANVI","DESCAPOTABLE");
+
+        System.out.printf("\n\t%-15s %-15s %-15s %-15b",
+                marca,model,
+                canvi,descapotable);
+
+        System.out.print("\n\t------------------------------------------------------------");
+    }
     private static void informacioEstadistiques(){
         // Mostrar estadisticas
         // VELOCITAT - REVOLUCIONS - MARXA ACTUAL - REVERSE
@@ -267,9 +373,16 @@ public class TestCotxe_carlos_pomares {
                 "VELOCITAT","REVOLUCIONS",
                 "MARXA ACTUAL","ESTATUS");
 
+        String marxa;
+        if(vehicleSeleccionat.getSiEsReverse()){
+            marxa = "R";
+        } else {
+            marxa = String.valueOf(vehicleSeleccionat.getMarxaActual());
+        }
+
         System.out.printf("\n\t%-15s %-15s %-15s %-15s",
                 vehicleSeleccionat.getVelocitat(),vehicleSeleccionat.getRevolucions(),
-                vehicleSeleccionat.getMarxaActual(),vehicleSeleccionat.comprovaMotor());
+                marxa,vehicleSeleccionat.comprovaMotor());
 
         System.out.print("\n\t------------------------------------------------------------");
     }
