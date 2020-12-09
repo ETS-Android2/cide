@@ -24,20 +24,19 @@ import java.util.LinkedHashMap;
 public class Cotxe_carlos_pomares extends CotxeAbstracte {
 
     // Constants
-    final private static int MAX_VELOCITAT = 250;
+    final private static int MAX_VELOCITY = 250;
     final private static int VELOCITAT_INCREMENTADOR = 5;
     final private static int REVOLUCIONS_ENMARXA = 930;
     final private static int MAX_MARXASECUENCIAL = 7;
     final private boolean DESCAPOTABLE;
 
     // Vehicle individual
-    private int revolucions = 1;
-    private int velocitat = 0;
+    private int revolutions = 1;
+    private int velocity = 0;
     private boolean reverse;
-    private boolean capota;
-    private boolean cinturo;
-    private EstatsMotorCotxe estatCoxte = EstatsMotorCotxe.Aturat;
-    private int marxaActual = 0;
+    private boolean hood;
+    private EstatsMotorCotxe carState = EstatsMotorCotxe.Aturat;
+    private int gear = 0;
 
     // Components
     final private LinkedHashMap<String,Integer> components = new LinkedHashMap<>();
@@ -53,63 +52,64 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
         components.put("Limpia parabrisas",0);
 
     }
-    public void accelerar() throws Exception {
-        if(this.velocitat >= 0 && this.velocitat <= MAX_VELOCITAT){
+
+    public void accelerate() throws Exception {
+        if(this.velocity >= 0 && this.velocity <= MAX_VELOCITY){
             if(this.tipuscanvi == TipusCanvi.CanviManual){
-                switch (this.marxaActual){
+                switch (this.gear){
                     case 0 -> {
-                        if(this.reverse && this.velocitat <= 5){
-                            incrementarVelocitat();
+                        if(this.reverse && this.velocity <= 5){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesita poner una marxa o Ha superat la maxima velocitat.");
                         }
                     }
                     // First gear
                     case 1 -> {
-                        if(this.velocitat <= 10){
-                            incrementarVelocitat();
+                        if(this.velocity <= 10){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesites aumentar marxa.");
                         }
                     }
                     case 2 -> {
-                        if(this.velocitat <= 25){
-                            incrementarVelocitat();
+                        if(this.velocity <= 25){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesites aumentar marxa.");
                         }
                     }
                     case 3 -> {
-                        if(this.velocitat <= 50){
-                            incrementarVelocitat();
+                        if(this.velocity <= 50){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesites aumentar marxa.");
                         }
                     }
                     case 4 -> {
-                        if(this.velocitat <= 75){
-                            incrementarVelocitat();
+                        if(this.velocity <= 75){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesites aumentar marxa.");
                         }
                     }
                     case 5 -> {
-                        if(this.velocitat <= 100){
-                            incrementarVelocitat();
+                        if(this.velocity <= 100){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesites aumentar marxa.");
                         }
                     }
                     case 6 -> {
-                        if(this.velocitat <= 145){
-                            incrementarVelocitat();
+                        if(this.velocity <= 145){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesites aumentar marxa.");
                         }
                     }
                     case 7 -> {
-                        if(this.velocitat <= (MAX_VELOCITAT - 5)){
-                            incrementarVelocitat();
+                        if(this.velocity <= (MAX_VELOCITY - 5)){
+                            velocityIncrement();
                         } else {
                             throw new RuntimeException("Necesites aumentar marxa.");
                         }
@@ -118,20 +118,20 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
 
                 }
             } else if(this.tipuscanvi == TipusCanvi.CanviAutomatic){
-                if(this.estatCoxte == EstatsMotorCotxe.EnMarxa){
-                    if(this.velocitat == 0 && this.marxaActual == 0){
-                        this.incrementarMarxa();
-                        this.incrementarVelocitat();
-                    } else if(this.marxaActual >= 1 && this.marxaActual <= MAX_MARXASECUENCIAL){
-                        switch (this.velocitat){
+                if(this.carState == EstatsMotorCotxe.EnMarxa){
+                    if(this.velocity == 0 && this.gear == 0){
+                        this.gearUp();
+                        this.velocityIncrement();
+                    } else if(this.gear >= 1 && this.gear <= MAX_MARXASECUENCIAL){
+                        switch (this.velocity){
                             case 15, 25, 50, 80, 90, 120 -> {
-                                incrementarMarxa();
-                                incrementarVelocitat();
+                                gearUp();
+                                velocityIncrement();
                             }
                             case 250 -> {
                                 throw new RuntimeException("Maxima velocitat.");
                             }
-                            default -> incrementarVelocitat();
+                            default -> velocityIncrement();
                         }
                     }
                 }
@@ -142,123 +142,126 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             throw new Exception("No se pot accelerar.");
         }
     }
-    public void frenar() throws Exception {
-        if(this.velocitat >= 5){
+
+    public void deccelerate() throws Exception {
+        if(this.velocity >= 5){
             if(this.tipuscanvi == TipusCanvi.CanviAutomatic){
-                switch (this.marxaActual){
+                switch (this.gear){
                     case 0 -> {
                         if(reverse){
-                            decrementarVelocitat();
+                            velocityDecrement();
                         } else {
                             throw new RuntimeException("Error");
                         }
                     }
                     case 2 -> {
-                        if(this.velocitat <= 10) {
-                            decrementarMarxa();
+                        if(this.velocity <= 10) {
+                            gearDown();
                         }
-                        decrementarVelocitat();
+                        velocityDecrement();
                     }
                     case 3 -> {
-                        if(this.velocitat <= 20) {
-                            decrementarMarxa();
+                        if(this.velocity <= 20) {
+                            gearDown();
                         }
-                        decrementarVelocitat();
+                        velocityDecrement();
                     }
                     case 4 -> {
-                        if(this.velocitat <= 40) {
-                            decrementarMarxa();
+                        if(this.velocity <= 40) {
+                            gearDown();
                         }
-                        decrementarVelocitat();
+                        velocityDecrement();
                     }
                     case 5 -> {
-                        if(this.velocitat <= 60) {
-                            decrementarMarxa();
+                        if(this.velocity <= 60) {
+                            gearDown();
                         }
-                        decrementarVelocitat();
+                        velocityDecrement();
                     }
                     case 6 -> {
-                        if(this.velocitat <= 80) {
-                            decrementarMarxa();
+                        if(this.velocity <= 80) {
+                            gearDown();
                         }
-                        decrementarVelocitat();
+                        velocityDecrement();
                     }
                     case 7 -> {
-                        if(this.velocitat <= 110) {
-                            decrementarMarxa();
+                        if(this.velocity <= 110) {
+                            gearDown();
                         }
-                        decrementarVelocitat();
+                        velocityDecrement();
                     }
-                    default -> decrementarVelocitat();
+                    default -> velocityDecrement();
                 }
             } else {
-                decrementarVelocitat();
+                velocityDecrement();
             }
         } else {
             throw new RuntimeException("Ya estas aturat.");
         }
     }
-    public boolean potsPosarMarxaEnrrera() throws Exception {
-        if(this.velocitat <= 5 && this.marxaActual <= 1){
+
+    public boolean canPutReverse() throws Exception {
+        if(this.velocity <= 5 && this.gear <= 1){
             return true;
         } else {
             throw new RuntimeException("No pots posar marxa enrrera.");
         }
     }
-    public void incrementarMarxa() throws Exception {
-        if(this.marxaActual <= MAX_MARXASECUENCIAL) {
+
+    public void gearUp() throws Exception {
+        if(this.gear <= MAX_MARXASECUENCIAL) {
             if(this.reverse){
-                if(this.velocitat == 0 || (this.velocitat >= 0 && this.velocitat <= 5)){
-                    this.marxaActual += 1;
+                if(this.velocity == 0 || (this.velocity >= 0 && this.velocity <= 5)){
+                    this.gear += 1;
                     this.reverse = false;
                 }
             } else {
-                switch (this.marxaActual) {
+                switch (this.gear) {
                     case 0 -> {
-                        if(this.velocitat == 0){
-                            this.marxaActual += 1;
+                        if(this.velocity == 0){
+                            this.gear += 1;
                         } else {
                             throw new RuntimeException("Error.");
                         }
                     }
                     case 1 -> {
-                        if(this.velocitat >= 5 && this.velocitat <= 15){
-                            this.marxaActual += 1;
+                        if(this.velocity >= 5 && this.velocity <= 15){
+                            this.gear += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
                         }
                     }
                     case 2 -> {
-                        if(this.velocitat >= 20 && this.velocitat <= 30){
-                            this.marxaActual += 1;
+                        if(this.velocity >= 20 && this.velocity <= 30){
+                            this.gear += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
                         }
                     }
                     case 3 -> {
-                        if(this.velocitat >= 35 && this.velocitat <= 55){
-                            this.marxaActual += 1;
+                        if(this.velocity >= 35 && this.velocity <= 55){
+                            this.gear += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
                         }
                     }
                     case 4 -> {
-                        if(this.velocitat >= 60 && this.velocitat <= 85){
-                            this.marxaActual += 1;
+                        if(this.velocity >= 60 && this.velocity <= 85){
+                            this.gear += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
                         }
                     }
                     case 5 -> {
-                        if(this.velocitat >= 90 && this.velocitat <= 110){
-                            this.marxaActual += 1;
+                        if(this.velocity >= 90 && this.velocity <= 110){
+                            this.gear += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
                         }
                     }
                     case 6 -> {
-                        if(this.velocitat >= 115 && this.velocitat <= 150){
-                            this.marxaActual += 1;
+                        if(this.velocity >= 115 && this.velocity <= 150){
+                            this.gear += 1;
                         } else {
                             throw new RuntimeException("Velocitat insuficient.");
                         }
@@ -269,61 +272,62 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             }
         }
     }
-    public void decrementarMarxa() throws Exception {
-        if(this.marxaActual <= MAX_MARXASECUENCIAL) {
-            switch (this.marxaActual) {
+
+    public void gearDown() throws Exception {
+        if(this.gear <= MAX_MARXASECUENCIAL) {
+            switch (this.gear) {
                 case 0 -> {
-                    if(this.velocitat >= 0 && this.velocitat <= 5){
+                    if(this.velocity >= 0 && this.velocity <= 5){
                         this.reverse = true;
                     } else {
                         throw new RuntimeException("Error.");
                     }
                 }
                 case 1 -> {
-                    if(this.velocitat <= 15){
-                        this.marxaActual -= 1;
+                    if(this.velocity <= 15){
+                        this.gear -= 1;
                     } else {
                         throw new RuntimeException("Molta velocitat.");
                     }
                 }
                 case 2 -> {
-                    if(this.velocitat <= 25){
-                        this.marxaActual -= 1;
+                    if(this.velocity <= 25){
+                        this.gear -= 1;
                     } else {
                         throw new RuntimeException("Molta velocitat.");
                     }
                 }
                 case 3 -> {
-                    if(this.velocitat <= 45){
-                        this.marxaActual -= 1;
+                    if(this.velocity <= 45){
+                        this.gear -= 1;
                     } else {
                         throw new RuntimeException("Molta velocitat.");
                     }
                 }
                 case 4 -> {
-                    if(this.velocitat <= 55){
-                        this.marxaActual -= 1;
+                    if(this.velocity <= 55){
+                        this.gear -= 1;
                     } else {
                         throw new RuntimeException("Molta velocitat.");
                     }
                 }
                 case 5 -> {
-                    if(this.velocitat <= 70){
-                        this.marxaActual -= 1;
+                    if(this.velocity <= 70){
+                        this.gear -= 1;
                     } else {
                         throw new RuntimeException("Molta velocitat.");
                     }
                 }
                 case 6 -> {
-                    if(this.velocitat <= 100){
-                        this.marxaActual -= 1;
+                    if(this.velocity <= 100){
+                        this.gear -= 1;
                     } else {
                         throw new RuntimeException("Molta velocitat.");
                     }
                 }
                 case 7 -> {
-                    if(this.velocitat <= 130){
-                        this.marxaActual -= 1;
+                    if(this.velocity <= 130){
+                        this.gear -= 1;
                     } else {
                         throw new RuntimeException("Molta velocitat.");
                     }
@@ -332,34 +336,39 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             }
         }
     }
-    private void incrementarVelocitat(){
-        if(this.velocitat <= (MAX_VELOCITAT - 5)){
-            this.velocitat += VELOCITAT_INCREMENTADOR;
-            this.revolucions = (REVOLUCIONS_ENMARXA + ((this.velocitat / 10) * this.marxaActual));
+
+    private void velocityIncrement(){
+        if(this.velocity <= (MAX_VELOCITY - 5)){
+            this.velocity += VELOCITAT_INCREMENTADOR;
+            this.revolutions = (REVOLUCIONS_ENMARXA + ((this.velocity / 10) * this.gear));
         }
     }
-    private void decrementarVelocitat(){
-        if(this.velocitat >= 5){
-            this.velocitat -= VELOCITAT_INCREMENTADOR;
+
+    private void velocityDecrement(){
+        if(this.velocity >= 5){
+            this.velocity -= VELOCITAT_INCREMENTADOR;
         }
     }
-    public void posarCapota() throws Exception {
-        if(this.capota){
+
+    public void putHood() throws Exception {
+        if(this.hood){
             throw new Exception("Ya esta posada.");
         } else {
-            this.capota = true;
+            this.hood = true;
             this.components.replace("Capota",0,1);
         }
     }
-    public void quitarCapota() throws Exception {
-        if(this.capota){
-            this.capota = false;
+
+    public void takeOffHood() throws Exception {
+        if(this.hood){
+            this.hood = false;
             this.components.replace("Capota",1,0);
         } else {
             throw new Exception("Ya esta quitada.");
         }
     }
-    public void cambiarNivellAire() throws Exception {
+
+    public void changeAirLevel() throws Exception {
 
         String key = "Aire acondicionat";
         int component = this.components.get(key);
@@ -372,7 +381,8 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             this.components.replace(key,1);
         }
     }
-    public void cambiarNivellLimpia() throws Exception {
+
+    public void changeWindScreenLevel() throws Exception {
 
         String key = "Limpia parabrisas";
 
@@ -384,60 +394,73 @@ public class Cotxe_carlos_pomares extends CotxeAbstracte {
             this.components.replace(key,1);
         }
     }
+
     @Override
     public void arrancarMotor() throws Exception {
-        if(this.estatCoxte == EstatsMotorCotxe.EnMarxa){
+        if(this.carState == EstatsMotorCotxe.EnMarxa){
             throw new Exception("Error, es cotxe ja esta en marxa.");
         } else {
-            this.estatCoxte = EstatsMotorCotxe.EnMarxa;
+            this.carState = EstatsMotorCotxe.EnMarxa;
         }
     }
+
     @Override
     public void aturarMotor() throws Exception {
-        if(this.estatCoxte == EstatsMotorCotxe.Aturat){
+        if(this.carState == EstatsMotorCotxe.Aturat){
             throw new Exception("Error, es cotxe ja esta aturat.");
         } else {
-            this.estatCoxte = EstatsMotorCotxe.Aturat;
+            this.carState = EstatsMotorCotxe.Aturat;
         }
     }
+
     @Override
     public EstatsMotorCotxe comprovaMotor() {
-        return this.estatCoxte;
+        return this.carState;
     }
-    public int getVelocitat(){
-        return this.velocitat;
+
+    public int getVelocity(){
+        return this.velocity;
     }
-    public String getMarca(){
+
+    public String getBrand(){
         return this.marca;
     }
+
     public String getModel(){
         return this.model;
     }
-    public String getTipusCanvi(){
+
+    public String getTransmissionType(){
         return this.tipuscanvi.toString();
     }
+
     public HashMap<String,Integer> getComponents() {
         return components;
     }
-    public boolean getSiEsDescapotable(){
+
+    public boolean getConvertible(){
         return this.DESCAPOTABLE;
     }
-    public boolean getCapotaEstat() { return this.capota; }
-    public boolean getSiEsReverse(){
+
+    public boolean getHoodState() { return this.hood; }
+
+    public boolean getReverse(){
         return this.reverse;
     }
-    public int getMarxaActual(){
-        return this.marxaActual;
+
+    public int getGear(){
+        return this.gear;
     }
+
     @Override
-    public int getRevolucions() {
-        if(this.estatCoxte == EstatsMotorCotxe.Aturat){
+    public int getRevolutions() {
+        if(this.carState == EstatsMotorCotxe.Aturat){
             return 0;
         } else {
-            if(velocitat == 0){
+            if(velocity == 0){
                 return REVOLUCIONS_ENMARXA;
             } else {
-                return this.revolucions;
+                return this.revolutions;
             }
         }
     }

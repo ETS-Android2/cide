@@ -75,7 +75,7 @@ public class TestCotxe_carlos_pomares {
                     default -> System.out.println("Selecciona una opcio.");
                 }
             } catch (Exception e){
-                System.out.println(e.getMessage());
+                ERRORS.add(e.getMessage());
             }
         }
         System.out.print("\n\t========= END MAIN MENU =========\n");
@@ -235,9 +235,9 @@ public class TestCotxe_carlos_pomares {
         // Mostrar vehicles
         for(Cotxe_carlos_pomares vehicle : COTXES){
             System.out.printf("\t%-6d %-15s %-10s %-20s %-10b\n",
-                    (COTXES.indexOf(vehicle) + 1),vehicle.getMarca(),
-                    vehicle.getModel(),vehicle.getTipusCanvi(),
-                    vehicle.getSiEsDescapotable());
+                    (COTXES.indexOf(vehicle) + 1),vehicle.getBrand(),
+                    vehicle.getModel(),vehicle.getTransmissionType(),
+                    vehicle.getConvertible());
         }
 
         // Donar seleccio
@@ -316,16 +316,16 @@ public class TestCotxe_carlos_pomares {
                     }
                     case 3 -> {
                         ORDRES.add("Accelerar.");
-                        vehicleSeleccionat.accelerar();
+                        vehicleSeleccionat.accelerate();
                     }
                     case 4 -> {
                         ORDRES.add("Frenar.");
-                        vehicleSeleccionat.frenar();
+                        vehicleSeleccionat.deccelerate();
                     }
                     case 5 -> {
                         if(vehicleSeleccionat.tipuscanvi == TipusCanvi.CanviManual){
                             ORDRES.add("Pujar marxa.");
-                            vehicleSeleccionat.incrementarMarxa();
+                            vehicleSeleccionat.gearUp();
                         } else {
                             throw new RuntimeException("No disponible en automatic.");
                         }
@@ -333,17 +333,17 @@ public class TestCotxe_carlos_pomares {
                     case 6 -> {
                         if(vehicleSeleccionat.tipuscanvi == TipusCanvi.CanviManual){
                             ORDRES.add("Baixar marxa.");
-                            vehicleSeleccionat.decrementarMarxa();
+                            vehicleSeleccionat.gearDown();
                         }  else {
                             throw new RuntimeException("No disponible en automatic.");
                         }
                     }
                     case 7 -> {
                         ORDRES.add("Posar/Quitar marxa enrrera");
-                        if(vehicleSeleccionat.potsPosarMarxaEnrrera()){
-                            vehicleSeleccionat.decrementarMarxa();
-                        } else if(vehicleSeleccionat.getSiEsReverse()){
-                            vehicleSeleccionat.incrementarMarxa();
+                        if(vehicleSeleccionat.canPutReverse()){
+                            vehicleSeleccionat.gearDown();
+                        } else if(vehicleSeleccionat.getReverse()){
+                            vehicleSeleccionat.gearUp();
                         } else {
                             throw new RuntimeException("No pot posar marxa enrrera.");
                         }
@@ -388,7 +388,7 @@ public class TestCotxe_carlos_pomares {
             }
 
             for (int i = 0; i < opcions.length; i++) {
-                if(vehicleSeleccionat.getSiEsDescapotable()){
+                if(vehicleSeleccionat.getConvertible()){
                     System.out.printf("\t(%d) %s",(i+1),opcions[i]);
                 } else {
                     if(!"Capota".equals(opcions[i])){
@@ -401,15 +401,15 @@ public class TestCotxe_carlos_pomares {
 
             try {
                 switch (Integer.parseInt(USER_IN.nextLine())){
-                    case 1 -> vehicleSeleccionat.cambiarNivellAire();
+                    case 1 -> vehicleSeleccionat.changeAirLevel();
                     case 2 -> {
-                        if (vehicleSeleccionat.getCapotaEstat()){
-                            vehicleSeleccionat.quitarCapota();
+                        if (vehicleSeleccionat.getHoodState()){
+                            vehicleSeleccionat.takeOffHood();
                         } else {
-                            vehicleSeleccionat.posarCapota();
+                            vehicleSeleccionat.putHood();
                         }
                     }
-                    case 3 -> vehicleSeleccionat.cambiarNivellLimpia();
+                    case 3 -> vehicleSeleccionat.changeWindScreenLevel();
                     case 4 -> exit = true;
                     default -> System.out.println("Opcio incorrecte.");
                 }
@@ -476,8 +476,8 @@ public class TestCotxe_carlos_pomares {
                 "TIPUS CANVI","DESCAPOTABLE");
 
         System.out.printf("\n\t%-15s %-15s %-15s %-15b",
-                vehicleSeleccionat.getMarca(),vehicleSeleccionat.getModel(),
-                vehicleSeleccionat.getTipusCanvi(),vehicleSeleccionat.getSiEsDescapotable());
+                vehicleSeleccionat.getBrand(),vehicleSeleccionat.getModel(),
+                vehicleSeleccionat.getTransmissionType(),vehicleSeleccionat.getConvertible());
 
         System.out.print("\n\t------------------------------------------------------------");
     }
@@ -507,14 +507,14 @@ public class TestCotxe_carlos_pomares {
                 "MARXA ACTUAL","ESTATUS");
 
         String marxa;
-        if(vehicleSeleccionat.getSiEsReverse()){
+        if(vehicleSeleccionat.getReverse()){
             marxa = "R";
         } else {
-            marxa = String.valueOf(vehicleSeleccionat.getMarxaActual());
+            marxa = String.valueOf(vehicleSeleccionat.getGear());
         }
 
         System.out.printf("\n\t%-15s %-15s %-15s %-15s",
-                vehicleSeleccionat.getVelocitat(),vehicleSeleccionat.getRevolucions(),
+                vehicleSeleccionat.getVelocity(),vehicleSeleccionat.getRevolutions(),
                 marxa,vehicleSeleccionat.comprovaMotor());
 
         System.out.print("\n\t------------------------------------------------------------");

@@ -10,9 +10,14 @@
 
  */
 
+import EjerciciosDeClase.Bucles.SecondUnitE19;
 import EjerciciosDeClase.Methods.HypotenuseTest;
 import EjerciciosDeClase.Methods.RoundedNumbers2;
+import Projectos.Coche.ConsoleColorsLite;
 import Utilitats.ConsoleColors;
+import Utilitats.Encapsulate;
+
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,6 +25,6 @@ public class Main {
         System.out.println(ConsoleColors.stringColor(ConsoleColors.GREEN,"Debuggin BUCLES"));
 
         // add code here
-        HypotenuseTest app = new HypotenuseTest();
+
     }
 }

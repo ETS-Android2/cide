@@ -23,7 +23,7 @@ public interface InterfaceCotxe {
      * Si el motor està en marxa retornarà un numero aleatori entre 1 i 6500
      * @return
      */
-    public int getRevolucions();
+    public int getRevolutions();
     /**
      * El metode aturarMotor() llançara una excepcio si s'intenta
      * aturar el motor pero el motor està aturat.

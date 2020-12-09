@@ -20,17 +20,23 @@ package Projectos.Coche;
 
 public class Encapsulate {
     public static void encapsulateString(String toEncapsulate, String escapeCharacter){
-
+        encapsulate(toEncapsulate.length(),toEncapsulate,escapeCharacter);
+    }
+    public static void encapsulateString(String toEncapsulate, String escapeCharacter, String spaceCharacter){
+        encapsulate(toEncapsulate.length(),toEncapsulate,escapeCharacter,spaceCharacter);
+    }
+    public static void encapsulateString(String color, String toEncapsulate, String escapeCharacter, String spaceCharacter){
         int lengthOfString = toEncapsulate.length();
+        toEncapsulate = ConsoleColorsLite.stringColor(color,toEncapsulate);
+        encapsulate(lengthOfString,toEncapsulate,escapeCharacter,spaceCharacter);
+    }
 
-        String firstPhase,secondPhase,thirdPhase;
-        boolean firstPhaseCheck = false, secondPhaseCheck = false, thirdPhaseCheck = false;
+    private static void encapsulate(int stringLength,String toEncapsulate, String escapeCharacter){
+
+        boolean firstPhaseCheck = false, secondPhaseCheck = false;
         boolean stringCheck = false;
-        boolean firstChar = false;
-        boolean secondChar = false;
-        boolean thirdChar = false;
 
-        for (int i = 0; i < ((lengthOfString + 1) * 3); i++) {
+        for (int i = 0; i < ((stringLength + 1) * 3); i++) {
 
             // First phase
             if(!firstPhaseCheck){
@@ -38,13 +44,13 @@ public class Encapsulate {
                     System.out.print(escapeCharacter);
                 }
                 System.out.print("-");
-                if(i == (lengthOfString + 1)){
+                if(i == (stringLength + 1)){
                     firstPhaseCheck = true;
                 }
             } else if(!secondPhaseCheck){
-                if(i == (lengthOfString + 2)){
+                if(i == (stringLength + 2)){
                     System.out.print("\n" + escapeCharacter +"|");
-                } else if(i == ((lengthOfString * 2) + 1)){
+                } else if(i == ((stringLength * 2) + 1)){
                     System.out.print("|");
                     secondPhaseCheck = true;
                 } else if(!stringCheck){
@@ -52,26 +58,19 @@ public class Encapsulate {
                     stringCheck = true;
                 }
             } else {
-                if(i == ((lengthOfString * 2) + 2)){
+                if(i == ((stringLength * 2) + 2)){
                     System.out.print("\n" + escapeCharacter + "-");
                 }
                 System.out.print("-");
             }
         }
-
     }
-    public static void encapsulateString(String toEncapsulate, String escapeCharacter, String spaceCharacter){
+    private static void encapsulate(int stringLength, String toEncapsulate, String escapeCharacter, String spaceCharacter){
 
-        int lengthOfString = toEncapsulate.length();
-
-        String firstPhase,secondPhase,thirdPhase;
-        boolean firstPhaseCheck = false, secondPhaseCheck = false, thirdPhaseCheck = false;
+        boolean firstPhaseCheck = false, secondPhaseCheck = false;
         boolean stringCheck = false;
-        boolean firstChar = false;
-        boolean secondChar = false;
-        boolean thirdChar = false;
 
-        for (int i = 0; i < ((lengthOfString + 1) * 3); i++) {
+        for (int i = 0; i < ((stringLength + 1) * 3); i++) {
 
             // First phase
             if(!firstPhaseCheck){
@@ -79,13 +78,13 @@ public class Encapsulate {
                     System.out.print(escapeCharacter);
                 }
                 System.out.print(spaceCharacter);
-                if(i == (lengthOfString + 1)){
+                if(i == (stringLength + 1)){
                     firstPhaseCheck = true;
                 }
             } else if(!secondPhaseCheck){
-                if(i == (lengthOfString + 2)){
+                if(i == (stringLength + 2)){
                     System.out.print("\n" + escapeCharacter +"|");
-                } else if(i == ((lengthOfString * 2) + 1)){
+                } else if(i == ((stringLength * 2) + 1)){
                     System.out.print("|");
                     secondPhaseCheck = true;
                 } else if(!stringCheck){
@@ -93,54 +92,12 @@ public class Encapsulate {
                     stringCheck = true;
                 }
             } else {
-                if(i == ((lengthOfString * 2) + 2)){
+                if(i == ((stringLength * 2) + 2)){
                     System.out.print("\n" + escapeCharacter + spaceCharacter);
                 }
                 System.out.print(spaceCharacter);
             }
         }
-
     }
-    public static void encapsulateString(String color, String toEncapsulate, String escapeCharacter, String spaceCharacter){
 
-        int lengthOfString = toEncapsulate.length();
-        toEncapsulate = ConsoleColorsLite.stringColor(color,toEncapsulate);
-
-        String firstPhase,secondPhase,thirdPhase;
-        boolean firstPhaseCheck = false, secondPhaseCheck = false, thirdPhaseCheck = false;
-        boolean stringCheck = false;
-        boolean firstChar = false;
-        boolean secondChar = false;
-        boolean thirdChar = false;
-
-        for (int i = 0; i < ((lengthOfString + 1) * 3); i++) {
-
-            // First phase
-            if(!firstPhaseCheck){
-                if(i == 0){
-                    System.out.print(escapeCharacter);
-                }
-                System.out.print(spaceCharacter);
-                if(i == (lengthOfString + 1)){
-                    firstPhaseCheck = true;
-                }
-            } else if(!secondPhaseCheck){
-                if(i == (lengthOfString + 2)){
-                    System.out.print("\n" + escapeCharacter +"|");
-                } else if(i == ((lengthOfString * 2) + 1)){
-                    System.out.print("|");
-                    secondPhaseCheck = true;
-                } else if(!stringCheck){
-                    System.out.print(toEncapsulate);
-                    stringCheck = true;
-                }
-            } else {
-                if(i == ((lengthOfString * 2) + 2)){
-                    System.out.print("\n" + escapeCharacter + spaceCharacter);
-                }
-                System.out.print(spaceCharacter);
-            }
-        }
-
-    }
 }
