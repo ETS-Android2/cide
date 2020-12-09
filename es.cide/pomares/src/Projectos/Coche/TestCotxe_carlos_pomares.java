@@ -84,33 +84,128 @@ public class TestCotxe_carlos_pomares {
     // TODO Crear vehicle
     private static void crearVehicle(){
 
-        String marca,model,canvi,descapotable;
+        String[] datos = new String[]{"Marca","Model","Transmissio","Descapotable"};
+        String marca = "marca",model = "model",canvi = "transmissio",descapotable = "descapotable";
         TipusCanvi tCanvi = TipusCanvi.CanviAutomatic;
         boolean isDescapotable = false;
 
+        String[] opcions = new String[]{
+                "Siguiente", "Introducir", "Ejecutar", "Borrar errors", "Salir"
+        };
+
+        int selected = 1;
+        boolean exit = false;
+        boolean created = false;
+
         System.out.print("\n\t========= Creacio de vehicle =========\n");
 
-        System.out.print("\tMARCA(String): ");
-        marca = USER_IN.nextLine();
 
-        System.out.print("\tMODEL(String): ");
-        model = USER_IN.nextLine();
+        while(!exit){
+            try {
 
-        System.out.print("\tCANVI MANUAL/AUTOMATIC: ");
-        canvi = USER_IN.nextLine();
+                if(canvi.equalsIgnoreCase("manual")){
+                    tCanvi = TipusCanvi.CanviManual;
+                } else if(canvi.equalsIgnoreCase("automatic") || canvi.equalsIgnoreCase("automatico") || canvi.equalsIgnoreCase("automatica")){
+                    canvi = "automatico";
+                    tCanvi = TipusCanvi.CanviAutomatic;
+                } else {
+                    canvi = "manual";
+                }
 
-        if ("manual".equalsIgnoreCase(canvi)) {
-            tCanvi = TipusCanvi.CanviManual;
+                if(descapotable.equalsIgnoreCase("si") || descapotable.equalsIgnoreCase("true")){
+                    isDescapotable = true;
+                    descapotable = "true";
+                } else {
+                    descapotable = "false";
+                }
+
+                // MARCA
+                System.out.printf("\n\n\t---------- %s ----------\n","MARCA");
+
+                if(selected == 1){
+                    Encapsulate.encapsulateString(ConsoleColorsLite.GREEN_BOLD,marca,"\t\t","-");
+                } else {
+                    System.out.printf("\t\t%s",marca);
+                }
+
+                // MODELO
+                System.out.printf("\n\t---------- %s ----------\n","MODELO");
+
+                if(selected == 2){
+                    Encapsulate.encapsulateString(ConsoleColorsLite.GREEN_BOLD,model,"\t\t","-");
+                } else {
+                    System.out.printf("\t\t%s",model);
+                }
+
+                // CANVI
+                System.out.printf("\n\t---------- %s ----------\n","TIPUS CANVI");
+
+                if(selected == 3){
+                    Encapsulate.encapsulateString(ConsoleColorsLite.GREEN_BOLD,canvi,"\t\t","-");
+                } else {
+                    System.out.printf("\t\t%s",canvi);
+                }
+
+                // DESCAPOTABLE
+                System.out.printf("\n\t---------- %s ----------\n","DESCAPOTABLE");
+
+                if(selected == 4){
+                    Encapsulate.encapsulateString(ConsoleColorsLite.GREEN_BOLD,descapotable,"\t\t","-");
+                } else {
+                    System.out.printf("\t\t%s",descapotable);
+                }
+
+                System.out.print("\n\n");
+
+                if(ERRORS.size() != 0){
+                    informeErrors();
+                }
+
+                if(created){
+                    informacioVehicle(marca,model,tCanvi,isDescapotable);
+                    System.out.print("\n\n");
+                }
+
+                // OPCIONS
+                for (int i = 0; i < opcions.length; i++) {
+                    System.out.printf("\t(%d) %s",
+                            (i + 1),opcions[i]);
+                }
+
+                System.out.print("\n\n\tOrden: ");
+
+                // (1)
+                switch (Integer.parseInt(USER_IN.nextLine())){
+                    case 1 -> {
+                        if(selected == 4){
+                            selected = 1;
+                        } else {
+                            selected++;
+                        }
+                    }
+                    case 2 -> {
+                        System.out.printf("\n\tIntroduce el nuevo valor de (%s): ",datos[selected - 1]);
+                        switch (selected){
+                            case 1 -> marca = USER_IN.nextLine();
+                            case 2 -> model = USER_IN.nextLine();
+                            case 3 -> canvi = USER_IN.nextLine();
+                            case 4 -> descapotable = USER_IN.nextLine();
+                        }
+                    }
+                    case 3 -> {
+                        COTXES.add(new Cotxe_carlos_pomares(marca,model,tCanvi,isDescapotable));
+                        created = true;
+                    }
+                    case 4 -> ERRORS.clear();
+                    case 5 -> exit = true;
+                    default -> ERRORS.add("Creacio de vehicles. Opcio incorrecta.");
+                }
+
+                // informacioVehicle(marca,model,tCanvi,isDescapotable);
+            } catch (Exception e){
+                ERRORS.add(e.getMessage());
+            }
         }
-
-        System.out.print("\tDESCAPOTABLE SI/NO: ");
-        descapotable = USER_IN.nextLine();
-
-        if ("si".equalsIgnoreCase(descapotable)) {
-            isDescapotable = true;
-        }
-
-        informacioVehicle(marca,model,tCanvi,isDescapotable);
 
         System.out.print("\n\n\t========= END MODULE =========\n");
 
