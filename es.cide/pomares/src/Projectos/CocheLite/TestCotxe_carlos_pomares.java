@@ -21,18 +21,27 @@ package Projectos.CocheLite;
 public class TestCotxe_carlos_pomares {
     public static void main(String[] args) {
 
-        Cotxe_carlos_pomares c1 = new Cotxe_carlos_pomares("Fiat","500S",TipusCanvi.CanviManual);
+        // Cotxe_carlos_pomares c1 = new Cotxe_carlos_pomares("Fiat","500S",TipusCanvi.CanviManual);
+        CotxeSegonaPart_carlos_pomares c1 = new CotxeSegonaPart_carlos_pomares("Fiat","500S",TipusCanvi.CanviManual);
 
         try {
-
             c1.arrancarMotor();
-            System.out.println(c1.comprovaMotor() + " REV: " + c1.getRevolutions());
-
-            c1.aturarMotor();
-            System.out.println(c1.comprovaMotor() + " REV: " + c1.getRevolutions());
+            c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('-');
+            c1.CanviarMarxaManual('-');
+            c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('-');
+            //c1.CanviarMarxaAutomatic('-');
+            // c1.CanviarMarxaAutomatic('-');
+            System.out.println(CanviManual.getCanviString(c1.getMarxaActual()));
 
         } catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
         }
 
     }
