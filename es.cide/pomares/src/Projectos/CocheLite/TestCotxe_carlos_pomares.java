@@ -29,16 +29,9 @@ public class TestCotxe_carlos_pomares {
             c1.CanviarMarxaManual('+');
             c1.CanviarMarxaManual('+');
             c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('-');
-            c1.CanviarMarxaManual('-');
-            c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('-');
-            //c1.CanviarMarxaAutomatic('-');
-            // c1.CanviarMarxaAutomatic('-');
-            System.out.println(CanviManual.getCanviString(c1.getMarxaActual()));
+            c1.CanviarMarxaManual('+');c1.CanviarMarxaManual('+');
+            c1.CanviarMarxaManual('+');c1.CanviarMarxaManual('+');
+            System.out.println(c1.getMarxaActualString());
 
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());

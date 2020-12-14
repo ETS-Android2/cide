@@ -40,6 +40,14 @@ public class CotxeSegonaPart_carlos_pomares extends Cotxe_carlos_pomares {
     public void CanviarMarxaAutomatic(char tipusOperacio) throws Exception {
         if(this.comprovaMotor() == EstatsMotorCotxe.EnMarxa && this.tipuscanvi == TipusCanvi.CanviAutomatic && (tipusOperacio=='+' || tipusOperacio=='-')){
             switch (this.marxaActual){
+                case 1,0,-1 -> {
+                    if(tipusOperacio=='+' && this.marxaActual != 1){
+                        this.marxaActual = CanviAutomatic.getCanvi(this.marxaActual + 1).getValorMarxa();
+                    } else {
+                        this.marxaActual = CanviAutomatic.getCanvi(this.marxaActual - 1).getValorMarxa();
+                    }
+                }
+                /*
                 case 1 -> {
                     if(tipusOperacio=='+'){
                         throw new RuntimeException("Máxima marxa.");
@@ -61,6 +69,8 @@ public class CotxeSegonaPart_carlos_pomares extends Cotxe_carlos_pomares {
                         throw new RuntimeException("Minima marxa.");
                     }
                 }
+
+                 */
                 default -> throw new RuntimeException("Error.");
             }
         } else {
@@ -70,6 +80,16 @@ public class CotxeSegonaPart_carlos_pomares extends Cotxe_carlos_pomares {
     public void CanviarMarxaManual(char tipusOperacio) throws Exception {
         if(this.comprovaMotor() == EstatsMotorCotxe.EnMarxa && this.tipuscanvi == TipusCanvi.CanviManual && (tipusOperacio=='+' || tipusOperacio=='-')){
             switch (this.marxaActual){
+                case -1,0,1,2,3,4,5,6 -> {
+                    if(tipusOperacio == '+' && this.marxaActual <= 6){
+                        this.marxaActual = CanviManual.getCanvi(this.marxaActual + 1).getValorMarxa();
+                    } else if(tipusOperacio == '-' && this.marxaActual >= 0 || this.marxaActual == -1){
+                        this.marxaActual = CanviManual.getCanvi(this.marxaActual - 1).getValorMarxa();
+                    } else {
+                        throw new RuntimeException("Limite de marxa.");
+                    }
+                }
+                /*
                 case 6 -> {
                     if(tipusOperacio=='+'){
                         throw new RuntimeException("Máxima marxa.");
@@ -126,6 +146,8 @@ public class CotxeSegonaPart_carlos_pomares extends Cotxe_carlos_pomares {
                         throw new RuntimeException("Minima marxa.");
                     }
                 }
+
+             */
                 default -> throw new RuntimeException("Error.");
             }
         } else {
@@ -135,6 +157,14 @@ public class CotxeSegonaPart_carlos_pomares extends Cotxe_carlos_pomares {
 
     public int getMarxaActual() {
         return this.marxaActual;
+    }
+
+    public String getMarxaActualString(){
+        if(this.tipuscanvi == TipusCanvi.CanviAutomatic){
+            return CanviAutomatic.getCanviString(this.marxaActual);
+        } else {
+            return CanviManual.getCanviString(this.marxaActual);
+        }
     }
 
 }

@@ -38,6 +38,16 @@ public enum CanviManual {
         return this.valorMarxa;
     }
 
+    public static CanviManual getCanvi(int marxa){
+        CanviManual canviActual = null;
+        for(CanviManual canvi : CanviManual.values()) {
+            if(canvi.getValorMarxa() == marxa){
+                canviActual = canvi;
+            }
+        }
+        return canviActual;
+    }
+
     public static String getCanviString(int marxa){
         String canviActual = null;
         for(CanviManual canvi : CanviManual.values()) {
