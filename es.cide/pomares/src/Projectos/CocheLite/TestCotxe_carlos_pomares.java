@@ -25,13 +25,8 @@ public class TestCotxe_carlos_pomares {
         CotxeSegonaPart_carlos_pomares c1 = new CotxeSegonaPart_carlos_pomares("Fiat","500S",TipusCanvi.CanviManual);
 
         try {
-            c1.arrancarMotor();
-            c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('+');c1.CanviarMarxaManual('+');
-            c1.CanviarMarxaManual('+');c1.CanviarMarxaManual('+');
-            System.out.println(c1.getMarxaActualString());
+            c1.CanviarMarxaManual('-');
+            System.out.println(c1.getMarxaActual());
 
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
