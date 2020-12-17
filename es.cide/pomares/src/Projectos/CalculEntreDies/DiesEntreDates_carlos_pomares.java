@@ -22,17 +22,24 @@ public class DiesEntreDates_carlos_pomares extends CalcularDiesEntreDates {
 
     @Override
     protected int diesMes(int mes) {
-        return 0;
+        int[] meses = new int[]{
+                31,28,31,
+                30,31,30,
+                31,31,30,
+                31,30,31
+        };
+        return meses[mes - 1];
     }
 
     @Override
     protected int diesMesInicial(DataXS dataXS) {
-        return 0;
+        int diesTotal = diesMes(dataXS.mes);
+        return diesTotal - dataXS.dia;
     }
 
     @Override
     protected int diesMesDesti(DataXS dataXS) {
-        return 0;
+        return dataXS.dia;
     }
 
     @Override
@@ -52,7 +59,20 @@ public class DiesEntreDates_carlos_pomares extends CalcularDiesEntreDates {
 
     @Override
     protected int numDiesPerAnysdeTraspas(DataXS datainicial, DataXS datadesti) {
-        return 0;
+
+        int anys = 0;
+
+        try {
+            for(int i = datainicial.any; datadesti.any <= i; i++){
+                if((new DataXS().calculaAnyDeTraspas(i))) {
+                    anys++;
+                }
+            }
+        } catch (Exception e){
+            e.getMessage();
+        }
+
+        return anys;
     }
 
     @Override

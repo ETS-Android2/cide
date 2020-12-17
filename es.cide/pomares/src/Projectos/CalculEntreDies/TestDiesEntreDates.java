@@ -27,8 +27,9 @@ public class TestDiesEntreDates {
         calcul = new DiesEntreDates_carlos_pomares();
         try {
             inici = new DataXS("12/12/2017");
-            desti = new DataXS("1/1/2018");
-            System.out.println(calcul.nombreDiesTotals(inici,desti));
+            desti = new DataXS("01/01/2018");
+             System.out.println(calcul.nombreDiesTotals(inici,desti));
+            //System.out.println(calcul.numDiesPerAnysdeTraspas(inici,desti));
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
