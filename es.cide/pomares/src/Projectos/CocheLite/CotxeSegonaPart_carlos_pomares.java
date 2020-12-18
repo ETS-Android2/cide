@@ -20,6 +20,17 @@ package Projectos.CocheLite;
  * @author Carlos Pomares
  */
 
+/**
+ *
+ * Permite el cambio de marchas, donde todas las marchas están
+ * centralizadas en el enum Marxes y donde los limites de las
+ * diferentes transmisiones son impuestas por ellas, lo que limitan
+ * el tipo de cambio posible dentro del ENUM.
+ *
+ * Esta realizado de esta manera para poder operar sobre el enum, con números
+ * enteros y poder hacer operaciones de suma y resta según convenga.
+ *
+ */
 enum Marxes {
     MARXA_ENRRERA(-1),
     NEUTRAL(0),
