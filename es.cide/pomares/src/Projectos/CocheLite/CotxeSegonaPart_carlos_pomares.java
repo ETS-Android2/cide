@@ -10,6 +10,9 @@ package Projectos.CocheLite;
     Date        2020-12-11
 
     DESCRIPTION
+    Segunda parte de la práctica de vehículo, donde se aplican nuevos métodos de uso de marchas,
+    y complementariamente he añadido diversos métodos que permiten tener un control más amplio del
+    vehículo.
     
 */
 
@@ -82,11 +85,11 @@ public class CotxeSegonaPart_carlos_pomares extends Cotxe_carlos_pomares {
 
     /**
      *
-     * Cambia la marcha actual de la transmision automatico.
+     * Cambia la marcha actual de la transmisión automático.
      * Permite subir o bajar la marcha teniendo en cuenta los límites de la transmisión.
      *
-     * @param tipusOperacio el tipo de operacion que se desea realizar, puede ser '+' o '-'.
-     * @throws Exception Si el coche no está arrancado o el tipo de operacion no es la correcta o se han alcanzado los límites.
+     * @param tipusOperacio el tipo de operación que se desea realizar, puede ser '+' o '-'.
+     * @throws Exception Si el coche no está arrancado o el tipo de operación no es la correcta o se han alcanzado los límites.
      */
     public void CanviarMarxaAutomatic(char tipusOperacio) throws Exception {
         if(this.comprovaMotor() == EstatsMotorCotxe.EnMarxa && this.tipuscanvi == TipusCanvi.CanviAutomatic && (tipusOperacio=='+' || tipusOperacio=='-')){
@@ -111,8 +114,8 @@ public class CotxeSegonaPart_carlos_pomares extends Cotxe_carlos_pomares {
      * Cambia la marcha actual de la transmisión manual.
      * Permite subir o bajar la marcha teniendo en cuenta los límites de la transmisión.
      *
-     * @param tipusOperacio el tipo de operacion que se desea realizar, puede ser '+' o '-'
-     * @throws Exception Si el coche no está arrancado o el tipo de operacion no es la correcta o se han alcanzado los límites.
+     * @param tipusOperacio el tipo de operación que se desea realizar, puede ser '+' o '-'
+     * @throws Exception Si el coche no está arrancado o el tipo de operación no es la correcta o se han alcanzado los límites.
      */
     public void CanviarMarxaManual(char tipusOperacio) throws Exception {
         if(this.comprovaMotor() == EstatsMotorCotxe.EnMarxa && this.tipuscanvi == TipusCanvi.CanviManual && (tipusOperacio=='+' || tipusOperacio=='-')){
