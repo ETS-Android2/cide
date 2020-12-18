@@ -76,7 +76,7 @@ public class DiesEntreDates_carlos_pomares extends CalcularDiesEntreDates {
     @Override
     protected int diesResteAnyInicial(DataXS datainicial) {
         int dies = 0;
-        for(int i = datainicial.mes; i < 12 && datainicial.mes != 12; i++){
+        for(int i = datainicial.mes + 1; i <= 12 && datainicial.mes != 12; i++){
             dies += diesMes(i);
         }
         return dies;
