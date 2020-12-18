@@ -21,11 +21,13 @@ package Projectos.CalculEntreDies;
 public class TestDiesEntreDates {
 
     private static DiesEntreDates_carlos_pomares calcul;
-    private static DataXS inici, desti;
+    private static DataXS inici, desti,test1,test2;
 
     public static void main(String[] args) {
         calcul = new DiesEntreDates_carlos_pomares();
         try {
+            test1 = new DataXS("01/01/2000");
+            test2 = new DataXS("28/02/2016");
             inici = new DataXS("12/12/2017");
             desti = new DataXS("01/01/2018");
              System.out.println(calcul.nombreDiesTotals(inici,desti));
