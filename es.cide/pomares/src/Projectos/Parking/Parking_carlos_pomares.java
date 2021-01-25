@@ -83,8 +83,8 @@ public class Parking_carlos_pomares {
             while(plate != null){
                 try {
                     if(isMatriculaValida(plate)){
-                        int random = (int)(Math.random() * 10 + 1);
-                        if(random > 2){
+                        int random = (int)(Math.random() * 100 + 1);
+                        if(random > 20){
                             entraCotxe(plate);
                         } else {
                             entraCotxeDiscapacitat(plate);
