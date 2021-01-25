@@ -10,6 +10,9 @@ package Projectos.Parking;
     Date        2021-01-23
 
     DESCRIPTION
+    Aquesta classe ha de poder rebre un paràmetre que sigui el path complet d’un fitxer.
+    Si és el cas, el primer que haurà de fer serà omplir el parking amb les matrícules contingudes
+    al fitxer*. S’ha d’implementar un menú.
     
 */
 
@@ -32,21 +35,21 @@ public class ParkingTest_carlos_pomares {
     private Parking_carlos_pomares parking;
 
     private boolean debug = false;
-    private boolean leido = false;
+    private boolean llegit = false;
 
     /**
      *
      * Constructor amb path predefinid.
      *
-     * @param args asignará el path a l'aplicació.
+     * @param args asignarà el path a l'aplicació.
      */
     public ParkingTest_carlos_pomares(String[] args){
         componentInitialization();
         if(pathIsValid(args[0])){
             try {
                 this.parking.llegirMatricules(args[0]);
-                this.leido = true;
-                this.ALERTAS.add(String.format( this.GREEN + "Read file path: %s" + this.RESET,args[0]));
+                this.llegit = true;
+                this.ALERTAS.add(String.format( this.GREEN + "Llegit desde arguments: %s" + this.RESET,args[0]));
             } catch (Exception e){
                 ALERTAS.add(e.getMessage());
             }
@@ -68,7 +71,7 @@ public class ParkingTest_carlos_pomares {
 
     /**
      *
-     * Instanciara la clase parking amb el parámetres de persones no discapacitades y discapacitades.
+     * Instanciarà la clase parking amb el paràmetres de persones no discapacitades y discapacitades.
      *
      */
     private void componentInitialization(){
@@ -77,7 +80,7 @@ public class ParkingTest_carlos_pomares {
 
     /**
      *
-     * El menu principal, el bucle de l'aplicació amb el que l'usuari interactuará.
+     * El menu principal, el bucle de l'aplicació amb el que l'usuari interactuarà.
      *
      */
     private void menuPrincipal(){
@@ -96,7 +99,7 @@ public class ParkingTest_carlos_pomares {
 
         String[] debugOptions = new String[]{
                 "Borrar errors",
-                "Creditos"
+                "Credits"
         };
 
         initBrief();
@@ -126,10 +129,10 @@ public class ParkingTest_carlos_pomares {
 
                 switch (Integer.parseInt(order)){
                     case 1 -> {
-                        if(!this.leido){
+                        if(!this.llegit){
                             System.out.print("\n\tRuta del arxiu: ");
                             this.parking.llegirMatricules(USUARI.nextLine());
-                            this.leido = true;
+                            this.llegit = true;
                         } else {
                             throw new Exception("Fitxer ja llegit.");
                         }
@@ -171,7 +174,7 @@ public class ParkingTest_carlos_pomares {
 
     /**
      *
-     * Métode per donar per consola diferents missatges de comencament.
+     * Mètode per donar per consola diferents missatges de comencament.
      *
      */
     private void initBrief(){
@@ -180,11 +183,11 @@ public class ParkingTest_carlos_pomares {
 
     /**
      *
-     * Métode per imprimir per consola les alertas del programa.
+     * Mètode per imprimir per consola les alertes del programa.
      *
      */
     private void errorBrief(){
-        System.out.print("\n\n\t-------------------------- ALERTAS -------------------------");
+        System.out.print("\n\n\t-------------------------- ALERTES -------------------------");
         for (int i = 0; i < ALERTAS.size(); i++) {
             System.out.printf("\n\t%-10s %-15s",
                     (i+1), (this.RED + ALERTAS.get(i) + this.RESET));
@@ -194,13 +197,13 @@ public class ParkingTest_carlos_pomares {
 
     /**
      *
-     * Métode per mostrar les opcions del menu.
+     * Mètode per mostrar les opcions del menú.
      *
      * @param options un array d'opcions.
      */
     private void optionBrief(String[] options){
         System.out.printf("\n\n\t%-10s %-30s\n",
-                "Nombre","Opcio");
+                "Nombre","Opció");
         for (int i = 0; i < options.length ; i++) {
             System.out.printf("\t%-10d %-30s\n",(i + 1),this.BLUE + options[i] + this.RESET);
         }
@@ -211,11 +214,11 @@ public class ParkingTest_carlos_pomares {
      * Métode per mostrar les opcions del menu amb un nombre donat.
      *
      * @param options un array d'opcions.
-     * @param firstNumber el nombre per el que les opcions comencaran.
+     * @param firstNumber el nombre per el que les opcions començaràn.
      */
     private void optionBrief(String[] options,int firstNumber){
         System.out.printf("\n\n\t%-10s %-30s\n",
-                "Nombre","Opcio");
+                "Nombre","Opció");
         for (int i = 0; i < options.length ; i++) {
             System.out.printf("\t%-10d %-30s\n",(i + firstNumber),this.BLUE + options[i] + this.RESET);
         }
@@ -223,11 +226,11 @@ public class ParkingTest_carlos_pomares {
 
     /**
      *
-     * Un métode per mostrar un petit dibuix amb informació sobre l'autor.
+     * Un mètode per mostrar un petit dibuix amb informació sobre l'autor.
      *
      */
     private void author(){
-        System.out.printf("\n\t========= %s =========\n", (this.BLUE + "Creditos del autor" + this.RESET));
+        System.out.printf("\n\t========= %s =========\n", (this.BLUE + "Credits del autor" + this.RESET));
         System.out.print("\t   ______________________________\n" +
                 "\t / \\                             \\.\n" +
                 "\t|   |                            |.\n" +
@@ -253,10 +256,10 @@ public class ParkingTest_carlos_pomares {
 
     /**]
      *
-     * Métode per introduir un cotxe a l'aplicacio mitjancant una interfaz per consola.
+     * Mètode per introduir un cotxe a l'aplicacio mitjancant una inteficie per consola.
      *
-     * @param type el tipus de cotxe que s'introduirá.
-     * @throws Exception si ocurreix un error a l'hora de utilzar el métodes de entrarCotxe o entrarCotxeDiscapacitat.
+     * @param type el tipus de cotxe que s'introduirà.
+     * @throws Exception si ocurreix un error a l'hora de utilzar el mètodes de entrarCotxe o entrarCotxeDiscapacitat.
      */
     private void vehicleEntry(boolean type) throws Exception {
         System.out.println("\n\t----------- MATRÍCULA -----------\n");
@@ -267,16 +270,16 @@ public class ParkingTest_carlos_pomares {
         } else {
             this.parking.entraCotxeDiscapacitat(matricula);
         }
-        System.out.print("\t" + this.GREEN + "SUCCESSFULLY OPERATION" + this.RESET);
+        System.out.print("\t" + this.GREEN + "OPERACIÓ SATISFACTORIA" + this.RESET);
         System.out.println("\n\n\t-------------- END --------------");
     }
 
     /**
      *
-     * Métode per introduir una matrícula d'un cotxo i que surti del parking.
+     * Mètode per introduir una matrícula d'un cotxe i que surti del parking.
      *
      * @param type el tipus de cotxo que ha de sortir.
-     * @throws Exception si hi ha alguna excepció a l'hora de utilizar el métodes sortirCotxe o sortirCotxeDiscapacitat.
+     * @throws Exception si hi ha alguna excepció a l'hora de utilizar el mètodes sortirCotxe o sortirCotxeDiscapacitat.
      */
     private void vehicleRemove(boolean type) throws Exception {
         System.out.println("\n\t----------- MATRÍCULA -----------\n");
@@ -287,26 +290,26 @@ public class ParkingTest_carlos_pomares {
         } else {
             this.parking.surtCotxeDiscapacitat(matricula);
         }
-        System.out.print("\t" + this.GREEN + "SUCCESSFULLY OPERATION" + this.RESET);
+        System.out.print("\t" + this.GREEN + "OPERACIÓ SATISFACTORIA" + this.RESET);
         System.out.println("\n\n\t-------------- END --------------");
     }
 
     /**
      *
-     * Métode que utilizará el métode guardarMatrícules amb una petita interficie per introduir la ruta.
+     * Mètode que utilizarà el mètode guardarMatricules amb una petita interficie per introduir la ruta.
      *
      */
     private void saveParkingData(){
-        System.out.print("\n\tIntroduce la ruta del archivo: ");
+        System.out.print("\n\tIntrodueix la ruta del arxiu: ");
         String path = "";
         try {
             path = this.USUARI.nextLine();
             if(pathIsValid(path)) {
                 this.parking.guardarMatricules(path);
             } else {
-                throw new Exception(String.format("Path %s not valid.",path));
+                throw new Exception(String.format("La ruta %s no es vàlida.",path));
             }
-            System.out.println("\n\n\t" + this.GREEN + "SUCCESFULL SAVE!" + this.RESET);
+            System.out.println("\n\n\t" + this.GREEN + "GUARDAT SATISFACTORI!" + this.RESET);
         } catch (Exception error){
             this.ALERTAS.add(error.getMessage());
         }
@@ -314,10 +317,10 @@ public class ParkingTest_carlos_pomares {
 
     /**
      *
-     * Métode per comprobar si una ruta es valida segons el tipus d'arxiu soportat.
+     * Mètode per comprovar si una ruta es vàlida segons el tipus d'arxiu soportat.
      *
      * @param pathToValidate la ruta per validar.
-     * @return true si la ruta es valida. false si no ho es.
+     * @return true si la ruta es vàlida. false si no ho es.
      */
     private boolean pathIsValid(String pathToValidate){
         String[] supportedTypes = new String[]{
@@ -336,7 +339,7 @@ public class ParkingTest_carlos_pomares {
     }
 
     public static void main(String[] args) {
-        // Detectará si hi ha arguments.
+        // Detectarà si hi ha arguments.
         if(args.length > 0){
             ParkingTest_carlos_pomares parkingTest = new ParkingTest_carlos_pomares(args);
         } else {
