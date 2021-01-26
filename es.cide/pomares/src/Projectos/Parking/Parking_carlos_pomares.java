@@ -91,7 +91,7 @@ public class Parking_carlos_pomares {
                         }
                     }
                 } catch (Exception e){
-                    System.out.println("ALERTA ====> " + e.getMessage());
+                    //System.out.println(e.getMessage());
                 }
                 plate = this.llegir.readLine();
             }
@@ -137,21 +137,17 @@ public class Parking_carlos_pomares {
      * @throws Exception si detecta que el parking està ple o la matrícula es de format incorrecte o si ja es al parking.
      */
     public int entraCotxe(String matricula) throws Exception {
-
         if(getPlacesLliures(TipusPlacesParking.No_Discapacitat) == 0){
             throw new Exception("Parking ple.");
         }
-
         if(isMatriculaValida(matricula) && !isMatriculaExistent(matricula) && getPlacesLliures(TipusPlacesParking.No_Discapacitat) != 0){
             sercarLloc(matricula,TipusPlacesParking.No_Discapacitat);
             this.matricules.put(matricula,TipusPlacesParking.No_Discapacitat);
         } else {
             throw new Exception("El cotxe ja està al parking. No pot entrar.");
         }
-
         comprobarEstat();
         comprobarIntegritat(matricula);
-
         return this.vehicles.get(matricula);
     }
 
@@ -188,7 +184,7 @@ public class Parking_carlos_pomares {
      * @throws Exception si la matrícula es de format incorrecte o el cotxe no està al parking o no es de tipus no discapacitat.
      */
     public void surtCotxe(String matricula) throws Exception {
-        if(isMatriculaExistent(matricula) && this.matricules.get(matricula) == TipusPlacesParking.No_Discapacitat && isMatriculaValida(matricula)){
+        if(isMatriculaValida(matricula) && isMatriculaExistent(matricula) && this.matricules.get(matricula) == TipusPlacesParking.No_Discapacitat && isMatriculaValida(matricula)){
             this.vehicles.remove(matricula);
             this.matricules.remove(matricula);
         } else {
@@ -204,7 +200,7 @@ public class Parking_carlos_pomares {
      * @throws Exception si la matrícula es de format incorrecte o el cotxe no està al parking o no es de tipus no discapacitat.
      */
     public void surtCotxeDiscapacitat(String matricula) throws Exception {
-        if(isMatriculaExistent(matricula) && this.matricules.get(matricula) == TipusPlacesParking.Discapacitat && isMatriculaValida(matricula)){
+        if(isMatriculaValida(matricula) && isMatriculaExistent(matricula) && this.matricules.get(matricula) == TipusPlacesParking.Discapacitat && isMatriculaValida(matricula)){
             this.vehicles.remove(matricula);
             this.matricules.remove(matricula);
         } else {
@@ -219,7 +215,7 @@ public class Parking_carlos_pomares {
      * @param tipus tipus de persones, pot ser no_discapacitat o discapacitat.
      * @return el nombre de places ocupades.
      */
-    public int getPlacesOcupades(TipusPlacesParking tipus) throws Exception {
+    public int getPlacesOcupades(TipusPlacesParking tipus) {
         int counter = 0;
         for(Integer placa : this.vehicles.values()){
             if(this.places.get(placa) == tipus){
@@ -236,7 +232,7 @@ public class Parking_carlos_pomares {
      * @param tipus tipus de persones, pot ser no_discapacitat o discapacitat.
      * @return  el nombre de places lliures.
      */
-    public int getPlacesLliures(TipusPlacesParking tipus) throws Exception {
+    public int getPlacesLliures(TipusPlacesParking tipus) {
         int counter = 0;
         for(Integer placa : this.places.keySet()){
             if(this.places.get(placa) == tipus && this.vehicles.containsValue(placa)){
@@ -304,10 +300,10 @@ public class Parking_carlos_pomares {
     private void comprobarEstat() throws Exception {
         if(getTipusParkingEstat(TipusPlacesParking.No_Discapacitat) >= 85 && !this.ocupacioNoDiscapacitats){
             this.ocupacioNoDiscapacitats = true;
-            throw new Exception("Ocupació de places per no discapacitats supera el 85%.");
+            throw new Exception("ALERTA =====> Ocupació de places per no discapacitats supera el 85%.");
         } else if(getTipusParkingEstat(TipusPlacesParking.Discapacitat) >= 85 && !this.ocupacioDiscapacitats){
             this.ocupacioDiscapacitats = true;
-            throw new Exception("Ocupació de places per discapacitats supera el 85%.");
+            throw new Exception("ALERTA =====> Ocupació de places per discapacitats supera el 85%.");
         }
     }
 
@@ -354,9 +350,9 @@ public class Parking_carlos_pomares {
      */
     private void comprobarIntegritat(String matricula) throws Exception {
         if(this.places.get(this.vehicles.get(matricula)) != this.matricules.get(matricula) && this.matricules.get(matricula) == TipusPlacesParking.No_Discapacitat){
-            throw new Exception("Garrulo detected!!! Ha aparcat a la plaça: " + this.vehicles.get(matricula));
+            throw new Exception("ALERTA =====> Garrulo detected!!! Ha aparcat a la plaça: " + this.vehicles.get(matricula));
         } else if(this.places.get(this.vehicles.get(matricula)) == TipusPlacesParking.No_Discapacitat && this.matricules.get(matricula) == TipusPlacesParking.Discapacitat) {
-            throw new Exception("Parking per discapacitats ple. Ha ocupat plaça normal num: " + this.vehicles.get(matricula));
+            throw new Exception("ALERTA =====> Parking per discapacitats ple. Ha ocupat plaça normal num: " + this.vehicles.get(matricula));
         }
     }
 
@@ -392,12 +388,12 @@ public class Parking_carlos_pomares {
      * @throws Exception si la matrícula no es correcte.
      */
     private boolean isMatriculaValida(String matricula) throws Exception{
-        Pattern pattern = Pattern.compile("[0-9]{4}[A-Z]{3}");
+        Pattern pattern = Pattern.compile("^[0-9]{4}[A-Z]{3}$");
         Matcher matcher = pattern.matcher(matricula);
         if(matcher.find()){
             return true;
         } else {
-            throw new Exception("Matrícula incorrecte.");
+            throw new Exception("ALERTA =====> Matrícula incorrecte.");
         }
     }
 

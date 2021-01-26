@@ -25,15 +25,11 @@ import java.util.Scanner;
 
 public class ParkingTest_carlos_pomares {
 
-    private final String RESET = "\033[0m";
-    private final String RED = "\033[0;31m";
-    private final String GREEN = "\033[0;32m";
-    private final String BLUE = "\033[0;34m";
-
     private final Scanner USUARI = new Scanner(System.in);
     private final ArrayList<String> ALERTAS = new ArrayList<>();
     private Parking_carlos_pomares parking;
 
+    private String pathToFile;
     private boolean debug = false;
     private boolean llegit = false;
 
@@ -46,15 +42,10 @@ public class ParkingTest_carlos_pomares {
     public ParkingTest_carlos_pomares(String[] args){
         componentInitialization();
         if(pathIsValid(args[0])){
-            try {
-                this.parking.llegirMatricules(args[0]);
-                this.llegit = true;
-                this.ALERTAS.add(String.format( this.GREEN + "Llegit desde arguments: %s" + this.RESET,args[0]));
-            } catch (Exception e){
-                ALERTAS.add(e.getMessage());
-            }
+            this.ALERTAS.add(String.format("Ruta detectada desde arguments: %s",args[0]));
+            this.pathToFile = args[0];
         } else {
-            ALERTAS.add(this.RED + "ALERTA ===> Fitxer amb format no correcte." + this.RESET);
+            ALERTAS.add("ALERTA ===> Fitxer amb format no correcte.");
         }
         menuPrincipal();
     }
@@ -124,15 +115,20 @@ public class ParkingTest_carlos_pomares {
 
                 if(order.contains("debug")){
                     debug = true;
-                    this.ALERTAS.add(this.GREEN + "DEBUG Habilitat" + this.RESET);
+                    this.ALERTAS.add("DEBUG Habilitat");
                 }
 
                 switch (Integer.parseInt(order)){
                     case 1 -> {
                         if(!this.llegit){
-                            System.out.print("\n\tRuta del arxiu: ");
-                            this.parking.llegirMatricules(USUARI.nextLine());
+                            if(this.pathToFile != null){
+                                this.parking.llegirMatricules(this.pathToFile);
+                            } else {
+                                System.out.print("\n\tRuta del arxiu: ");
+                                this.parking.llegirMatricules(USUARI.nextLine());
+                            }
                             this.llegit = true;
+                            this.ALERTAS.add("Fitxer llegit");
                         } else {
                             throw new Exception("Fitxer ja llegit.");
                         }
@@ -190,7 +186,7 @@ public class ParkingTest_carlos_pomares {
         System.out.print("\n\n\t-------------------------- ALERTES -------------------------");
         for (int i = 0; i < ALERTAS.size(); i++) {
             System.out.printf("\n\t%-10s %-15s",
-                    (i+1), (this.RED + ALERTAS.get(i) + this.RESET));
+                    (i+1), (ALERTAS.get(i)));
         }
         System.out.print("\n\t------------------------------------------------------------");
     }
@@ -205,7 +201,7 @@ public class ParkingTest_carlos_pomares {
         System.out.printf("\n\n\t%-10s %-30s\n",
                 "Nombre","Opció");
         for (int i = 0; i < options.length ; i++) {
-            System.out.printf("\t%-10d %-30s\n",(i + 1),this.BLUE + options[i] + this.RESET);
+            System.out.printf("\t%-10d %-30s\n",(i + 1),options[i]);
         }
     }
 
@@ -220,7 +216,7 @@ public class ParkingTest_carlos_pomares {
         System.out.printf("\n\n\t%-10s %-30s\n",
                 "Nombre","Opció");
         for (int i = 0; i < options.length ; i++) {
-            System.out.printf("\t%-10d %-30s\n",(i + firstNumber),this.BLUE + options[i] + this.RESET);
+            System.out.printf("\t%-10d %-30s\n",(i + firstNumber),options[i]);
         }
     }
 
@@ -230,7 +226,7 @@ public class ParkingTest_carlos_pomares {
      *
      */
     private void author(){
-        System.out.printf("\n\t========= %s =========\n", (this.BLUE + "Credits del autor" + this.RESET));
+        System.out.printf("\n\t========= %s =========\n", ("Credits del autor"));
         System.out.print("\t   ______________________________\n" +
                 "\t / \\                             \\.\n" +
                 "\t|   |                            |.\n" +
@@ -263,14 +259,14 @@ public class ParkingTest_carlos_pomares {
      */
     private void vehicleEntry(boolean type) throws Exception {
         System.out.println("\n\t----------- MATRÍCULA -----------\n");
-        System.out.print("\t" + this.BLUE + "MATRÍCULA: " + this.RESET);
+        System.out.print("\tMATRÍCULA: ");
         String matricula = this.USUARI.nextLine();
         if(type){
             this.parking.entraCotxe(matricula);
         } else {
             this.parking.entraCotxeDiscapacitat(matricula);
         }
-        System.out.print("\t" + this.GREEN + "OPERACIÓ SATISFACTORIA" + this.RESET);
+        System.out.print("\tOPERACIÓ SATISFACTORIA");
         System.out.println("\n\n\t-------------- END --------------");
     }
 
@@ -283,14 +279,14 @@ public class ParkingTest_carlos_pomares {
      */
     private void vehicleRemove(boolean type) throws Exception {
         System.out.println("\n\t----------- MATRÍCULA -----------\n");
-        System.out.print("\t" + this.BLUE + "MATRÍCULA: " + this.RESET);
+        System.out.print("\tMATRÍCULA: ");
         String matricula = this.USUARI.nextLine();
         if(type){
             this.parking.surtCotxe(matricula);
         } else {
             this.parking.surtCotxeDiscapacitat(matricula);
         }
-        System.out.print("\t" + this.GREEN + "OPERACIÓ SATISFACTORIA" + this.RESET);
+        System.out.print("\tOPERACIÓ SATISFACTORIA");
         System.out.println("\n\n\t-------------- END --------------");
     }
 
@@ -309,7 +305,7 @@ public class ParkingTest_carlos_pomares {
             } else {
                 throw new Exception(String.format("La ruta %s no es vàlida.",path));
             }
-            System.out.println("\n\n\t" + this.GREEN + "GUARDAT SATISFACTORI!" + this.RESET);
+            System.out.println("\n\n\tGUARDAT SATISFACTORI!");
         } catch (Exception error){
             this.ALERTAS.add(error.getMessage());
         }
