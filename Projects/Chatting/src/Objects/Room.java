@@ -13,6 +13,10 @@ package Objects;
     
 */
 
+import Services.Database;
+import Util.FormApp;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,25 +27,35 @@ import java.util.HashMap;
 
 public class Room {
 
-    final private int id;
-    final private int user;
+    private int id;
+    final private User user;
     final private String title;
     final private String description;
     final private boolean visibility;
 
-    private Room(int id, int user, String title, String description, boolean visibility) {
-        this.id = id;
+    private HashMap<User,Message> messages;
+
+    private Room(User user, String title, String description, boolean visibility) {
         this.user = user;
         this.title = title;
         this.description = description;
         this.visibility = visibility;
     }
 
+    private Room(int id, User user, String title, String description, boolean visibility) {
+        this.id = id;
+        this.user = user;
+        this.title = title;
+        this.description = description;
+        this.visibility = visibility;
+        messages = new HashMap<>();
+    }
+
     public int getId() {
         return id;
     }
 
-    public int getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -53,16 +67,22 @@ public class Room {
         return description;
     }
 
-    public boolean isVisibility() {
+    public boolean getVisibility() {
         return visibility;
     }
 
-    public static boolean create(){
-        return true;
+    // TODO
+    public String toSQL(){
+        return String.format("INSERT INTO room(user,title,description,visibility) VALUES (%d,'%s','%s',%b)",getUser().getId(),getTitle(),getDescription(),getVisibility());
     }
 
-    public static boolean connect(Room room){
-        return true;
+    // TODO
+    public String retrieveSQL(){
+        return "";
+    }
+
+    public static boolean create(User user, String title, String description, boolean visibility) throws SQLException {
+        return Database.newUpdate(FormApp.getDatabaseManager(),new Room(user,title,description,visibility).toSQL());
     }
 
     public static boolean sendMessage(Message message, Room room){

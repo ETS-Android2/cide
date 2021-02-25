@@ -34,6 +34,18 @@ public class User {
         this.password = password;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     public static User generate(String username, String password){
         return new User(username,password);
     }
