@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Projects/Calculator/Calculator.iml" filepath="$PROJECT_DIR$/Projects/Calculator/Calculator.iml" />
       <module fileurl="file://$PROJECT_DIR$/Projects/CardGame/CardGame.iml" filepath="$PROJECT_DIR$/Projects/CardGame/CardGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Projects/Chatting/Chatting.iml" filepath="$PROJECT_DIR$/Projects/Chatting/Chatting.iml" />
       <module fileurl="file://$PROJECT_DIR$/es.cide/pomares/Programming2021.iml" filepath="$PROJECT_DIR$/es.cide/pomares/Programming2021.iml" />
     </modules>
   </component>
