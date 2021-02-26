@@ -37,6 +37,7 @@ public class SignUpForm extends ChatForm {
         getRoot().setBounds(100, 100, 301, 244);
         getRoot().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getRoot().getContentPane().setLayout(null);
+        getRoot().setTitle("Sign Up - Chatting");
 
         JLabel lblNewLabel = new JLabel("Username:");
         lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));

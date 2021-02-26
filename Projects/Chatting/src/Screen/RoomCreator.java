@@ -41,6 +41,7 @@ public class RoomCreator extends ChatForm {
         getRoot().setBounds(100, 100, 330, 419);
         getRoot().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getRoot().getContentPane().setLayout(null);
+        getRoot().setTitle("Room Creator - Chatting");
 
         JLabel lblNewLabel = new JLabel("Title:");
         lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -75,13 +76,13 @@ public class RoomCreator extends ChatForm {
 
         publicRadioButton = new JRadioButton("Public");
         visibilityGroup.add(publicRadioButton);
-        publicRadioButton.setBounds(10, 212, 53, 23);
+        publicRadioButton.setBounds(10, 212, 100, 23);
         getRoot().getContentPane().add(publicRadioButton);
         publicRadioButton.setSelected(true);
 
         privateRadioButton = new JRadioButton("Private");
         visibilityGroup.add(privateRadioButton);
-        privateRadioButton.setBounds(65, 212, 59, 23);
+        privateRadioButton.setBounds(130, 212, 100, 23);
         getRoot().getContentPane().add(privateRadioButton);
 
         passwordField = new JTextField();

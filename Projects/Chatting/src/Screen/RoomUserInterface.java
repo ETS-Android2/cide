@@ -17,6 +17,7 @@ import Objects.Message;
 import Objects.Room;
 import Services.ErrorWindow;
 import Services.RoomManager;
+import Util.CellRendering;
 import Util.ChatForm;
 import Util.Application;
 import Util.FormManager;
@@ -63,6 +64,7 @@ public class RoomUserInterface extends ChatForm {
         chatList.setModel(listModel);
         chatList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         chatList.setBounds(10, 11, 177, 217);
+        chatList.setCellRenderer(new CellRendering(177));
 
         JLabel lblNewLabel = new JLabel("Title:");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -86,9 +88,14 @@ public class RoomUserInterface extends ChatForm {
         roomDescription.setLineWrap(true);
         popupMenu.add(roomDescription);
 
+        JScrollPane messageScroll = new JScrollPane();
+        messageScroll.setBounds(208, 188, 144, 40);
+        getRoot().getContentPane().add(messageScroll);
+
         messageArea = new JTextArea();
         messageArea.setBounds(208, 188, 144, 40);
-        getRoot().getContentPane().add(messageArea);
+        messageScroll.setViewportView(messageArea);
+        messageArea.setLineWrap(true);
 
         JButton sendButton = new JButton("Send");
         sendButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -129,6 +136,8 @@ public class RoomUserInterface extends ChatForm {
 
         roomTitle.setText(Application.getRoomManager().getConnected().getTitle());
         roomDescription.setText(Application.getRoomManager().getConnected().getDescription());
+
+        getRoot().setTitle(String.format("%s - Room Interface",Application.getRoomManager().getConnected().getTitle()));
 
         sendButton.addActionListener(e -> sendMessage());
         disconnectButton.addActionListener(e -> disconnect());
@@ -196,6 +205,7 @@ public class RoomUserInterface extends ChatForm {
         } catch (SQLException ex){
             ErrorWindow.run(ex.getMessage());
         }
+        messageArea.setText("");
         update();
     }
 
@@ -205,3 +215,4 @@ public class RoomUserInterface extends ChatForm {
     }
 
 }
+

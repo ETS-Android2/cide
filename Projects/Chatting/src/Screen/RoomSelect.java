@@ -58,6 +58,7 @@ public class RoomSelect extends ChatForm {
         getRoot().setBounds(100, 100, 536, 173);
         getRoot().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getRoot().getContentPane().setLayout(null);
+        getRoot().setTitle("Select - Chatting");
 
         roomsListModel = new DefaultListModel();
         roomsList = new JList();
