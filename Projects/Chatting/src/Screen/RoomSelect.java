@@ -19,7 +19,7 @@ import Services.Database;
 import Services.ErrorWindow;
 import Services.RoomManager;
 import Util.ChatForm;
-import Util.FormApp;
+import Util.Application;
 import Util.FormManager;
 
 import javax.swing.*;
@@ -30,6 +30,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Carlos Pomares
@@ -40,6 +43,8 @@ public class RoomSelect extends ChatForm {
     private JTextField roomIdField;
     private JList roomsList;
     private DefaultListModel roomsListModel;
+    private ScheduledExecutorService executorService;
+    private JScrollPane scrollPane;
 
     private HashMap<Integer,String> rooms;
 
@@ -55,18 +60,23 @@ public class RoomSelect extends ChatForm {
         getRoot().getContentPane().setLayout(null);
 
         roomsListModel = new DefaultListModel();
-
         roomsList = new JList();
         roomsList.setModel(roomsListModel);
         roomsList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
+                if(!e.getValueIsAdjusting()){
                     listSelection();
                 }
             }
         });
+
+        scrollPane = new JScrollPane();
+        scrollPane.setViewportView(roomsList);
+
         roomsList.setBounds(10, 42, 211, 81);
+
+        update();
 
         JLabel lblNewLabel = new JLabel("Room ID:");
         lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -97,13 +107,18 @@ public class RoomSelect extends ChatForm {
 
         createRoomButton.addActionListener(e -> create());
 
-        JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 42, 211, 81);
         getRoot().getContentPane().add(scrollPane);
 
-        scrollPane.setViewportView(roomsList);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                update();
+            }
+        };
 
-        update();
+        executorService = Executors.newScheduledThreadPool(1);
+        executorService.scheduleAtFixedRate(runnable,0,1, TimeUnit.MINUTES);
 
         show();
 
@@ -115,7 +130,7 @@ public class RoomSelect extends ChatForm {
         Connection connection;
         ResultSet resultSet;
         try {
-            connection = Database.start(FormApp.getDatabaseManager());
+            connection = Database.start(Application.getDatabaseManager());
             resultSet = Database.newQuery(connection,SQL);
             while(resultSet.next()){
                 int id = Integer.parseInt(resultSet.getString("id"));
@@ -163,7 +178,7 @@ public class RoomSelect extends ChatForm {
 
         try {
 
-            connection = Database.start(FormApp.getDatabaseManager());
+            connection = Database.start(Application.getDatabaseManager());
 
             // GET ID FROM FIELD
             int id = Integer.parseInt(roomIdField.getText());
@@ -207,19 +222,21 @@ public class RoomSelect extends ChatForm {
             // CHANGE ROOM IN ROOM MANAGER
             User user = User.retrieve(userID,userName);
             Room room = Room.retrieve(roomID,user,roomTitle,roomDescription,roomVisibility);
-            RoomManager.changeRoom(FormApp.getRoomManager(),room);
+            RoomManager.changeRoom(Application.getRoomManager(),room);
 
             // CHANGE FORM
-            FormManager.changeForm(FormApp.getFormManager(),FormApp.roomInterface);
+            FormManager.changeForm(Application.getFormManager(), Application.roomInterface);
 
         } catch (Exception e){
             ErrorWindow.run(e.getMessage());
         }
 
+        getRoot().getContentPane().removeAll();
+
     }
 
     private void create(){
-        FormManager.changeForm(FormApp.getFormManager(),FormApp.roomCreator);
+        FormManager.changeForm(Application.getFormManager(), Application.roomCreator);
     }
 
 }

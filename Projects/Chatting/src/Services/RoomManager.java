@@ -16,6 +16,9 @@ package Services;
 import Objects.Message;
 import Objects.Room;
 import Objects.User;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -26,10 +29,10 @@ public class RoomManager {
 
     private Room connected;
     private User user;
-    private HashMap<User,Message> messages;
+    private ArrayList<Message> messages;
 
     public RoomManager(){
-        messages = new HashMap<>();
+        messages = new ArrayList<>();
     }
 
     public Room getConnected() {
@@ -38,7 +41,7 @@ public class RoomManager {
     public User getUser() {
         return user;
     }
-    public HashMap<User, Message> getMessages() {
+    public ArrayList<Message> getMessages() {
         return messages;
     }
 
@@ -46,10 +49,12 @@ public class RoomManager {
         roomManager.user = user;
         return true;
     }
-    public static boolean checkMessages(RoomManager manager){
+    public static boolean checkMessages(RoomManager manager)
+            throws SQLException {
         return Room.getMessages(manager.connected).size() > manager.messages.size();
     }
-    public static boolean updateMessages(RoomManager manager){
+    public static boolean updateMessages(RoomManager manager)
+            throws SQLException {
         if(!checkMessages(manager)){
             return false;
         }

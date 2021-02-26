@@ -36,6 +36,10 @@ public abstract class ChatForm implements Form {
         return this.root;
     }
 
+    public void unload(){
+        getRoot().getContentPane().removeAll();
+    }
+
     protected void show(){
         root.setVisible(true);
     }

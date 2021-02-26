@@ -14,8 +14,7 @@ package Objects;
 */
 
 import Services.Database;
-import Util.Form;
-import Util.FormApp;
+import Util.Application;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -83,7 +82,7 @@ public class User {
                 + "ORDER BY B.creation_date DESC "
                 + "LIMIT 1"
         ,user.getId());
-        Connection connection = Database.start(FormApp.getDatabaseManager());
+        Connection connection = Database.start(Application.getDatabaseManager());
         ResultSet rs = Database.newQuery(connection,SQL);
         rs.next();
         int result = Integer.parseInt(rs.getString("message_id"));

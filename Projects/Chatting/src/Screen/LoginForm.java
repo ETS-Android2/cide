@@ -23,7 +23,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.util.Arrays;
 
 /**
  * @author Carlos Pomares
@@ -44,17 +43,17 @@ public class LoginForm extends ChatForm {
 
         JLabel lblNewLabel = new JLabel("Username:");
         lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        lblNewLabel.setBounds(10, 34, 76, 19);
+        lblNewLabel.setBounds(10, 34, 100, 19);
         getRoot().getContentPane().add(lblNewLabel);
 
         JLabel lblNewLabel_1 = new JLabel("Password:");
         lblNewLabel_1.setFont(new Font("Arial", Font.PLAIN, 16));
-        lblNewLabel_1.setBounds(10, 88, 74, 19);
+        lblNewLabel_1.setBounds(10, 88, 100, 19);
         getRoot().getContentPane().add(lblNewLabel_1);
 
         usernameField = new JTextField();
         usernameField.setFont(new Font("Arial", Font.PLAIN, 12));
-        usernameField.setBounds(96, 32, 158, 21);
+        usernameField.setBounds(120, 32, 158, 21);
         getRoot().getContentPane().add(usernameField);
         usernameField.setColumns(10);
 
@@ -70,7 +69,7 @@ public class LoginForm extends ChatForm {
 
         passwordField = new JPasswordField();
         passwordField.setFont(new Font("Arial", Font.PLAIN, 12));
-        passwordField.setBounds(96, 88, 158, 21);
+        passwordField.setBounds(120, 88, 158, 21);
         getRoot().getContentPane().add(passwordField);
 
         loginButton.addActionListener(e -> {
@@ -95,7 +94,7 @@ public class LoginForm extends ChatForm {
 
         try {
             // INIT CONNECTION
-            con = Database.start(FormApp.getDatabaseManager());
+            con = Database.start(Application.getDatabaseManager());
             // OBTAIN ALL USERS
             rs = Database.newQuery(con,SQL);
             // ITERATE
@@ -107,26 +106,27 @@ public class LoginForm extends ChatForm {
 
                 // CHECK USERNAMES AND PASSWORDS
                 if(usernameField.getText().equals(username) && password.equals(MD5.getMD5(Stringify.charsToString(passwordField.getPassword())))){
-                    RoomManager.setUser(FormApp.getRoomManager(), User.retrieve(id,username,password));
+                    RoomManager.setUser(Application.getRoomManager(), User.retrieve(id,username,password));
                     success = true;
                 }
             }
+
             Database.close(con);
         } catch (Exception e){
             ErrorWindow.run(e.getMessage());
         }
 
         if(success){
-            FormManager.changeForm(FormApp.getFormManager(),FormApp.roomSelect);
+            FormManager.changeForm(Application.getFormManager(), Application.roomSelect);
             return success;
         }
 
-        ErrorWindow.run("Incorrect user or password.");
+        //ErrorWindow.run("Incorrect user or password.");
         return success;
     }
 
     private void signUp(){
-        FormManager.changeForm(FormApp.getFormManager(),FormApp.signupForm);
+        FormManager.changeForm(Application.getFormManager(), Application.signupForm);
     }
 
 }

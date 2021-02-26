@@ -11,14 +11,8 @@
     
 */
 
-import Screen.*;
-import Services.Database;
-import Util.ChatForm;
-import Util.FormApp;
+import Util.Application;
 import Util.FormManager;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * @author Carlos Pomares
@@ -27,8 +21,8 @@ import java.sql.SQLException;
 public class Chatting {
 
     public static void main(String[] args) {
-        FormApp.init(args);
-        FormManager.changeForm(FormApp.getFormManager(),FormApp.loginForm);
+        Application.init(args);
+        FormManager.changeForm(Application.getFormManager(), Application.loginForm);
     }
 
 }

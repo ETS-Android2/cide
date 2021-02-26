@@ -13,10 +13,15 @@ package Screen;
     
 */
 
+import Objects.Room;
+import Services.ErrorWindow;
 import Util.ChatForm;
+import Util.Application;
+import Util.FormManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 /**
  * @author Carlos Pomares
@@ -25,7 +30,9 @@ import java.awt.*;
 public class RoomCreator extends ChatForm {
 
     private JTextField titleField;
+    private JTextArea description;
     private final ButtonGroup visibilityGroup = new ButtonGroup();
+    private JRadioButton publicRadioButton, privateRadioButton;
     private JTextField passwordField;
 
     @Override
@@ -61,17 +68,18 @@ public class RoomCreator extends ChatForm {
         getRoot().getContentPane().add(titleField);
         titleField.setColumns(10);
 
-        JTextArea textArea = new JTextArea();
-        textArea.setLineWrap(true);
-        textArea.setBounds(10, 114, 280, 58);
-        getRoot().getContentPane().add(textArea);
+        description = new JTextArea();
+        description.setLineWrap(true);
+        description.setBounds(10, 114, 280, 58);
+        getRoot().getContentPane().add(description);
 
-        JRadioButton publicRadioButton = new JRadioButton("Public");
+        publicRadioButton = new JRadioButton("Public");
         visibilityGroup.add(publicRadioButton);
         publicRadioButton.setBounds(10, 212, 53, 23);
         getRoot().getContentPane().add(publicRadioButton);
+        publicRadioButton.setSelected(true);
 
-        JRadioButton privateRadioButton = new JRadioButton("Private");
+        privateRadioButton = new JRadioButton("Private");
         visibilityGroup.add(privateRadioButton);
         privateRadioButton.setBounds(65, 212, 59, 23);
         getRoot().getContentPane().add(privateRadioButton);
@@ -81,13 +89,44 @@ public class RoomCreator extends ChatForm {
         getRoot().getContentPane().add(passwordField);
         passwordField.setColumns(10);
 
-        JButton btnNewButton = new JButton("Create Room!");
-        btnNewButton.setFont(new Font("Arial", Font.PLAIN, 18));
-        btnNewButton.setBounds(10, 319, 280, 50);
-        getRoot().getContentPane().add(btnNewButton);
+        // Future update
+        passwordField.setEnabled(false);
+
+        JButton createButton = new JButton("Create Room!");
+        createButton.setFont(new Font("Arial", Font.PLAIN, 18));
+        createButton.setBounds(10, 319, 280, 50);
+        getRoot().getContentPane().add(createButton);
+
+        createButton.addActionListener(e -> create());
 
         show();
 
+    }
+
+    private void create(){
+
+        boolean isValid =
+                titleField.getText().toCharArray().length > 0
+                &&
+                this.description.getText().toCharArray().length > 0;
+
+        String title, description;
+        boolean visibility;
+
+        try {
+            if(isValid){
+                title = titleField.getText();
+                description = this.description.getText();
+                visibility = publicRadioButton.isSelected();
+                Room.create(Application.getRoomManager().getUser(),title,description,visibility);
+            } else {
+                ErrorWindow.run("Requirements not satisfied!");
+            }
+        } catch (SQLException ex){
+            ErrorWindow.run(ex.getMessage());
+        } finally {
+            FormManager.changeForm(Application.getFormManager(), Application.roomSelect);
+        }
     }
 
 }

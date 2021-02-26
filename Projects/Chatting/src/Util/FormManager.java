@@ -30,7 +30,8 @@ public class FormManager {
 
     private void unloadForm(){
         if(getCurrentForm() != null){
-           getCurrentForm().hide();
+            getCurrentForm().unload();
+            getCurrentForm().hide();
         }
     }
 

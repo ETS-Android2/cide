@@ -24,7 +24,7 @@ import java.sql.SQLException;
  * @author Carlos Pomares
  */
 
-public class FormApp {
+public class Application {
 
     public static ChatForm loginForm = new LoginForm();
     public static ChatForm signupForm = new SignUpForm();
@@ -36,7 +36,7 @@ public class FormApp {
     private static RoomManager roomManager;
     private static Database databaseManager;
 
-    private FormApp(){}
+    private Application(){}
 
     public static void init(String[] args){
         formManager = new FormManager();

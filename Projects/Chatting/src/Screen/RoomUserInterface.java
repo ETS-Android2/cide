@@ -14,14 +14,22 @@ package Screen;
 */
 
 import Objects.Message;
-import Objects.User;
+import Objects.Room;
+import Services.ErrorWindow;
+import Services.RoomManager;
 import Util.ChatForm;
+import Util.Application;
+import Util.FormManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Carlos Pomares
@@ -29,7 +37,16 @@ import java.util.HashMap;
 
 public class RoomUserInterface extends ChatForm {
 
-    private HashMap<User, Message> messages;
+    private ArrayList<Message> messages;
+
+    private JTextArea messageArea;
+    private JList chatList;
+    private DefaultListModel listModel;
+    ScheduledExecutorService executorService;
+
+    public RoomUserInterface(){
+        messages = new ArrayList<>();
+    }
 
     @Override
     public void run() {
@@ -39,17 +56,11 @@ public class RoomUserInterface extends ChatForm {
         getRoot().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getRoot().getContentPane().setLayout(null);
 
-        JList chatList = new JList();
+        listModel = new DefaultListModel();
+
+        chatList = new JList();
         chatList.setValueIsAdjusting(true);
-        chatList.setModel(new AbstractListModel() {
-            String[] values = new String[] {};
-            public int getSize() {
-                return values.length;
-            }
-            public Object getElementAt(int index) {
-                return values[index];
-            }
-        });
+        chatList.setModel(listModel);
         chatList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         chatList.setBounds(10, 11, 177, 217);
 
@@ -58,9 +69,10 @@ public class RoomUserInterface extends ChatForm {
         lblNewLabel.setBounds(208, 12, 38, 19);
         getRoot().getContentPane().add(lblNewLabel);
 
-        JLabel lblNewLabel_1 = new JLabel("[RoomTitle]");
-        lblNewLabel_1.setBounds(256, 16, 73, 14);
-        getRoot().getContentPane().add(lblNewLabel_1);
+        JLabel roomTitle = new JLabel("[RoomTitle]");
+        roomTitle.setBounds(208, 35, 150, 14);
+        roomTitle.setFont(new Font("Arial", Font.BOLD, 14));
+        getRoot().getContentPane().add(roomTitle);
 
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.setLocation(new Point(50, 50));
@@ -71,9 +83,10 @@ public class RoomUserInterface extends ChatForm {
 
         JTextArea roomDescription = new JTextArea();
         roomDescription.setEditable(false);
+        roomDescription.setLineWrap(true);
         popupMenu.add(roomDescription);
 
-        JTextArea messageArea = new JTextArea();
+        messageArea = new JTextArea();
         messageArea.setBounds(208, 188, 144, 40);
         getRoot().getContentPane().add(messageArea);
 
@@ -84,7 +97,7 @@ public class RoomUserInterface extends ChatForm {
         getRoot().getContentPane().add(sendButton);
 
         JButton disconnectButton = new JButton("Disconnect");
-        disconnectButton.setBounds(339, 12, 85, 23);
+        disconnectButton.setBounds(320, 12, 120, 23);
         getRoot().getContentPane().add(disconnectButton);
 
 
@@ -112,14 +125,83 @@ public class RoomUserInterface extends ChatForm {
         });
         mnNewMenu.add(menuItemDescription);
 
+        // SET ROOM PROPERTIES
+
+        roomTitle.setText(Application.getRoomManager().getConnected().getTitle());
+        roomDescription.setText(Application.getRoomManager().getConnected().getDescription());
+
+        sendButton.addActionListener(e -> sendMessage());
+        disconnectButton.addActionListener(e -> disconnect());
+
+        update();
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                update();
+            }
+        };
+
+        executorService = Executors.newScheduledThreadPool(1);
+        executorService.scheduleAtFixedRate(runnable,0,5, TimeUnit.SECONDS);
+
         show();
         
     }
 
-    private void update(){}
+    private void update(){
+        // OBTAIN ALL MESSAGES
+        try {
+            if(RoomManager.checkMessages(Application.getRoomManager())){
+                RoomManager.updateMessages(Application.getRoomManager());
+                this.messages.clear();
+                this.messages = Application.getRoomManager().getMessages();
+            }
+        } catch (SQLException ex){
+            ErrorWindow.run(ex.getMessage());
+        }
+        updateList();
+    }
 
-    private void updateList(){}
+    private void updateList(){
+        listModel.clear();
+        for(Message msg : this.messages){
 
-    private void sendMessage(){}
+            String[] messageDate = msg.getDate().split(" ")[1].split(":");
+            String shortDate = String.format("%s:%s",messageDate[0],messageDate[1]);
+
+            // USER - Message content
+            String message = String.format(
+                    "%s:%s -> %s"
+                    ,msg.getUser().getUsername()
+                    ,shortDate
+                    ,msg.getContent()
+            );
+
+            listModel.addElement(message);
+
+        }
+    }
+
+    private void sendMessage(){
+        try {
+            boolean isValid = messageArea.getText().toCharArray().length > 0;
+            if(isValid){
+                Room.sendMessage(Application.getRoomManager().getUser()
+                        ,Message.generate(Application.getRoomManager().getUser(),messageArea.getText())
+                        , Application.getRoomManager().getConnected());
+            } else {
+                ErrorWindow.run("Message not valid!");
+            }
+        } catch (SQLException ex){
+            ErrorWindow.run(ex.getMessage());
+        }
+        update();
+    }
+
+    private void disconnect(){
+        executorService.shutdown();
+        FormManager.changeForm(Application.getFormManager(), Application.roomSelect);
+    }
 
 }

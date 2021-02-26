@@ -23,11 +23,11 @@ import java.sql.*;
 
 public class Database {
 
-    final private String host = "localhost";
-    final private String port = "3306";
-    final private String database = "chatting";
-    final private String username = "javaTest";
-    final private String password = "dream19";
+    final private String host = "HOSTNAME";
+    final private String port = "PORT";
+    final private String database = "DATABASE";
+    final private String username = "USER";
+    final private String password = "PASSWORD";
     final private String url = "jdbc:mysql://" + host + ":" + port + "/" + database;
 
     private Connection connection;

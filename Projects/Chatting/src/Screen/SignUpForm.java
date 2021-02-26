@@ -96,10 +96,10 @@ public class SignUpForm extends ChatForm {
                 );
 
                 // CONNECTION
-                Connection connection = Database.start(FormApp.getDatabaseManager());
+                Connection connection = Database.start(Application.getDatabaseManager());
                 Database.newUpdate(connection,stmt);
                 Database.close(connection);
-                FormManager.changeForm(FormApp.getFormManager(),FormApp.loginForm);
+                FormManager.changeForm(Application.getFormManager(), Application.loginForm);
             } catch (Exception e){
                 ErrorWindow.run(e.getMessage());
             }
