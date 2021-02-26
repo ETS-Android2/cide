@@ -12,9 +12,13 @@
 */
 
 import Screen.*;
+import Services.Database;
 import Util.ChatForm;
 import Util.FormApp;
 import Util.FormManager;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author Carlos Pomares
@@ -22,15 +26,9 @@ import Util.FormManager;
 
 public class Chatting {
 
-    public static ChatForm loginForm = new LoginForm();
-    public static ChatForm signupForm = new SignUpForm();
-    public static ChatForm roomSelect = new RoomSelect();
-    public static ChatForm roomInterface = new RoomUserInterface();
-    public static ChatForm roomCreator = new RoomCreator();
-
     public static void main(String[] args) {
         FormApp.init(args);
-        FormManager.changeForm(FormApp.getFormManager(),loginForm);
+        FormManager.changeForm(FormApp.getFormManager(),FormApp.loginForm);
     }
 
 }

@@ -28,6 +28,12 @@ public class FormManager {
         getCurrentForm().run();
     }
 
+    private void unloadForm(){
+        if(getCurrentForm() != null){
+           getCurrentForm().hide();
+        }
+    }
+
     private void setCurrentForm(ChatForm form){
         this.currentForm = form;
     }
@@ -37,6 +43,7 @@ public class FormManager {
     }
 
     public static void changeForm(FormManager formManager, ChatForm chatForm){
+        formManager.unloadForm();
         formManager.setCurrentForm(chatForm);
         formManager.loadForm();
     }

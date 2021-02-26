@@ -13,12 +13,15 @@ package Screen;
     
 */
 
+import Objects.Message;
+import Objects.User;
 import Util.ChatForm;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 /**
  * @author Carlos Pomares
@@ -26,15 +29,15 @@ import java.awt.event.ActionListener;
 
 public class RoomUserInterface extends ChatForm {
 
-    
+    private HashMap<User, Message> messages;
 
     @Override
     public void run() {
         
-        root().setResizable(false);
-        root().setBounds(100, 100, 450, 300);
-        root().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        root().getContentPane().setLayout(null);
+        getRoot().setResizable(false);
+        getRoot().setBounds(100, 100, 450, 300);
+        getRoot().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        getRoot().getContentPane().setLayout(null);
 
         JList chatList = new JList();
         chatList.setValueIsAdjusting(true);
@@ -53,18 +56,18 @@ public class RoomUserInterface extends ChatForm {
         JLabel lblNewLabel = new JLabel("Title:");
         lblNewLabel.setFont(new Font("Arial", Font.BOLD, 16));
         lblNewLabel.setBounds(208, 12, 38, 19);
-        root().getContentPane().add(lblNewLabel);
+        getRoot().getContentPane().add(lblNewLabel);
 
         JLabel lblNewLabel_1 = new JLabel("[RoomTitle]");
         lblNewLabel_1.setBounds(256, 16, 73, 14);
-        root().getContentPane().add(lblNewLabel_1);
+        getRoot().getContentPane().add(lblNewLabel_1);
 
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.setLocation(new Point(50, 50));
         popupMenu.setLabel("Hello World!");
         popupMenu.setPopupSize(new Dimension(200, 100));
         popupMenu.setBounds(50, 0, 100, 28);
-        root().getContentPane().add(popupMenu);
+        getRoot().getContentPane().add(popupMenu);
 
         JTextArea roomDescription = new JTextArea();
         roomDescription.setEditable(false);
@@ -72,27 +75,27 @@ public class RoomUserInterface extends ChatForm {
 
         JTextArea messageArea = new JTextArea();
         messageArea.setBounds(208, 188, 144, 40);
-        root().getContentPane().add(messageArea);
+        getRoot().getContentPane().add(messageArea);
 
         JButton sendButton = new JButton("Send");
         sendButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         sendButton.setFont(new Font("Arial", Font.PLAIN, 12));
         sendButton.setBounds(362, 189, 62, 39);
-        root().getContentPane().add(sendButton);
+        getRoot().getContentPane().add(sendButton);
 
         JButton disconnectButton = new JButton("Disconnect");
         disconnectButton.setBounds(339, 12, 85, 23);
-        root().getContentPane().add(disconnectButton);
+        getRoot().getContentPane().add(disconnectButton);
 
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 11, 190, 217);
-        root().getContentPane().add(scrollPane);
+        getRoot().getContentPane().add(scrollPane);
 
         scrollPane.setViewportView(chatList);
 
         JMenuBar menuBar = new JMenuBar();
-        root().setJMenuBar(menuBar);
+        getRoot().setJMenuBar(menuBar);
 
         JMenu mnNewMenu = new JMenu("Info");
         menuBar.add(mnNewMenu);
@@ -112,5 +115,11 @@ public class RoomUserInterface extends ChatForm {
         show();
         
     }
+
+    private void update(){}
+
+    private void updateList(){}
+
+    private void sendMessage(){}
 
 }

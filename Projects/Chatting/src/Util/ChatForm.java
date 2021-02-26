@@ -32,7 +32,7 @@ public abstract class ChatForm implements Form {
         root.setResizable(false);
     }
 
-    protected JFrame root(){
+    protected JFrame getRoot(){
         return this.root;
     }
 

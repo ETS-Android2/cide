@@ -46,9 +46,8 @@ public class Message {
         return content;
     }
 
-    // TODO
     public String toSQL(){
-        return String.format("INSERT INTO message(user,content) VALUES ('%s','%s')",getUser().getUsername(),getContent());
+        return String.format("INSERT INTO message(user,content) VALUES (%d,'%s')",getUser().getId(),getContent());
     }
 
     public static Message retrieve(int id, User user, String content){

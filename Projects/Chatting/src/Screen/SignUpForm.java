@@ -13,10 +13,14 @@ package Screen;
     
 */
 
-import Util.ChatForm;
+import Objects.User;
+import Services.Database;
+import Services.ErrorWindow;
+import Util.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
 
 /**
  * @author Carlos Pomares
@@ -30,37 +34,77 @@ public class SignUpForm extends ChatForm {
     @Override
     public void run() {
         
-        root().setBounds(100, 100, 301, 244);
-        root().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        root().getContentPane().setLayout(null);
+        getRoot().setBounds(100, 100, 301, 244);
+        getRoot().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        getRoot().getContentPane().setLayout(null);
 
         JLabel lblNewLabel = new JLabel("Username:");
         lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         lblNewLabel.setBounds(10, 11, 84, 22);
-        root().getContentPane().add(lblNewLabel);
+        getRoot().getContentPane().add(lblNewLabel);
 
         usernameField = new JTextField();
         usernameField.setFont(new Font("Arial", Font.PLAIN, 12));
         usernameField.setBounds(8, 40, 267, 20);
-        root().getContentPane().add(usernameField);
+        getRoot().getContentPane().add(usernameField);
         usernameField.setColumns(10);
 
         JLabel lblPassword = new JLabel("Password:");
         lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 18));
         lblPassword.setBounds(10, 71, 80, 22);
-        root().getContentPane().add(lblPassword);
+        getRoot().getContentPane().add(lblPassword);
 
         passwordField = new JPasswordField();
         passwordField.setFont(new Font("Arial", Font.PLAIN, 12));
         passwordField.setBounds(10, 104, 265, 20);
-        root().getContentPane().add(passwordField);
+        getRoot().getContentPane().add(passwordField);
 
         JButton signUpButton = new JButton("Sign up");
         signUpButton.setFont(new Font("Arial", Font.PLAIN, 14));
         signUpButton.setBounds(98, 152, 81, 25);
-        root().getContentPane().add(signUpButton);
+        getRoot().getContentPane().add(signUpButton);
+
+        signUpButton.addActionListener(e -> {
+            signUp();
+        });
 
         show();
 
     }
+
+    private void signUp(){
+
+        boolean requirements = true;
+        // CHECK REQUERIMENTS
+
+        if(usernameField.getText().length() > 50){
+            ErrorWindow.run("Max length of username!");
+            requirements = false;
+        }
+
+        if(passwordField.getPassword().length == 0){
+            ErrorWindow.run("Password not valid!");
+            requirements = false;
+        }
+
+        if(requirements){
+            try {
+                User user = User.generate(usernameField.getText(),MD5.getMD5(Stringify.charsToString(passwordField.getPassword())));
+                String stmt = String.format(
+                        "INSERT INTO user(username,password) VALUES ('%s','%s')"
+                        ,user.getUsername(),user.getPassword()
+                );
+
+                // CONNECTION
+                Connection connection = Database.start(FormApp.getDatabaseManager());
+                Database.newUpdate(connection,stmt);
+                Database.close(connection);
+                FormManager.changeForm(FormApp.getFormManager(),FormApp.loginForm);
+            } catch (Exception e){
+                ErrorWindow.run(e.getMessage());
+            }
+        }
+
+    }
+
 }

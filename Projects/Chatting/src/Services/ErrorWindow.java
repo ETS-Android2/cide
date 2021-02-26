@@ -30,9 +30,9 @@ public class ErrorWindow {
 
     public static void run(String message) {
 
-        root = new JFrame();
         root.setBounds(100, 100, 450, 139);
         root.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        root.setResizable(false);
         root.getContentPane().setLayout(null);
 
         lblNewLabel.setFont(new Font("Arial", Font.PLAIN, 28));

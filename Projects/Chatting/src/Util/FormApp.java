@@ -13,8 +13,10 @@ package Util;
     
 */
 
+import Screen.*;
 import Services.Database;
 import Services.ErrorWindow;
+import Services.RoomManager;
 
 import java.sql.SQLException;
 
@@ -24,16 +26,24 @@ import java.sql.SQLException;
 
 public class FormApp {
 
+    public static ChatForm loginForm = new LoginForm();
+    public static ChatForm signupForm = new SignUpForm();
+    public static ChatForm roomSelect = new RoomSelect();
+    public static ChatForm roomInterface = new RoomUserInterface();
+    public static ChatForm roomCreator = new RoomCreator();
+
     private static FormManager formManager;
+    private static RoomManager roomManager;
     private static Database databaseManager;
 
     private FormApp(){}
 
     public static void init(String[] args){
         formManager = new FormManager();
+        roomManager = new RoomManager();
         try {
             databaseManager = Database.init();
-        } catch (SQLException e){
+        } catch (Exception e){
             ErrorWindow.run(e.getMessage());
         }
     }
@@ -41,7 +51,9 @@ public class FormApp {
     public static FormManager getFormManager() {
         return formManager;
     }
-
+    public static RoomManager getRoomManager(){
+        return roomManager;
+    }
     public static Database getDatabaseManager() {
         return databaseManager;
     }

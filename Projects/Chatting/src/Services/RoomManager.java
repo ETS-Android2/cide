@@ -28,8 +28,7 @@ public class RoomManager {
     private User user;
     private HashMap<User,Message> messages;
 
-    public RoomManager(User connectedUser){
-        this.user = connectedUser;
+    public RoomManager(){
         messages = new HashMap<>();
     }
 
@@ -43,6 +42,10 @@ public class RoomManager {
         return messages;
     }
 
+    public static boolean setUser(RoomManager roomManager,User user){
+        roomManager.user = user;
+        return true;
+    }
     public static boolean checkMessages(RoomManager manager){
         return Room.getMessages(manager.connected).size() > manager.messages.size();
     }
@@ -55,9 +58,6 @@ public class RoomManager {
     }
     public static boolean changeRoom(RoomManager roomManager, Room room){
         roomManager.connected = room;
-        return true;
-    }
-    public static boolean connect(Room room){
         return true;
     }
 
