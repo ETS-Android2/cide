@@ -81,7 +81,6 @@ public class TestCotxe_carlos_pomares {
         System.out.print("\n\t========= END MAIN MENU =========\n");
     }
 
-    // TODO Crear vehicle
     private static void crearVehicle(){
 
         String[] datos = new String[]{"Marca","Model","Transmissio","Descapotable"};
@@ -211,7 +210,6 @@ public class TestCotxe_carlos_pomares {
 
     }
 
-    // TODO Generar vehicles
     private static void generarVehicles(){
         // Default vehicles
         Cotxe_carlos_pomares lamborghini = new Cotxe_carlos_pomares("Lamborghini","Gallardo",TipusCanvi.CanviAutomatic,false);
@@ -222,7 +220,6 @@ public class TestCotxe_carlos_pomares {
         COTXES.add(mercedes);
     }
 
-    // TODO Seleccio
     private static void seleccionarVehicle(){
 
         System.out.print("\n\t========= Seleccio de vehicle =========\n");
@@ -257,7 +254,6 @@ public class TestCotxe_carlos_pomares {
         System.out.print("\n\t========= END SELECT MENU =========\n");
     }
 
-    // TODO Conduccio
     private static void conduirVehicle(){
 
         String[] opcions = new String[]{
@@ -368,7 +364,6 @@ public class TestCotxe_carlos_pomares {
         System.out.print("\n\t========= END MODULE =========\n");
     }
 
-    // TODO Configuracio
     private static void configuracioVehicle() {
 
         String[] opcions = new String[]{
@@ -422,7 +417,6 @@ public class TestCotxe_carlos_pomares {
 
     }
 
-    // TODO Author
     private static void author(){
 
         System.out.printf("\n\t========= %s =========\n",ConsoleColorsLite.stringColor(ConsoleColorsLite.CYAN_BOLD,"Credits de l'autor"));
@@ -465,7 +459,6 @@ public class TestCotxe_carlos_pomares {
 
     }
 
-    // TODO INFORMACIONS
     private static void informacioVehicle(){
         // Mostrar vehicle
         // MARCA - MODEL - TIPUS CANVI - DESCAPOTABLE
