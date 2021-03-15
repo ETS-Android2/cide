@@ -1,4 +1,4 @@
-package Data;
+package Application.Persistent;
 
 /*
 
@@ -17,7 +17,7 @@ package Data;
  * @author Carlos Pomares
  */
 
-public enum BDCredentials {
+public enum Credentials {
 
     USERNAME("dam"),
     PASSWORD("Cide2050"),
@@ -27,7 +27,7 @@ public enum BDCredentials {
 
     private final String data;
 
-    BDCredentials(String data) {
+    Credentials(String data) {
         this.data = data;
     }
 

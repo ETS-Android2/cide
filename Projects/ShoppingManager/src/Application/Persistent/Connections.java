@@ -1,4 +1,4 @@
-package Data;
+package Application.Persistent;
 
 /*
 
@@ -13,21 +13,15 @@ package Data;
     
 */
 
-import Application.Entities.Client;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Carlos Pomares
  */
 
-public class BDManager {
-
-    private Connection conn;
+public class Connections {
 
     /**
      *
@@ -36,8 +30,8 @@ public class BDManager {
      * @return a SQL Connection.
      * @throws SQLException if the connection fails.
      */
-    public Connection createConnection() throws SQLException {
-        return conn = DriverManager.getConnection(BDCredentials.getUrl(),BDCredentials.USERNAME.getData(),BDCredentials.PASSWORD.getData());
+    public static Connection createConnection() throws SQLException {
+        return DriverManager.getConnection(Credentials.getUrl(), Credentials.USERNAME.getData(), Credentials.PASSWORD.getData());
     }
 
     /**
@@ -50,18 +44,8 @@ public class BDManager {
      * @return a SQL connection.
      * @throws SQLException if the connections fails.
      */
-    public Connection createConnection(String url, String username, String password) throws SQLException {
-        return conn = DriverManager.getConnection(url,username,password);
-    }
-
-    /**
-     *
-     * Close the connection with the database.
-     *
-     * @throws SQLException if the actions fails.
-     */
-    public void close() throws SQLException {
-        this.conn.close();
+    public static Connection createConnection(String url, String username, String password) throws SQLException {
+        return DriverManager.getConnection(url,username,password);
     }
 
 }

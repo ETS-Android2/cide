@@ -13,7 +13,7 @@ package Application;
     
 */
 
-import Data.BDManager;
+import Application.Persistent.Connections;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -23,11 +23,11 @@ import java.io.InputStreamReader;
 
 public class GestorEncarrecs {
 
-    private BDManager gestor;
+    private Connections gestor;
     private BufferedReader entrada;
 
     public GestorEncarrecs() throws Exception {
-        gestor = new BDManager();
+        gestor = new Connections();
         entrada = new BufferedReader(new InputStreamReader(System.in));
     }
 
