@@ -37,16 +37,4 @@ public class OrderConsole extends ConsoleUI {
 
     }
 
-    // TODO Método de entrada de la aplicación por consola
-
-    // TODO Menu principal
-
-    // TODO Método genérico de entrada de pregunta
-
-    // TODO Método genérico de muestra de pregunta
-
-    // TODO Método buscar cliente, secuencia de preguntas...
-
-    // TODO Método agregar cliente, secuencia de preguntas...
-
 }
