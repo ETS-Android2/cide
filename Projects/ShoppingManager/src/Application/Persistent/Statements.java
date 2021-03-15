@@ -35,6 +35,8 @@ public enum Statements {
     GET_CLIENT_BY_NAME("SELECT * FROM client WHERE name = '%s'"),
     GET_ALL_CLIENT_ORDERS("SELECT * FROM client_order WHERE client = %d"),
 
+    GET_PRODUCT_BY_TITLE("SELECT * FROM product WHERE UPPER(title) LIKE '%s'"),
+
     GET_ALL_PRODUCT_ID_AND_QUANTITY_IN_ORDER("SELECT * FROM order_product WHERE order_id = %d")
     ;
 

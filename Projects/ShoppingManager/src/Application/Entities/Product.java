@@ -24,6 +24,12 @@ public class Product {
     private String description;
     private float price;
 
+    public Product(String t, String d, float p) {
+        this.title = t;
+        this.description = d;
+        this.price = p;
+    }
+
     public Product(int i, String t, String d, float p) {
         this.id = i;
         this.title = t;

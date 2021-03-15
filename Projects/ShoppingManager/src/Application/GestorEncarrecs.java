@@ -13,7 +13,9 @@ package Application;
     
 */
 
-import Application.Persistent.Connections;
+import Application.Persistent.DatabaseDriver;
+import Application.Services.OrderConsole;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -23,27 +25,19 @@ import java.io.InputStreamReader;
 
 public class GestorEncarrecs {
 
-    private Connections gestor;
-    private BufferedReader entrada;
+    final private DatabaseDriver driver;
+    final private BufferedReader userIn;
+    final private OrderConsole console;
 
     public GestorEncarrecs() throws Exception {
-        gestor = new Connections();
-        entrada = new BufferedReader(new InputStreamReader(System.in));
+        driver = new DatabaseDriver();
+        userIn = new BufferedReader(new InputStreamReader(System.in));
+        console = new OrderConsole(userIn,driver);
     }
 
-    // TODO Método de entrada de la aplicación por consola
-    public void start(){}
-
-    // TODO Menu principal
-    private void menuPrincipal(){}
-
-    // TODO Método genérico de entrada de pregunta
-
-    // TODO Método genérico de muestra de pregunta
-
-    // TODO Método buscar cliente, secuencia de preguntas...
-
-    // TODO Método agregar cliente, secuencia de preguntas...
+    public void start(){
+        this.console.start();
+    }
 
     public static void main(String[] args) throws Exception {
         GestorEncarrecs ge = new GestorEncarrecs();

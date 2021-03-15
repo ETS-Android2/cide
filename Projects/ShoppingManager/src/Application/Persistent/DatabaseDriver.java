@@ -14,6 +14,7 @@ package Application.Persistent;
 */
 
 import Application.Entities.Client;
+import Application.Entities.Product;
 import Application.Persistent.Connections;
 
 import javax.xml.transform.Result;
@@ -32,7 +33,7 @@ public class DatabaseDriver {
 
     private Connection conn;
 
-    public DatabaseDriver() throws Exception {
+    public DatabaseDriver() throws SQLException {
         this.conn = Connections.createConnection();
     }
 
@@ -42,16 +43,33 @@ public class DatabaseDriver {
      *
      * */
 
-    // TODO Obtener nuevo ID de cliente
     public int obtenerNuevoIDCliente() throws SQLException {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(Statements.GET_LAST_CLIENT_ID.getQuery());
         if(rs.next())
             return (1 + rs.getInt(1));
-        return 1;
+        return 0;
     }
 
-    // TODO Buscar un cliente por nombre
+    public List<Client> obtenerTodosLosClientes() throws SQLException {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(Statements.SELECT_ALL_CLIENTS.getQuery());
+        ArrayList<Client> clients = new ArrayList<>();
+        while(rs.next()){
+            clients.add(new Client(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("name_2"),
+                    rs.getString("lastname"),
+                    rs.getString("lastname_2"),
+                    rs.getString("street_address"),
+                    rs.getString("mail_address"),
+                    rs.getString("phone_number")
+            ));
+        }
+        return clients;
+    }
+
     public List<Client> buscarClientePorNombre(String nom) throws SQLException {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(String.format(Statements.GET_CLIENT_BY_NAME.getQuery(),nom));
@@ -71,7 +89,6 @@ public class DatabaseDriver {
         return clients;
     }
 
-    // TODO Agregar cliente
     public boolean agregarCliente(Client c) throws SQLException {
         Statement stmt = conn.createStatement();
         return stmt.execute(String.format(Statements.INSERT_NEW_CLIENT.getQuery(),
@@ -92,9 +109,30 @@ public class DatabaseDriver {
      *
      * */
 
-    // TODO Buscar producto por nombre
+    // TODO Buscar producto por título
+    public List<Product> buscarProductoPorTitulo(String title) throws SQLException {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(String.format(Statements.GET_PRODUCT_BY_TITLE.getQuery(),title));
+        ArrayList<Product> products = new ArrayList<>();
+        while(rs.next()){
+            products.add(new Product(
+                    rs.getInt("id"),
+                    rs.getString("title"),
+                    rs.getString("description"),
+                    rs.getFloat("price")
+            ));
+        }
+        return products;
+    }
 
-    // TODO Agregar producto
+    public boolean agregarProducto(Product p) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.execute(String.format(Statements.INSERT_NEW_PRODUCT.getQuery(),
+                p.getTitle(),
+                p.getDescription(),
+                p.getPrice()
+        ));
+    }
 
     /*
      *

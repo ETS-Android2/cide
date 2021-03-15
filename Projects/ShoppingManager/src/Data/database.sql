@@ -7,7 +7,7 @@ CREATE TABLE client (
     name            VARCHAR(20) NOT NULL,
     name_2          VARCHAR(20) NULL,
     lastname        VARCHAR(30) NOT NULL,
-    lastname_2      VARCHAR(30) NOT NULL,
+    lastname_2      VARCHAR(30) NULL,
     street_address  VARCHAR(50) NOT NULL,
     mail_address    VARCHAR(50) NOT NULL,
     phone_number    VARCHAR(9) NOT NULL,
