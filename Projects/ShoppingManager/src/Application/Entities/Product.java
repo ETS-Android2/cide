@@ -13,6 +13,9 @@ package Application.Entities;
     
 */
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 /**
  * @author Carlos Pomares
  */

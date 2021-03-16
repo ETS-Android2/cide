@@ -25,10 +25,10 @@ public enum Statements {
     SELECT_ALL_ORDERS("SELECT * FROM order"),
     SELECT_ALL_PRODUCTS_IN_ORDERS("SELECT * FROM order_product"),
 
-    INSERT_NEW_CLIENT("INSERT INTO client(id,name,name_2,lastname,lastname_2,street_address,mail_address,phone_number) VALUES (%d,'%s','%s','%s','%s','%s','%s','%s')"),
-    INSERT_NEW_PRODUCT("INSERT INTO product(title,description,price) VALUES ('%s','%s',%f)"),
-    INSERT_NEW_ORDER("INSERT INTO client_order(client) VALUES (%d)"),
-    INSERT_NEW_ORDER_PRODUCT("INSERT INTO order_product(product,quantity) VALUES (%d,%f)"),
+    INSERT_NEW_CLIENT("INSERT INTO client (id,name,name_2,lastname,lastname_2,street_address,mail_address,phone_number) VALUES (%d,'%s','%s','%s','%s','%s','%s','%s')"),
+    INSERT_NEW_PRODUCT("INSERT INTO product (title,description,price) VALUES ('%s','%s',%s)"),
+    INSERT_NEW_ORDER("INSERT INTO client_order (client) VALUES (%d)"),
+    INSERT_NEW_ORDER_PRODUCT("INSERT INTO order_product (product,quantity) VALUES (%d,%f)"),
 
     // SPECIFIC
     GET_LAST_CLIENT_ID("SELECT MAX(id) FROM client"),

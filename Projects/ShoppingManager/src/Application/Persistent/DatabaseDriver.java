@@ -22,6 +22,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,6 +111,21 @@ public class DatabaseDriver {
      *
      * */
 
+    public List<Product> obtenerTodosLosProductos() throws SQLException {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(Statements.SELECT_ALL_PRODUCTS.getQuery());
+        ArrayList<Product> products = new ArrayList<>();
+        while(rs.next()){
+            products.add(new Product(
+                    rs.getInt("id")
+                    ,rs.getString("title")
+                    ,rs.getString("description")
+                    ,rs.getFloat("price")
+            ));
+        }
+        return products;
+    }
+
     // TODO Buscar producto por título
     public List<Product> buscarProductoPorTitulo(String title) throws SQLException {
         Statement stmt = conn.createStatement();
@@ -127,10 +144,11 @@ public class DatabaseDriver {
 
     public boolean agregarProducto(Product p) throws SQLException {
         Statement stmt = conn.createStatement();
+        NumberFormat nf = new DecimalFormat("#.##");
         return stmt.execute(String.format(Statements.INSERT_NEW_PRODUCT.getQuery(),
-                p.getTitle(),
-                p.getDescription(),
-                p.getPrice()
+                p.getTitle()
+                ,p.getDescription()
+                ,nf.format(p.getPrice()).replace(",",".")
         ));
     }
 
