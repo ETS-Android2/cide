@@ -16,6 +16,7 @@ package Application;
 import Application.Entities.Client;
 import Application.Entities.Product;
 import Application.Persistent.DatabaseDriver;
+import Application.Services.Encapsulate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -23,6 +24,7 @@ import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -50,7 +52,6 @@ public class GestorEncarrecs {
         menuPrincipal();
     }
 
-    // TODO Menu principal
     private void menuPrincipal(){
 
         boolean exit = false;
@@ -58,6 +59,7 @@ public class GestorEncarrecs {
         String[] options = {
                 "Cliente",
                 "Producto",
+                "Encargos",
                 "Salir"
         };
 
@@ -89,7 +91,8 @@ public class GestorEncarrecs {
                 switch (parseCommand(order.toLowerCase())){
                     case 1 -> menuCliente();
                     case 2 -> menuProducto();
-                    case 3 -> exit = true;
+                    case 3 -> menuEncargo();
+                    case 4 -> exit = true;
                 }
 
             } catch (Exception e){
@@ -127,7 +130,6 @@ public class GestorEncarrecs {
         return out;
     }
 
-    // TODO Menu Cliente
     private void menuCliente(){
 
         boolean exit = false;
@@ -166,7 +168,6 @@ public class GestorEncarrecs {
 
     }
 
-    // TODO Método buscar cliente, secuencia de preguntas...
     private ArrayList<Client> searchClientByName() throws Exception {
         String[] messages = {
                 "Introduce el nombre del cliente: "
@@ -182,7 +183,6 @@ public class GestorEncarrecs {
         return (ArrayList<Client>) DATA_SOURCE.buscarClientePorNombre(result.get(0));
     }
 
-    // TODO Método agregar cliente, secuencia de preguntas...
     private void registerNewClient() throws SQLException {
         String[] messages = {
                 "Introduce el primer nombre: "
@@ -209,7 +209,6 @@ public class GestorEncarrecs {
 
     }
 
-    // TODO Obtener clientes
     private void showAllClients(ArrayList<Client> clients){
         if(clients.size() != 0){
             System.out.printf("\n\n\t%-5s %-20s %-25s %-25s %-25s %-9s"
@@ -234,14 +233,86 @@ public class GestorEncarrecs {
         }
     }
 
-    // TODO Menu Producto
+    private int selectClient() throws Exception {
+
+        int selected = 0;
+
+        ArrayList<Client> clients = (ArrayList<Client>) DATA_SOURCE.obtenerTodosLosClientes();
+
+        if(clients.size() == 0)
+            throw new Exception("EMPTY CLIENTS");
+
+        boolean exit = false;
+
+        while(!exit){
+
+            try {
+
+                System.out.printf("\n\n\t%-5s %-35s %-30s"
+                        ,"ID"
+                        ,"NOMBRE"
+                        ,"MAIL"
+                );
+
+                for (int i = 0; i < clients.size(); i++) {
+                    Client c = clients.get(i);
+
+                    String name = c.getFirstName()
+                            + ((!c.getSecondName().equalsIgnoreCase("null")) ? " " + c.getSecondName() : " ")
+                            + " " + c.getFirstLastname()
+                            + " " + c.getSecondLastname();
+
+                    String format = String.format("%-5d %-35s %-30s"
+                            ,c.getId()
+                            ,name
+                            ,c.getMailAddress()
+                    );
+
+                    if(i == selected){
+                        Encapsulate.encapsulateString(format,"\t","=");
+                    } else {
+                        System.out.print("\n\t" + format);
+                    }
+
+                }
+
+                System.out.printf("\n\n\t%-15s %-15s %-15s",
+                        "1. SIGUIENTE",
+                        "2. SELECCIONAR",
+                        "3. SALIR"
+                );
+
+                System.out.print("\n\n\t> ");
+
+                switch (parseCommand(USER_INPUT.readLine())){
+                    case 1 -> {
+                        if(selected == (clients.size() - 1)){
+                            selected = 0;
+                        } else {
+                            selected++;
+                        }
+                    }
+                    case 2 -> {
+                        return clients.get(selected).getId();
+                    }
+                    case 3 -> exit = true;
+                }
+
+            } catch (Exception e){
+                ALERTS.add(e.getMessage());
+            }
+
+        }
+
+        return 0;
+    }
+
     private void menuProducto(){
 
         boolean exit = false;
 
         String[] options = {
                 "Agregar producto",
-                "Seleccionar producto",
                 "Buscar producto por título",
                 "Ver todos los productos",
                 "Volver al menu principal"
@@ -261,11 +332,9 @@ public class GestorEncarrecs {
 
                 switch (parseCommand(order.toLowerCase())){
                     case 1 -> registerNewProduct();
-                    case 2,3 -> {
-                        throw new Exception("NOT IMPLEMENTED");
-                    }
-                    case 4 -> showAllProducts((ArrayList<Product>) DATA_SOURCE.obtenerTodosLosProductos());
-                    case 5 -> exit = true;
+                    case 2 -> showAllProducts(searchProductByTitle());
+                    case 3 -> showAllProducts((ArrayList<Product>) DATA_SOURCE.obtenerTodosLosProductos());
+                    case 4 -> exit = true;
                 }
 
             } catch (Exception e){
@@ -276,7 +345,6 @@ public class GestorEncarrecs {
 
     }
 
-    // TODO Agregar producto
     private void registerNewProduct() throws Exception {
 
         String[] messages = {
@@ -295,7 +363,20 @@ public class GestorEncarrecs {
 
     }
 
-    // TODO Listar productos
+    private ArrayList<Product> searchProductByTitle() throws Exception {
+        String[] messages = {
+                "Introduce el titulo del producto: "
+        };
+
+        ArrayList<String> result = menuSecuencial(messages);
+
+        if(result.get(0).equalsIgnoreCase("")){
+            throw new Exception("No puede estar vacio...");
+        }
+
+        return (ArrayList<Product>) DATA_SOURCE.buscarProductoPorTitulo(result.get(0));
+    }
+
     private void showAllProducts(ArrayList<Product> products){
         if(products.size() != 0){
             System.out.printf("\n\n\t%-5s %-20s %-50s %-8s"
@@ -316,14 +397,80 @@ public class GestorEncarrecs {
         }
     }
 
+    private HashMap<Product,Integer> productCart(){
+
+        boolean exit = false;
+
+        while(!exit){
+
+            // VER CARRITO, SELECCIONAR PRODUCTOS,
+
+            try {
+
+                System.out.printf("\n\t%-15s %-15s");
+
+            } catch (Exception e){
+                ALERTS.add(e.getMessage());
+            }
+
+        }
+
+        return null;
+    }
+
     // TODO Menu Encargo
-    private void menuEncargo(){}
+    private void menuEncargo(){
+
+        boolean exit = false;
+
+        String[] options = {
+                "Realizar un encargo",
+                "Buscar un encargo",
+                "Eliminar encargo",
+                "Volver al menu principal"
+        };
+
+        while(!exit){
+
+            showMenus("Encargos",options);
+
+            // ORDER
+            System.out.print("\n\n\t> ");
+
+            try {
+
+                boolean command = false;
+                String order = USER_INPUT.readLine();
+
+                switch (parseCommand(order.toLowerCase())){
+                    case 1 -> makeOrder();
+                    case 2,3 -> {
+                        throw new Exception("NOT IMPLEMENTED");
+                    }
+                    case 4 -> exit = true;
+                }
+
+            } catch (Exception e){
+                ALERTS.add(e.getMessage());
+            }
+
+        }
+
+    }
 
     // TODO Realizar un encargo
+    private void makeOrder() throws Exception {
+
+        int selectedUser = selectClient();
+        HashMap<Product,Integer> products;
+
+    }
 
     // TODO Eliminar un encargo
 
     // TODO Consultar encargos
+
+    // TODO Agregar productos
 
     // TODO MENUS
     private void showMenuStyled(String title, String[] options,String escape){
