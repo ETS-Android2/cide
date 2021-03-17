@@ -37,7 +37,7 @@ CREATE TABLE order_product (
     order_id        INT NOT NULL,
     product         INT NOT NULL,
     quantity        INT NOT NULL,
-    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES client_order(id),
-    CONSTRAINT fk_product FOREIGN KEY (product) REFERENCES  product(id),
+    CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES client_order(id) ON DELETE CASCADE,
+    CONSTRAINT fk_product FOREIGN KEY (product) REFERENCES  product(id) ON DELETE CASCADE,
     PRIMARY KEY (order_id,product)
 );

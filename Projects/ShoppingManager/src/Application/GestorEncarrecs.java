@@ -14,15 +14,14 @@ package Application;
 */
 
 import Application.Entities.Client;
+import Application.Entities.Order;
 import Application.Entities.Product;
 import Application.Persistent.DatabaseDriver;
 import Application.Services.Encapsulate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.math.RoundingMode;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -569,9 +568,8 @@ public class GestorEncarrecs {
 
                 switch (parseCommand(order.toLowerCase())){
                     case 1 -> makeOrder();
-                    case 2,3 -> {
-                        throw new Exception("NOT IMPLEMENTED");
-                    }
+                    case 2 -> searchOrderByClientId();
+                    case 3 -> deleteOrder();
                     case 4 -> exit = true;
                 }
 
@@ -583,7 +581,6 @@ public class GestorEncarrecs {
 
     }
 
-    // TODO Realizar un encargo
     private void makeOrder() throws Exception {
         Client selectedUser = selectClient();
         HashMap<Product,Integer> products = productCart();
@@ -593,11 +590,48 @@ public class GestorEncarrecs {
         DATA_SOURCE.agregarProductosAEncargo(encargo,products);
     }
 
-    // TODO Eliminar un encargo
+    private void deleteOrder() throws Exception {
+        String[] messages = {
+                "Introduce el id del encargo: "
+        };
+        ArrayList<String> result = menuSecuencial(messages);
+        if(!DATA_SOURCE.eliminarEncargo(Integer.parseInt(result.get(0)))){
+            throw new Exception("ENCARGO NO ENCONTRADO");
+        }
+    }
 
-    // TODO Consultar encargos
+    // TODO Buscar encargo por usuario
+    private void searchOrderByClientId() throws Exception {
+        Client selected = selectClient();
+        assert selected != null;
+        showOrders(DATA_SOURCE.obtenerEncargosDeUnCliente(selected));
+    }
 
-    // TODO Agregar productos
+    // TODO Mostrar encargo
+    private void showOrder(Order o, String escape){
+        System.out.printf(escape + "%-5s %-45s %-20s"
+                ,o.getId()
+                ,o.getClient().getFirstName()
+                        + " " + o.getClient().getFirstLastname()
+                        + " " + o.getClient().getMailAddress()
+                ,o.getOrderDate()
+        );
+    }
+
+    // TODO Mostrar encargos
+    private void showOrders(ArrayList<Order> orders){
+        if(orders.size() > 0){
+            System.out.printf("\n\n\t%-5s %-45s %-20s"
+                    ,"ID"
+                    ,"CLIENTE"
+                    ,"FECHA"
+            );
+            for(Order o : orders){
+                showOrder(o,"\n\t");
+                System.out.print("\n\t---------------------------------------------");
+            }
+        }
+    }
 
     // TODO MENUS
     private void showMenuStyled(String title, String[] options,String escape){

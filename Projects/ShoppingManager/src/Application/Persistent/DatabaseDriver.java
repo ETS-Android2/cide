@@ -234,6 +234,23 @@ public class DatabaseDriver {
         }
     }
 
+    // TODO Obtener encargos de un cliente
+    public ArrayList<Order> obtenerEncargosDeUnCliente(Client c) throws Exception {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(String.format(
+                Statements.GET_ALL_CLIENT_ORDERS.getQuery()
+                ,c.getId()
+        ));
+
+        ArrayList<Order> orders = new ArrayList<>();
+
+        while(rs.next()){
+            orders.add(obtenerEncargo(rs.getInt("id")));
+        }
+
+        return orders;
+    }
+
     // TODO Obtener encargo completo
     public Order obtenerEncargo(int id) throws Exception {
 
@@ -246,7 +263,8 @@ public class DatabaseDriver {
 
         if(rs.next()){
             return new Order(
-                    obtenerClientePorId(rs.getInt("client"))
+                    rs.getInt("id")
+                    ,obtenerClientePorId(rs.getInt("client"))
                     ,obtenerProductosDeEncargo(rs.getInt("id"))
                     , rs.getTimestamp("date")
             );
@@ -280,6 +298,13 @@ public class DatabaseDriver {
     }
 
     // TODO Eliminar encargo
+    public boolean eliminarEncargo(int id) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.execute(String.format(
+                Statements.DELETE_ORDER_BY_ID.getQuery()
+                ,id
+        ));
+    }
 
     public void close() throws SQLException {
         this.conn.close();

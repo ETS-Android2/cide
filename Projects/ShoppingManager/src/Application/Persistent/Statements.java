@@ -41,7 +41,8 @@ public enum Statements {
     GET_PRODUCT_BY_ID("SELECT * FROM product WHERE id = %d"),
 
     GET_ORDER_BY_ID("SELECT * FROM client_order WHERE id = %d"),
-    GET_ALL_PRODUCT_ID_AND_QUANTITY_IN_ORDER("SELECT * FROM order_product WHERE order_id = %d")
+    GET_ALL_PRODUCT_ID_AND_QUANTITY_IN_ORDER("SELECT * FROM order_product WHERE order_id = %d"),
+    DELETE_ORDER_BY_ID("DELETE FROM client_order WHERE id = %d")
     ;
 
     private final String query;

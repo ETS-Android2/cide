@@ -5,14 +5,17 @@ import java.util.HashMap;
 
 public class Order {
 
+    private int id;
     private Timestamp orderDate;
     private Client client;
     private HashMap<Product,Integer> products;
 
-    public Order(Client c, HashMap<Product,Integer> p, Timestamp d){
+    public Order(int i,Client c, HashMap<Product,Integer> p, Timestamp d){
+        assert i != 0;
         assert c != null;
         assert p != null;
         assert d != null;
+        this.id = i;
         this.client = c;
         this.products = p;
         this.orderDate = d;
@@ -24,6 +27,10 @@ public class Order {
         this.client = c;
         this.products = p;
         makeOrder();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Timestamp getOrderDate() {
