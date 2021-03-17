@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Carlos Pomares
@@ -397,17 +398,149 @@ public class GestorEncarrecs {
         }
     }
 
-    private HashMap<Product,Integer> productCart(){
+    private Product selectProduct() throws Exception {
+
+        int selected = 0;
+
+        ArrayList<Product> products = (ArrayList<Product>) DATA_SOURCE.obtenerTodosLosProductos();
+
+        if(products.size() == 0)
+            throw new Exception("EMPTY PRODUCTS");
 
         boolean exit = false;
 
         while(!exit){
 
-            // VER CARRITO, SELECCIONAR PRODUCTOS,
+            try {
+
+                System.out.printf("\n\n\t%-5s %-30s %-10s"
+                        ,"ID"
+                        ,"TITULO"
+                        ,"PRECIO"
+                );
+
+                for (int i = 0; i < products.size(); i++) {
+                    Product p = products.get(i);
+
+                    String format = String.format("%-5d %-30s %-10.2f"
+                            ,p.getId()
+                            ,p.getTitle()
+                            ,p.getPrice()
+                    );
+
+                    if(i == selected){
+                        Encapsulate.encapsulateString(format,"\t","=");
+                    } else {
+                        System.out.print("\n\t" + format);
+                    }
+
+                }
+
+                System.out.printf("\n\n\t%-15s %-15s %-15s",
+                        "1. SIGUIENTE",
+                        "2. SELECCIONAR",
+                        "3. SALIR"
+                );
+
+                System.out.print("\n\n\t> ");
+
+                switch (parseCommand(USER_INPUT.readLine())){
+                    case 1 -> {
+                        if(selected == (products.size() - 1)){
+                            selected = 0;
+                        } else {
+                            selected++;
+                        }
+                    }
+                    case 2 -> {
+                        return products.get(selected);
+                    }
+                    case 3 -> exit = true;
+                }
+
+            } catch (Exception e){
+                ALERTS.add(e.getMessage());
+            }
+
+        }
+
+        return null;
+    }
+
+    private HashMap<Product,Integer> productCart() throws Exception {
+
+        boolean exit = false;
+
+        HashMap<Product,Integer> products = new HashMap<>();
+        ArrayList<Product> database = (ArrayList<Product>) DATA_SOURCE.obtenerTodosLosProductos();
+
+        while(!exit){
+
+            showInternalMenus();
+
+            // TODO Carrito heading text to high
+            System.out.println("\n\t---------------- CARRITO ----------");
 
             try {
 
-                System.out.printf("\n\t%-15s %-15s");
+                if(products.size() > 0){
+
+                    System.out.printf("\n\t%-5s %-30s %-10s %-10s"
+                            ,"ID"
+                            ,"TITULO"
+                            ,"PRECIO"
+                            ,"CANTIDAD"
+                    );
+
+                    // TODO Visual separation between each product
+                    for(Map.Entry<Product,Integer> p : products.entrySet()){
+                        Product product = p.getKey();
+                        int quantity = p.getValue();
+                        System.out.printf("\n\t%-5d %-30s %-10.2f %-10d",
+                                product.getId()
+                                ,product.getTitle()
+                                ,product.getPrice()
+                                ,quantity
+                        );
+                        System.out.print("\n\t-------------------------------");
+                    }
+                }
+
+                System.out.printf("\n\n\t%-20s %-20s %-20s %-20s %-20s\n"
+                        ,"1. AGREGAR PRODUCTO"
+                        ,"2. BORRAR PRODUCTO"
+                        ,"3. SIGUIENTE"
+                        ,"4. GUARDAR Y SALIR"
+                        ,"5. SALIR SIN GUARDAR"
+                );
+
+                System.out.print("\n\t> ");
+
+                switch (parseCommand(USER_INPUT.readLine())){
+                    case 1 -> {
+                        Product product = selectProduct();
+                        boolean changed = false;
+                        for(Product p : products.keySet()){
+                            if(p.equals(product)){
+                                products.replace(p,products.get(p),(products.get(p) + 1));
+                                changed = true;
+                                break;
+                            }
+                        }
+                        if(!changed){
+                            products.put(product,1);
+                        }
+                    }
+                    case 2,3 -> {
+                        throw new Exception("NOT IMPLEMENTED");
+                    }
+                    case 4 -> {
+                        return products;
+                    }
+                    case 5 -> {
+                        exit = true;
+                    }
+                }
 
             } catch (Exception e){
                 ALERTS.add(e.getMessage());
@@ -462,7 +595,11 @@ public class GestorEncarrecs {
     private void makeOrder() throws Exception {
 
         int selectedUser = selectClient();
-        HashMap<Product,Integer> products;
+
+        HashMap<Product,Integer> products = productCart();
+
+        System.out.println(selectedUser);
+        System.out.println(products);
 
     }
 
@@ -482,7 +619,7 @@ public class GestorEncarrecs {
         System.out.printf("\n" + escape + "-------------- %s -------------",title);
         String[] tmp = options.toArray(new String[0]);
         showOptionsWithNumbers(tmp,escape);
-        System.out.print(escape + "-----------------------------------");
+        System.out.print(escape + "-----------------------------------\n");
     }
     private void showOptions(String[] options,String escape){
         for(String option : options){
@@ -495,7 +632,11 @@ public class GestorEncarrecs {
         }
     }
     private void showMenus(String title, String[] options){
-
+        showInternalMenus();
+        // OPTIONS
+        showMenuStyled(title,options,"\n\t");
+    }
+    private void showInternalMenus(){
         // ALERTS
         if(ALERTS.size() > 0){
             showMenuStyled("ALERTS", (ArrayList<String>) ALERTS,"\n\t");
@@ -507,10 +648,6 @@ public class GestorEncarrecs {
         if(debug){
             showMenuStyled("DEBUG",debugOptions,"\n\t");
         }
-
-        // OPTIONS
-        showMenuStyled(title,options,"\n\t");
-
     }
     private String ask(String message, String escape) throws Exception {
         System.out.println(escape + message);
@@ -519,13 +656,16 @@ public class GestorEncarrecs {
     }
 
     // TODO Comandos
-    private int parseCommand(String command) {
+    private int parseCommand(String command) throws Exception {
         switch (command){
             case "debug" -> debug = true;
-            case "author" -> System.out.println("NOT IMPLEMENTED");
-            case "test" -> System.out.println("NOT IMPLEMENTED");
-            case "configure" -> System.out.println("NOT IMPLEMENTED");
-            case "help" -> System.out.println("NOT IMPLEMENTED");
+            case "author","test","configure","help" -> {
+                throw new Exception("NOT IMPLEMENTED");
+            }
+            case "reset" -> {
+                ALERTS.clear();
+                debug = false;
+            }
             default -> {
                 try {
                     return Integer.parseInt(command);

@@ -32,7 +32,7 @@ public enum Statements {
 
     // SPECIFIC
     GET_LAST_CLIENT_ID("SELECT MAX(id) FROM client"),
-    GET_CLIENT_BY_NAME("SELECT * FROM client WHERE name = '%s'"),
+    GET_CLIENT_BY_NAME("SELECT * FROM client WHERE UPPER(name) LIKE '%s'"),
     GET_ALL_CLIENT_ORDERS("SELECT * FROM client_order WHERE client = %d"),
 
     GET_PRODUCT_BY_TITLE("SELECT * FROM product WHERE UPPER(title) LIKE '%s'"),
