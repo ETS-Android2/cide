@@ -48,8 +48,9 @@ public class GestorEncarrecs {
         ALERTS = new ArrayList<>();
     }
 
-    public void start(){
+    public void start() throws Exception {
         menuPrincipal();
+        DATA_SOURCE.close();
     }
 
     private void menuPrincipal(){
