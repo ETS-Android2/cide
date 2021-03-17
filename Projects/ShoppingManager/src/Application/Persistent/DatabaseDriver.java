@@ -14,18 +14,18 @@ package Application.Persistent;
 */
 
 import Application.Entities.Client;
+import Application.Entities.Order;
 import Application.Entities.Product;
 import Application.Persistent.Connections;
 
 import javax.xml.transform.Result;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Carlos Pomares
@@ -91,6 +91,29 @@ public class DatabaseDriver {
         return clients;
     }
 
+    public Client obtenerClientePorId(int id) throws Exception {
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(String.format(Statements.GET_CLIENT_BY_ID.getQuery()
+                ,id)
+        );
+
+        if(rs.next()){
+            return new Client(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("name_2"),
+                    rs.getString("lastname"),
+                    rs.getString("lastname_2"),
+                    rs.getString("street_address"),
+                    rs.getString("mail_address"),
+                    rs.getString("phone_number")
+            );
+        } else {
+            throw new Exception("CLIENT NULL");
+        }
+    }
+
     public boolean agregarCliente(Client c) throws SQLException {
         Statement stmt = conn.createStatement();
         return stmt.execute(String.format(Statements.INSERT_NEW_CLIENT.getQuery(),
@@ -142,6 +165,22 @@ public class DatabaseDriver {
         return products;
     }
 
+    public Product obtenerProductoPorId(int id) throws SQLException {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(String.format(Statements.GET_PRODUCT_BY_ID.getQuery()
+                ,id)
+        );
+        if(rs.next()){
+            return new Product(
+                    rs.getInt("id")
+                    ,rs.getString("title")
+                    ,rs.getString("description")
+                    ,rs.getFloat("price")
+            );
+        }
+        return null;
+    }
+
     public boolean agregarProducto(Product p) throws SQLException {
         Statement stmt = conn.createStatement();
         NumberFormat nf = new DecimalFormat("#.##");
@@ -161,6 +200,84 @@ public class DatabaseDriver {
     // TODO Buscar encargos por cliente
 
     // TODO Crear encargo
+    public boolean agregarEncargo(Client c) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.execute(String.format(Statements.INSERT_NEW_ORDER.getQuery(),c.getId()));
+    }
+
+    public boolean agregarProductoAEncargo(Integer e,Product p, Integer i) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.execute(String.format(
+                Statements.INSERT_NEW_ORDER_PRODUCT.getQuery()
+                ,e
+                ,p.getId()
+                ,i
+        ));
+    }
+
+    public void agregarProductosAEncargo(int encargo, HashMap<Product,Integer> productos) throws Exception {
+        for(Map.Entry<Product,Integer> p : productos.entrySet()){
+            agregarProductoAEncargo(encargo,p.getKey(),p.getValue());
+        }
+    }
+
+    // TODO Obtener el último encargo de un cliente
+    public int obtenerIdUltimoEncargoDeUnCliente(Client c) throws Exception {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(String.format(Statements.GET_LAST_CLIENT_ORDER.getQuery()
+                ,c.getId())
+        );
+        if(rs.next()){
+            return rs.getInt("id");
+        } else {
+            throw new Exception("ID INCORRECTO");
+        }
+    }
+
+    // TODO Obtener encargo completo
+    public Order obtenerEncargo(int id) throws Exception {
+
+        Statement stmt = conn.createStatement();
+
+        ResultSet rs = stmt.executeQuery(String.format(
+                Statements.GET_ORDER_BY_ID.getQuery(),
+                id
+        ));
+
+        if(rs.next()){
+            return new Order(
+                    obtenerClientePorId(rs.getInt("client"))
+                    ,obtenerProductosDeEncargo(rs.getInt("id"))
+                    , rs.getTimestamp("date")
+            );
+        } else {
+            throw new Exception("ID INCORRECTO");
+        }
+    }
+
+    // TODO Obtener productos de encargo
+    public HashMap<Product,Integer> obtenerProductosDeEncargo(int encargo) throws Exception {
+
+        HashMap<Product,Integer> products = new HashMap<>();
+
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(String.format(Statements.GET_ALL_PRODUCT_ID_AND_QUANTITY_IN_ORDER.getQuery()
+                ,encargo)
+        );
+
+        while(rs.next()){
+            products.put(
+                    obtenerProductoPorId(rs.getInt("product"))
+                    ,rs.getInt("quantity")
+            );
+        }
+
+        if(products.size() == 0){
+            throw new Exception("EMPTY PRODUCTS");
+        }
+
+        return products;
+    }
 
     // TODO Eliminar encargo
 

@@ -66,22 +66,10 @@ public class GestorEncarrecs {
 
         while(!exit){
 
-            // ALERTS
-            if(ALERTS.size() > 0){
-                showMenuStyled("ALERTS", (ArrayList<String>) ALERTS,"\n\t");
-                if(ALERTS.size() >= 5)
-                    ALERTS.clear();
-            }
+            showInternalMenus();
 
-            // DEBUG OPTIONS
-            if(debug){
-                showMenuStyled("DEBUG",debugOptions,"\n\t");
-            }
-
-            // OPTIONS
             showMenuStyled("Options",options,"\n\t");
 
-            // ORDER
             System.out.print("\n\n\t> ");
 
             try {
@@ -234,7 +222,7 @@ public class GestorEncarrecs {
         }
     }
 
-    private int selectClient() throws Exception {
+    private Client selectClient() throws Exception {
 
         int selected = 0;
 
@@ -294,7 +282,7 @@ public class GestorEncarrecs {
                         }
                     }
                     case 2 -> {
-                        return clients.get(selected).getId();
+                        return clients.get(selected);
                     }
                     case 3 -> exit = true;
                 }
@@ -305,7 +293,7 @@ public class GestorEncarrecs {
 
         }
 
-        return 0;
+        return null;
     }
 
     private void menuProducto(){
@@ -535,7 +523,11 @@ public class GestorEncarrecs {
                         throw new Exception("NOT IMPLEMENTED");
                     }
                     case 4 -> {
-                        return products;
+                        if(products.size() > 0) {
+                            return products;
+                        } else {
+                            throw new Exception("CART CANNOT BE EMPTY.");
+                        }
                     }
                     case 5 -> {
                         exit = true;
@@ -593,14 +585,12 @@ public class GestorEncarrecs {
 
     // TODO Realizar un encargo
     private void makeOrder() throws Exception {
-
-        int selectedUser = selectClient();
-
+        Client selectedUser = selectClient();
         HashMap<Product,Integer> products = productCart();
-
-        System.out.println(selectedUser);
-        System.out.println(products);
-
+        DATA_SOURCE.agregarEncargo(selectedUser);
+        int encargo = DATA_SOURCE.obtenerIdUltimoEncargoDeUnCliente(selectedUser);
+        assert products != null;
+        DATA_SOURCE.agregarProductosAEncargo(encargo,products);
     }
 
     // TODO Eliminar un encargo

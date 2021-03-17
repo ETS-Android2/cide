@@ -36,7 +36,7 @@ CREATE TABLE client_order (
 CREATE TABLE order_product (
     order_id        INT NOT NULL,
     product         INT NOT NULL,
-    quantity        FLOAT DEFAULT 1.0,
+    quantity        INT NOT NULL,
     CONSTRAINT fk_order FOREIGN KEY (order_id) REFERENCES client_order(id),
     CONSTRAINT fk_product FOREIGN KEY (product) REFERENCES  product(id),
     PRIMARY KEY (order_id,product)
