@@ -339,7 +339,8 @@ public class GestorEncarrecs {
         String[] messages = {
                 "Introduce el título ",
                 "Introduce la descripción ",
-                "Introduce el precio: "
+                "Introduce el precio ",
+                "Introduce el stock "
         };
 
         ArrayList<String> result = menuSecuencial(messages);
@@ -347,7 +348,8 @@ public class GestorEncarrecs {
         DATA_SOURCE.agregarProducto(new Product(
                 result.get(0),
                 result.get(1),
-                Float.parseFloat(result.get(2))
+                Float.parseFloat(result.get(2)),
+                Integer.parseInt(result.get(3))
         ));
 
     }
@@ -368,18 +370,20 @@ public class GestorEncarrecs {
 
     private void showAllProducts(ArrayList<Product> products){
         if(products.size() != 0){
-            System.out.printf("\n\n\t%-5s %-20s %-50s %-8s"
+            System.out.printf("\n\n\t%-5s %-20s %-50s %-8s %-8s"
                     ,"ID"
                     ,"TÍTULO"
                     ,"DESCRIPCIÓN"
                     ,"PRECIO"
+                    ,"STOCK"
             );
             for(Product product : products){
-                System.out.printf("\n\t%-5d %-20s %-50s %-8.2f"
+                System.out.printf("\n\t%-5d %-20s %-50s %-8.2f %-8d"
                         ,product.getId()
                         ,product.getTitle()
                         ,product.getDescription()
                         ,product.getPrice()
+                        ,product.getStock()
                 );
                 System.out.print("\n\t---------------------------------------------");
             }
@@ -401,19 +405,21 @@ public class GestorEncarrecs {
 
             try {
 
-                System.out.printf("\n\n\t%-5s %-30s %-10s"
+                System.out.printf("\n\n\t%-5s %-30s %-10s %-8s"
                         ,"ID"
                         ,"TITULO"
                         ,"PRECIO"
+                        ,"STOCK"
                 );
 
                 for (int i = 0; i < products.size(); i++) {
                     Product p = products.get(i);
 
-                    String format = String.format("%-5d %-30s %-10.2f"
+                    String format = String.format("%-5d %-30s %-10.2f %-8d"
                             ,p.getId()
                             ,p.getTitle()
                             ,p.getPrice()
+                            ,p.getStock()
                     );
 
                     if(i == selected){
@@ -523,7 +529,8 @@ public class GestorEncarrecs {
                         throw new Exception("NOT IMPLEMENTED");
                     }
                     case 4 -> {
-                        if(products.size() > 0) {
+                        if(products.size() > 0 && validateProducts(products)) {
+                            updateProducts(products);
                             return products;
                         } else {
                             throw new Exception("CART CANNOT BE EMPTY.");
@@ -541,6 +548,32 @@ public class GestorEncarrecs {
         }
 
         return null;
+    }
+
+    private boolean validateProduct(Product p,int quantity) throws Exception {
+        return DATA_SOURCE.obtenerProductoPorId(p.getId()).getStock() >= quantity;
+    }
+
+    private boolean validateProducts(HashMap<Product,Integer> p) throws Exception {
+        int count = 0;
+        for(Map.Entry<Product,Integer> product : p.entrySet()){
+            if(validateProduct(product.getKey(),product.getValue())) {
+                count++;
+            } else {
+                throw new Exception("PRODUCT: "
+                        + product.getKey().getId()
+                        + " " + product.getKey().getTitle()
+                        + " NO ES VÁLIDO..."
+                );
+            }
+        }
+        return count == p.size();
+    }
+
+    private void updateProducts(HashMap<Product,Integer> p) throws Exception {
+        for(Map.Entry<Product,Integer> product : p.entrySet()){
+            DATA_SOURCE.updateProduct(product.getKey(),product.getValue());
+        }
     }
 
     // TODO Menu Encargo
@@ -585,9 +618,9 @@ public class GestorEncarrecs {
     private void makeOrder() throws Exception {
         Client selectedUser = selectClient();
         HashMap<Product,Integer> products = productCart();
+        assert products != null;
         DATA_SOURCE.agregarEncargo(selectedUser);
         int encargo = DATA_SOURCE.obtenerIdUltimoEncargoDeUnCliente(selectedUser);
-        assert products != null;
         DATA_SOURCE.agregarProductosAEncargo(encargo,products);
     }
 
@@ -596,7 +629,7 @@ public class GestorEncarrecs {
                 "Introduce el id del encargo: "
         };
         ArrayList<String> result = menuSecuencial(messages);
-        if(!DATA_SOURCE.eliminarEncargo(Integer.parseInt(result.get(0)))){
+        if(DATA_SOURCE.eliminarEncargo(Integer.parseInt(result.get(0)))){
             throw new Exception("ENCARGO NO ENCONTRADO");
         }
     }
