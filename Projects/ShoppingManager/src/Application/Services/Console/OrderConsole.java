@@ -16,10 +16,8 @@ package Application.Services.Console;
 import Application.Entities.Client;
 import Application.Persistent.DatabaseDriver;
 import Application.Services.Console.Components.Command.OrderParser;
-import Application.Services.Console.Components.Menu.DefaultInteractiveMenu;
-import Application.Services.Console.Components.Menu.InlineMenu;
-import Application.Services.Console.Components.Menu.OptionMenu;
-import Application.Services.Console.Components.Menu.SequentialMenu;
+import Application.Services.Console.Components.Menu.*;
+import Application.Services.Encapsulate;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -58,7 +56,8 @@ public class OrderConsole extends DefaultConsole {
             protected int callBack(String command) throws Exception {
                 switch (Integer.parseInt(command)){
                     case 1:
-                        client();
+                        //client();
+                        selectionTest();
                         break;
                     case 2:
                         product();
@@ -125,7 +124,7 @@ public class OrderConsole extends DefaultConsole {
                         registerNewClient();
                         break;
                     case 2:
-                        test();
+                        selectionTest();
                         break;
                     case 3:
                         throw new Exception("NOT IMPLEMENTED");
@@ -259,6 +258,93 @@ public class OrderConsole extends DefaultConsole {
 
                 optionMenu.show();
 
+            }
+        };
+
+        menu.show();
+
+    }
+
+    private void selectionTest(){
+
+        String header = String.format(
+                "\n\t%-15s"
+                ,"NOMBRE"
+        );
+
+        String[] options = {
+                "SIGUIENTE"
+                ,"ANTERIOR"
+                ,"SIGUIENTE PÁGINA"
+                ,"ANTERIOR PÁGINA"
+                ,"SALIR"
+        };
+
+        ArrayList<Object> items = new ArrayList<>();
+        items.add("hello");
+        items.add("hello");
+        items.add("hello");
+        items.add("hello");
+        items.add("hello");
+        items.add("hello");
+        items.add("hello");
+
+        InlineMenu inlineMenu = new InlineMenu(options,"\t",1);
+
+        SelectionMenu selectionMenu = new SelectionMenu("\t",items,header) {
+            @Override
+            protected void showItem(Object o, boolean selected) {
+                String item = (String) o;
+                String format = String.format("%s",item);
+                if(selected){
+                    Encapsulate.encapsulateString(format,"\t");
+                } else {
+                    System.out.printf("\n\t"+ "%s",format);
+                }
+            }
+        };
+
+        OrderParser orderParser = new OrderParser() {
+            @Override
+            protected int callBack(String command) throws Exception {
+                switch (Integer.parseInt(command)){
+                    case 1:
+                        selectionMenu.nextItem();
+                        break;
+                    case 2:
+                        selectionMenu.previousItem();
+                        break;
+                    case 3:
+                        selectionMenu.nextPage();
+                        break;
+                    case 4:
+                        selectionMenu.previousPage();
+                        break;
+                    case 5:
+                        return -1;
+                }
+                return 0;
+            }
+        };
+
+
+
+        DefaultInteractiveMenu menu = new SelectionInteractiveMenu(
+                this.errorLog
+                ,inlineMenu
+                ,orderParser
+                ,reader
+                ,"\n\t> "
+                ,selectionMenu
+        ) {
+            @Override
+            protected void outsideLoop() {
+
+            }
+
+            @Override
+            protected void loopBlock() {
+                super.loopBlock();
             }
         };
 

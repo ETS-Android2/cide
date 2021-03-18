@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * @author Carlos Pomares
  */
 
-public class OptionMenu extends DefaultMenu {
+public class OptionMenu extends OptionsMenu {
 
     private static int TITLE_LENGHT = 35;
     private static int SPACING = 2;

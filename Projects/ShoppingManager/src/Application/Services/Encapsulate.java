@@ -35,7 +35,7 @@ public class Encapsulate {
             // First phase
             if(!firstPhaseCheck){
                 if(i == 0){
-                    System.out.print(escapeCharacter);
+                    System.out.print("\n" + escapeCharacter);
                 }
                 System.out.print("-");
                 if(i == (lengthOfString + 1)){

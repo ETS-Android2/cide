@@ -21,16 +21,10 @@ import java.util.ArrayList;
 
 public abstract class DefaultMenu implements Menu {
 
-    protected String[] options;
+
     protected String escapeCharacters;
 
-    public DefaultMenu(String[] o, String e) {
-        this.options = o;
-        this.escapeCharacters = e;
-    }
-
-    public DefaultMenu(ArrayList<String> o, String e) {
-        this.options = o.toArray(new String[0]);
+    public DefaultMenu(String e) {
         this.escapeCharacters = e;
     }
 

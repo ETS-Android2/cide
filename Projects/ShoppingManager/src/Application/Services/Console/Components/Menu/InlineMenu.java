@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * @author Carlos Pomares
  */
 
-public class InlineMenu extends DefaultMenu {
+public class InlineMenu extends OptionsMenu {
 
     private static int MAX_ITEMS_PER_ROW = 5;
 
