@@ -35,8 +35,12 @@ public class DatabaseDriver {
 
     private Connection conn;
 
-    public DatabaseDriver() throws SQLException {
+    public void stablishConnection() throws SQLException {
         this.conn = Connections.createConnection();
+    }
+
+    public void configureNewConnection(String url, String username, String password) throws SQLException {
+        this.conn = Connections.createConnection(url,username,password);
     }
 
     /*
