@@ -38,7 +38,7 @@ public abstract class SelectionMenu extends DefaultMenu {
         super(e);
         this.items = items;
         this.header = header;
-        this.MAX_PAGE = (int)Math.ceil(this.items.size() % MAX_ITEM_IN_PAGE);
+        this.MAX_PAGE = (int)Math.ceil((double)this.items.size() / MAX_ITEM_IN_PAGE);
     }
 
     private void showPage(){
@@ -122,9 +122,16 @@ public abstract class SelectionMenu extends DefaultMenu {
     }
 
     public void nextItem() throws Exception {
+        Object o = null;
+        try {
+            o = this.items.get(this.selectionIndex + 1);
+        } catch (IndexOutOfBoundsException exception){
+            //
+        }
         if(this.selectionIndex + 1 > (this.currentMinSelection + MAX_ITEM_IN_PAGE - 1))
             throw new Exception("MAX ITEM");
-        this.selectionIndex++;
+        if(o != null)
+            this.selectionIndex++;
     }
 
     public Object select(){

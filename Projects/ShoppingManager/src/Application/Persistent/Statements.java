@@ -22,7 +22,7 @@ public enum Statements {
     // GENERAL
     SELECT_ALL_CLIENTS("SELECT * FROM client"),
     SELECT_ALL_PRODUCTS("SELECT * FROM product"),
-    SELECT_ALL_ORDERS("SELECT * FROM order"),
+    SELECT_ALL_ORDERS("SELECT * FROM client_order"),
     SELECT_ALL_PRODUCTS_IN_ORDERS("SELECT * FROM order_product"),
 
     INSERT_NEW_CLIENT("INSERT INTO client (id,name,name_2,lastname,lastname_2,street_address,mail_address,phone_number) VALUES (%d,'%s','%s','%s','%s','%s','%s','%s')"),

@@ -14,6 +14,8 @@ package Application.Services.Console;
 */
 
 import Application.Entities.Client;
+import Application.Entities.Order;
+import Application.Entities.Product;
 import Application.Persistent.DatabaseDriver;
 import Application.Services.Console.Components.Command.OrderParser;
 import Application.Services.Console.Components.Menu.*;
@@ -21,6 +23,9 @@ import Application.Services.Encapsulate;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Carlos Pomares
@@ -34,6 +39,13 @@ public class OrderConsole extends DefaultConsole {
     public OrderConsole() {
         driver = new DatabaseDriver();
         OrderParser.setConsole(this);
+
+        try {
+            driver.stablishConnection();
+        } catch (Exception e){
+            errorLog.add(e.getMessage());
+        }
+
     }
 
     /*
@@ -56,8 +68,7 @@ public class OrderConsole extends DefaultConsole {
             protected int callBack(String command) throws Exception {
                 switch (Integer.parseInt(command)){
                     case 1:
-                        //client();
-                        selectionTest();
+                        client();
                         break;
                     case 2:
                         product();
@@ -124,10 +135,11 @@ public class OrderConsole extends DefaultConsole {
                         registerNewClient();
                         break;
                     case 2:
-                        selectionTest();
+                        clientView((ArrayList<Client>) driver.obtenerTodosLosClientes(),false);
                         break;
                     case 3:
-                        throw new Exception("NOT IMPLEMENTED");
+                        clientView(searchClientByName(),false);
+                        break;
                     case 4:
                         return -1;
                 }
@@ -207,69 +219,38 @@ public class OrderConsole extends DefaultConsole {
 
     }
 
-    // TODO EXAMPLE INLINE MENU
-    private void test(){
+    private ArrayList<Client> searchClientByName() throws Exception {
 
-        String[] options = {
-                "Agregar cliente",
-                "Visualizar clientes",
-                "Buscar cliente por nombre",
-                "Volver al menu principal",
-                "Volver al menu principal",
-                "Volver al menu principal",
-                "Volver al menu principal"
+        String[] messages = {
+                "Introduce el nombre del cliente"
         };
 
-        InlineMenu optionMenu = new InlineMenu(options,"\t",1);
-
-        OrderParser parser = new OrderParser() {
-            @Override
-            protected int callBack(String command) throws Exception {
-                switch (Integer.parseInt(command)){
-                    case 1:
-                        registerNewClient();
-                        break;
-                    case 2:
-                        test();
-                        break;
-                    case 3:
-                        throw new Exception("NOT IMPLEMENTED");
-                    case 4:
-                        return -1;
-                }
-                return 0;
-            }
-        };
-
-        DefaultInteractiveMenu menu = new DefaultInteractiveMenu(
-                this.errorLog
-                ,optionMenu
-                ,parser
-                ,this.reader
-                ,"\n\t> "
-        ) {
-            @Override
-            protected void outsideLoop() {
-
-            }
-
-            @Override
-            protected void loopBlock() {
-
-                optionMenu.show();
-
-            }
-        };
-
+        SequentialMenu menu = new SequentialMenu(messages,reader,"\t",errorLog);
         menu.show();
 
+        ArrayList<String> result = menu.getOutput();
+
+        if(result.get(0).equals(""))
+            throw new Exception("No puede estar vacio...");
+
+        return (ArrayList<Client>) driver.buscarClientePorNombre(result.get(0));
     }
 
-    private void selectionTest(){
+    private Client clientView(ArrayList<Client> clients,boolean selection) throws Exception {
+
+        final Client[] selected = new Client[1];
+
+        if(clients.size() == 0)
+            throw new Exception("CLIENTS IS EMPTY");
 
         String header = String.format(
-                "\n\t%-15s"
+                "\n\t%-5s %-20s %-25s %-25s %-25s %-9s"
+                ,"ID"
                 ,"NOMBRE"
+                ,"APELLIDO"
+                ,"CALLE"
+                ,"MAIL"
+                ,"TELÉFONO"
         );
 
         String[] options = {
@@ -277,29 +258,37 @@ public class OrderConsole extends DefaultConsole {
                 ,"ANTERIOR"
                 ,"SIGUIENTE PÁGINA"
                 ,"ANTERIOR PÁGINA"
+                ,"SELECCIONAR"
                 ,"SALIR"
         };
 
-        ArrayList<Object> items = new ArrayList<>();
-        items.add("hello");
-        items.add("hello");
-        items.add("hello");
-        items.add("hello");
-        items.add("hello");
-        items.add("hello");
-        items.add("hello");
-
         InlineMenu inlineMenu = new InlineMenu(options,"\t",1);
 
-        SelectionMenu selectionMenu = new SelectionMenu("\t",items,header) {
+        // CASTING LIST
+        ArrayList<Object> items = new ArrayList<>(clients);
+
+        SelectionMenu selectionMenu = new SelectionMenu(
+                "\t"
+                ,items
+                ,header
+        ) {
             @Override
             protected void showItem(Object o, boolean selected) {
-                String item = (String) o;
-                String format = String.format("%s",item);
+                Client c = (Client) o;
+                String format = String.format(
+                        "%-5d %-20s %-25s %-25s %-25s %-9s"
+                        ,c.getId()
+                        ,(c.getFirstName() + " " + ((!c.getSecondName().equalsIgnoreCase("null")) ? c.getSecondName() : ""))
+                        ,(c.getFirstLastname() + " " + c.getSecondLastname())
+                        ,c.getStreetAddress()
+                        ,c.getMailAddress()
+                        ,c.getPhoneNumber()
+                );
+
                 if(selected){
                     Encapsulate.encapsulateString(format,"\t");
                 } else {
-                    System.out.printf("\n\t"+ "%s",format);
+                    System.out.printf("\n\t%s",format);
                 }
             }
         };
@@ -321,13 +310,18 @@ public class OrderConsole extends DefaultConsole {
                         selectionMenu.previousPage();
                         break;
                     case 5:
+                        if(!selection){
+                            throw new Exception("NOT ENABLED");
+                        } else {
+                            selected[0] = (Client) selectionMenu.select();
+                            return -1;
+                        }
+                    case 6:
                         return -1;
                 }
                 return 0;
             }
         };
-
-
 
         DefaultInteractiveMenu menu = new SelectionInteractiveMenu(
                 this.errorLog
@@ -341,15 +335,11 @@ public class OrderConsole extends DefaultConsole {
             protected void outsideLoop() {
 
             }
-
-            @Override
-            protected void loopBlock() {
-                super.loopBlock();
-            }
         };
 
         menu.show();
 
+        return selected[0];
     }
 
     /*
@@ -371,8 +361,15 @@ public class OrderConsole extends DefaultConsole {
             @Override
             protected int callBack(String command) throws Exception {
                 switch (Integer.parseInt(command)){
-                    case 1: case 2: case 3:
-                        throw new Exception("NOT IMPLEMENTED");
+                    case 1:
+                        registerNewProduct();
+                        break;
+                    case 2:
+                        productView(searchProductByTitle(),false);
+                        break;
+                    case 3:
+                        productView((ArrayList<Product>) driver.obtenerTodosLosProductos(),false);
+                        break;
                     case 4:
                         return -1;
                 }
@@ -406,6 +403,158 @@ public class OrderConsole extends DefaultConsole {
 
     }
 
+    private void registerNewProduct() throws Exception {
+
+        String[] messages = {
+                "Introduce el título ",
+                "Introduce la descripción ",
+                "Introduce el precio ",
+                "Introduce el stock "
+        };
+
+        String[] validation = {
+                "."
+                ,"."
+                ,"^[0-9]*.[0-9]{2}$"
+                ,"^[0-9]*$"
+        };
+
+        SequentialMenu menu = new SequentialMenu(messages,validation,reader,"\t",errorLog);
+        menu.show();
+
+        ArrayList<String> result = menu.getOutput();
+
+        if(result.size() < 4)
+            throw new Exception("NOT ENOUGH RESULTS");
+
+        driver.agregarProducto(new Product(
+                result.get(0)
+                ,result.get(1)
+                ,Float.parseFloat(result.get(2))
+                ,Integer.parseInt(result.get(3))
+        ));
+
+    }
+
+    private ArrayList<Product> searchProductByTitle() throws Exception {
+
+        String[] messages = {
+                "Introduce el título del producto"
+        };
+
+        SequentialMenu menu = new SequentialMenu(messages,reader,"\t",errorLog);
+        menu.show();
+
+        ArrayList<String> result = menu.getOutput();
+
+        if(result.get(0).equals(""))
+            throw new Exception("No puede estar vacio...");
+
+        return (ArrayList<Product>) driver.buscarProductoPorTitulo(result.get(0));
+    }
+
+    private Product productView(ArrayList<Product> products, boolean selection) throws Exception {
+
+        final Product[] selected = new Product[1];
+
+        String header = String.format(
+                "\n\t%-5s %-20s %-50s %-8s %-8s"
+                ,"ID"
+                ,"TÍTULO"
+                ,"DESCRIPCIÓN"
+                ,"PRECIO"
+                ,"STOCK"
+        );
+
+        String[] options = {
+                "SIGUIENTE"
+                ,"ANTERIOR"
+                ,"SIGUIENTE PÁGINA"
+                ,"ANTERIOR PÁGINA"
+                ,"SELECCIONAR"
+                ,"SALIR"
+        };
+
+        InlineMenu inlineMenu = new InlineMenu(options,"\t",1);
+
+        // CASTING LIST
+        ArrayList<Object> items = new ArrayList<>(products);
+
+        SelectionMenu selectionMenu = new SelectionMenu(
+                "\t"
+                ,items
+                ,header
+        ) {
+            @Override
+            protected void showItem(Object o, boolean selected) {
+                Product p = (Product) o;
+                String format = String.format(
+                        "%-5d %-20s %-50s %-8.2f %-8d"
+                        ,p.getId()
+                        ,p.getTitle()
+                        ,p.getDescription()
+                        ,p.getPrice()
+                        ,p.getStock()
+                );
+
+                if(selected){
+                    Encapsulate.encapsulateString(format,"\t");
+                } else {
+                    System.out.printf("\n\t%s",format);
+                }
+
+            }
+        };
+
+        OrderParser orderParser = new OrderParser() {
+            @Override
+            protected int callBack(String command) throws Exception {
+                switch (Integer.parseInt(command)){
+                    case 1:
+                        selectionMenu.nextItem();
+                        break;
+                    case 2:
+                        selectionMenu.previousItem();
+                        break;
+                    case 3:
+                        selectionMenu.nextPage();
+                        break;
+                    case 4:
+                        selectionMenu.previousPage();
+                        break;
+                    case 5:
+                        if(!selection){
+                            throw new Exception("NOT ENABLED");
+                        } else {
+                            selected[0] = (Product) selectionMenu.select();
+                            return -1;
+                        }
+                    case 6:
+                        return -1;
+                }
+                return 0;
+            }
+        };
+
+        DefaultInteractiveMenu menu = new SelectionInteractiveMenu(
+                this.errorLog
+                ,inlineMenu
+                ,orderParser
+                ,reader
+                ,"\n\t> "
+                ,selectionMenu
+        ) {
+            @Override
+            protected void outsideLoop() {
+
+            }
+        };
+
+        menu.show();
+
+        return selected[0];
+    }
+
     /*
         ORDER MENU
      */
@@ -425,8 +574,15 @@ public class OrderConsole extends DefaultConsole {
             @Override
             protected int callBack(String command) throws Exception {
                 switch (Integer.parseInt(command)){
-                    case 1: case 2: case 3:
-                        throw new Exception("NOT IMPLEMENTED");
+                    case 1:
+                        registerNewOrder();
+                        break;
+                    case 2:
+                        searchOrderByClient();
+                        break;
+                    case 3:
+                        removeOrder();
+                        break;
                     case 4:
                         return -1;
                 }
@@ -458,6 +614,274 @@ public class OrderConsole extends DefaultConsole {
 
         menu.show();
 
+    }
+
+    private void registerNewOrder() throws Exception {
+        Client selectedClient = clientView((ArrayList<Client>) driver.obtenerTodosLosClientes(),true);
+        HashMap<Product,Integer> products = productCart();
+        assert selectedClient != null;
+        assert products != null;
+        driver.agregarEncargo(selectedClient);
+        int order = driver.obtenerIdUltimoEncargoDeUnCliente(selectedClient);
+        driver.agregarProductosAEncargo(order,products);
+        updateProducts(products);
+    }
+
+    private void removeOrder() throws Exception {
+        Order order = orderView(driver.obtenerTodosLosEncargos(),true);
+        if(driver.eliminarEncargo(order.getId())){
+            throw new Exception("ENCARGO NO ENCONTRADO");
+        }
+    }
+
+    private void searchOrderByClient() throws Exception {
+        Client selected = clientView((ArrayList<Client>) driver.obtenerTodosLosClientes(),true);
+        assert selected != null;
+        orderView(driver.obtenerEncargosDeUnCliente(selected),false);
+    }
+
+    private HashMap<Product,Integer> productCart() throws Exception {
+
+        HashMap<Product,Integer> products = new HashMap<>();
+
+        final ArrayList<HashMap<Product,Integer>> result = new ArrayList<>();
+
+        String[] options = {
+                "AGREGAR PRODUCTO"
+                ,"BORRAR PRODUCTO"
+                ,"SIGUIENTE"
+                ,"EJECUTAR Y SALIR"
+                ,"SALIR SIN GUARDAR"
+        };
+
+        InlineMenu inlineMenu = new InlineMenu(options,"\t",1);
+
+        DefaultMenu productsView = new DefaultMenu(
+                "\t"
+        ) {
+            @Override
+            protected void update() {
+
+                System.out.printf(
+                        "\n" + escapeCharacters + "%-5s %-30s %-10s %-10s"
+                        ,"ID"
+                        ,"TITULO"
+                        ,"PRECIO"
+                        ,"CANTIDAD"
+                );
+
+                for(Map.Entry<Product,Integer> p : products.entrySet()){
+                    Product product = p.getKey();
+                    int quantity = p.getValue();
+                    System.out.printf("\n\t%-5d %-30s %-10.2f %-10d",
+                            product.getId()
+                            ,product.getTitle()
+                            ,product.getPrice()
+                            ,quantity
+                    );
+                    System.out.print("\n\t-------------------------------");
+                }
+
+            }
+        };
+
+        OrderParser parser = new OrderParser() {
+            @Override
+            protected int callBack(String command) throws Exception {
+                switch (Integer.parseInt(command)){
+                    case 1:
+                        Product product = productView((ArrayList<Product>) driver.obtenerTodosLosProductos(),true);
+                        boolean changed = false;
+                        for(Product p : products.keySet()){
+                            if(p.equals(product)){
+                                products.replace(p,products.get(p),(products.get(p) + 1));
+                                changed = true;
+                                break;
+                            }
+                        }
+                        if(!changed){
+                            products.put(product,1);
+                        }
+                        break;
+                    case 2: case 3:
+                        break;
+                    case 4:
+                        if(products.size() > 0 && validateProducts(products)) {
+                            result.add(products);
+                            return -1;
+                        } else {
+                            throw new Exception("CART CANNOT BE EMPTY.");
+                        }
+                    case 5:
+                        return -1;
+                }
+                return 0;
+            }
+        };
+
+        DefaultInteractiveMenu menu = new DefaultInteractiveMenu(
+                errorLog
+                ,inlineMenu
+                ,parser
+                ,reader
+                ,"\n\t> "
+        ) {
+            @Override
+            protected void outsideLoop() {
+
+            }
+
+            @Override
+            protected void loopBlock() {
+
+                System.out.printf("\n\t%s",Encapsulate.inlineEncapsulate("CARRITO",35,2));
+
+                if(products.size() > 0){
+                    productsView.show();
+                }
+
+                optionMenu.show();
+
+            }
+        };
+
+        menu.show();
+
+        return result.get(0);
+    }
+
+    private boolean validateProduct(Product p,int quantity) throws Exception {
+        return driver.obtenerProductoPorId(p.getId()).getStock() >= quantity;
+    }
+
+    private boolean validateProducts(HashMap<Product,Integer> p) throws Exception {
+        int count = 0;
+        for(Map.Entry<Product,Integer> product : p.entrySet()){
+            if(validateProduct(product.getKey(),product.getValue())) {
+                count++;
+            } else {
+                throw new Exception("PRODUCT: "
+                        + product.getKey().getId()
+                        + " " + product.getKey().getTitle()
+                        + " NO ES VÁLIDO..."
+                );
+            }
+        }
+        return count == p.size();
+    }
+
+    private void updateProducts(HashMap<Product,Integer> p) throws Exception {
+        for(Map.Entry<Product,Integer> product : p.entrySet()){
+            driver.updateProduct(product.getKey(),product.getValue());
+        }
+    }
+
+    private Order orderView(ArrayList<Order> orders, boolean selection) throws Exception {
+
+        final Order[] selected = new Order[1];
+
+        String header = String.format(
+                "\n\t%-5s %-45s %-25s %-10s %-10s"
+                ,"ID"
+                ,"CLIENTE"
+                ,"FECHA"
+                ,"PRODUCTOS"
+                ,"TOTAL"
+        );
+
+        String[] options = {
+                "SIGUIENTE"
+                ,"ANTERIOR"
+                ,"SIGUIENTE PÁGINA"
+                ,"ANTERIOR PÁGINA"
+                ,"SELECCIONAR"
+                ,"SALIR"
+        };
+
+        InlineMenu inlineMenu = new InlineMenu(options,"\t",1);
+
+        // CASTING LIST
+        ArrayList<Object> items = new ArrayList<>(orders);
+
+        SelectionMenu selectionMenu = new SelectionMenu(
+                "\t"
+                ,items
+                ,header
+        ) {
+            @Override
+            protected void showItem(Object o, boolean selected) {
+                Order order = (Order) o;
+                float total = 0f;
+                for(Map.Entry<Product,Integer> p : order.getProducts().entrySet()){
+                    total += p.getKey().getPrice() * p.getValue();
+                }
+                String format = String.format(
+                        "%-5d %-45s %-25s %-10d %-10.2f"
+                        ,order.getId()
+                        ,order.getClient().getFirstName()
+                                + " " + order.getClient().getFirstLastname()
+                                + " " + order.getClient().getMailAddress()
+                        ,order.getOrderDate().toString()
+                        ,order.getProducts().size()
+                        ,total
+                );
+
+                if(selected){
+                    Encapsulate.encapsulateString(format,"\t");
+                } else {
+                    System.out.printf("\n\t%s",format);
+                }
+
+            }
+        };
+
+        OrderParser orderParser = new OrderParser() {
+            @Override
+            protected int callBack(String command) throws Exception {
+                switch (Integer.parseInt(command)){
+                    case 1:
+                        selectionMenu.nextItem();
+                        break;
+                    case 2:
+                        selectionMenu.previousItem();
+                        break;
+                    case 3:
+                        selectionMenu.nextPage();
+                        break;
+                    case 4:
+                        selectionMenu.previousPage();
+                        break;
+                    case 5:
+                        if(!selection){
+                            throw new Exception("NOT ENABLED");
+                        } else {
+                            selected[0] = (Order) selectionMenu.select();
+                            return -1;
+                        }
+                    case 6:
+                        return -1;
+                }
+                return 0;
+            }
+        };
+
+        DefaultInteractiveMenu menu = new SelectionInteractiveMenu(
+                this.errorLog
+                ,inlineMenu
+                ,orderParser
+                ,reader
+                ,"\n\t> "
+                ,selectionMenu
+        ) {
+            @Override
+            protected void outsideLoop() {
+
+            }
+        };
+
+        menu.show();
+
+        return selected[0];
     }
 
     // TODO COMMANDS
@@ -500,6 +924,9 @@ public class OrderConsole extends DefaultConsole {
                 "\t    |   _________________________|___\n" +
                 "\t    |  /                            /.\n" +
                 "\t    \\_/____________________________/.\n\n");
+    }
+    public void reset(){
+        errorLog.clear();
     }
 
     @Override

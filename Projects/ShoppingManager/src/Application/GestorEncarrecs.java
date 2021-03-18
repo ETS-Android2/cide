@@ -492,7 +492,6 @@ public class GestorEncarrecs {
         boolean exit = false;
 
         HashMap<Product,Integer> products = new HashMap<>();
-        ArrayList<Product> database = (ArrayList<Product>) DATA_SOURCE.obtenerTodosLosProductos();
 
         while(!exit){
 

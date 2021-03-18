@@ -251,6 +251,20 @@ public class DatabaseDriver {
         }
     }
 
+    // TODO Obtener todos los encargos
+    public ArrayList<Order> obtenerTodosLosEncargos() throws Exception {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(Statements.SELECT_ALL_ORDERS.getQuery());
+
+        ArrayList<Order> orders = new ArrayList<>();
+
+        while(rs.next()){
+            orders.add(obtenerEncargo(rs.getInt("id")));
+        }
+
+        return orders;
+    }
+
     // TODO Obtener encargos de un cliente
     public ArrayList<Order> obtenerEncargosDeUnCliente(Client c) throws Exception {
         Statement stmt = conn.createStatement();

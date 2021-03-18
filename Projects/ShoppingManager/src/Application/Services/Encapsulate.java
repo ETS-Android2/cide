@@ -13,6 +13,8 @@ package Application.Services;
     
 */
 
+import Application.Services.Console.Components.Menu.StringGenerator;
+
 /**
  * @author Carlos Pomares
  */
@@ -100,5 +102,16 @@ public class Encapsulate {
             }
         }
 
+    }
+    public static String inlineEncapsulate(String s, int lenght, int spacing){
+        double firstStage = Math.ceil(((double)(lenght - s.length()) / 2)) - Math.ceil((double)spacing / 2);
+        double secondStage = Math.floor(((double)(lenght - s.length()) / 2)) - Math.floor((double)spacing / 2);
+        double firstSpacing = Math.ceil((double)spacing / 2);
+        double secondSpacing = Math.floor((double)spacing / 2);
+        return StringGenerator.generateStringByChar("-",firstStage)
+                + StringGenerator.generateStringByChar(" ",firstSpacing)
+                + s
+                + StringGenerator.generateStringByChar(" ",secondSpacing)
+                + StringGenerator.generateStringByChar("-",secondStage);
     }
 }
