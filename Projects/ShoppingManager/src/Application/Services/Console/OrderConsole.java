@@ -13,9 +13,11 @@ package Application.Services.Console;
     
 */
 
+import Application.Entities.Client;
 import Application.Persistent.DatabaseDriver;
 import Application.Services.Console.Components.Command.OrderParser;
 import Application.Services.Console.Components.Menu.DefaultInteractiveMenu;
+import Application.Services.Console.Components.Menu.InlineMenu;
 import Application.Services.Console.Components.Menu.OptionMenu;
 import Application.Services.Console.Components.Menu.SequentialMenu;
 
@@ -122,7 +124,10 @@ public class OrderConsole extends DefaultConsole {
                     case 1:
                         registerNewClient();
                         break;
-                    case 2: case 3:
+                    case 2:
+                        test();
+                        break;
+                    case 3:
                         throw new Exception("NOT IMPLEMENTED");
                     case 4:
                         return -1;
@@ -190,6 +195,74 @@ public class OrderConsole extends DefaultConsole {
         result.add(i,n.replace("-",""));
 
         // TODO Add driver update.
+        driver.agregarCliente(new Client(
+                driver.obtenerNuevoIDCliente(),
+                result.get(0),
+                result.get(1),
+                result.get(2),
+                result.get(3),
+                result.get(4),
+                result.get(5),
+                result.get(6)
+        ));
+
+    }
+
+    // TODO EXAMPLE INLINE MENU
+    private void test(){
+
+        String[] options = {
+                "Agregar cliente",
+                "Visualizar clientes",
+                "Buscar cliente por nombre",
+                "Volver al menu principal",
+                "Volver al menu principal",
+                "Volver al menu principal",
+                "Volver al menu principal"
+        };
+
+        InlineMenu optionMenu = new InlineMenu(options,"\t",1);
+
+        OrderParser parser = new OrderParser() {
+            @Override
+            protected int callBack(String command) throws Exception {
+                switch (Integer.parseInt(command)){
+                    case 1:
+                        registerNewClient();
+                        break;
+                    case 2:
+                        test();
+                        break;
+                    case 3:
+                        throw new Exception("NOT IMPLEMENTED");
+                    case 4:
+                        return -1;
+                }
+                return 0;
+            }
+        };
+
+        DefaultInteractiveMenu menu = new DefaultInteractiveMenu(
+                this.errorLog
+                ,optionMenu
+                ,parser
+                ,this.reader
+                ,"\n\t> "
+        ) {
+            @Override
+            protected void outsideLoop() {
+
+            }
+
+            @Override
+            protected void loopBlock() {
+
+                optionMenu.show();
+
+            }
+        };
+
+        menu.show();
 
     }
 

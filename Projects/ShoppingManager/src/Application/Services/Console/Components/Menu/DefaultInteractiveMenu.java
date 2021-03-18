@@ -26,13 +26,13 @@ import java.util.ArrayList;
 public abstract class DefaultInteractiveMenu implements Menu {
 
     protected ErrorLog errorLog;
-    protected OptionMenu optionMenu;
+    protected DefaultMenu optionMenu;
     protected CommandParser parser;
     protected BufferedReader reader;
     protected String shell;
     protected boolean exit = false;
 
-    public DefaultInteractiveMenu(ErrorLog e, OptionMenu o, CommandParser p, BufferedReader r,String s) {
+    public DefaultInteractiveMenu(ErrorLog e, DefaultMenu o, CommandParser p, BufferedReader r,String s) {
         this.errorLog = e;
         this.optionMenu = o;
         this.parser = p;
