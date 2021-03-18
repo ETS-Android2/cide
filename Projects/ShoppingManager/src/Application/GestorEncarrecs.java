@@ -107,20 +107,11 @@ public class GestorEncarrecs {
     }
 
     private ArrayList<String> menuSecuencial(String[] sequence){
-
-        ALERTS.clear();
-
+        
         int step = 0;
         ArrayList<String> out = new ArrayList<>();
 
         while(out.size() < sequence.length){
-
-            // ALERTS
-            if(ALERTS.size() > 0){
-                showMenuStyled("ALERTS", (ArrayList<String>) ALERTS,"\n\t");
-                if(ALERTS.size() >= 5)
-                    ALERTS.clear();
-            }
 
             try {
                 out.add(ask(sequence[step],"\t"));
@@ -747,6 +738,8 @@ public class GestorEncarrecs {
             showMenuStyled("DEBUG",debugOptions,"\n\t");
         }
     }
+
+    // TODO Ask con validation
     private String ask(String message, String escape) throws Exception {
         System.out.println(escape + message);
         System.out.print(escape + "--> ");
