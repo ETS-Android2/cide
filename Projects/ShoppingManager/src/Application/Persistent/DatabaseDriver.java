@@ -35,8 +35,12 @@ public class DatabaseDriver {
 
     private Connection conn;
 
-    public DatabaseDriver() throws SQLException {
+    public void stablishConnection() throws SQLException {
         this.conn = Connections.createConnection();
+    }
+
+    public void configureNewConnection(String url, String username, String password) throws SQLException {
+        this.conn = Connections.createConnection(url,username,password);
     }
 
     /*
@@ -144,6 +148,7 @@ public class DatabaseDriver {
                     ,rs.getString("title")
                     ,rs.getString("description")
                     ,rs.getFloat("price")
+                    ,rs.getInt("stock")
             ));
         }
         return products;
@@ -159,7 +164,8 @@ public class DatabaseDriver {
                     rs.getInt("id"),
                     rs.getString("title"),
                     rs.getString("description"),
-                    rs.getFloat("price")
+                    rs.getFloat("price"),
+                    rs.getInt("stock")
             ));
         }
         return products;
@@ -176,6 +182,7 @@ public class DatabaseDriver {
                     ,rs.getString("title")
                     ,rs.getString("description")
                     ,rs.getFloat("price")
+                    ,rs.getInt("stock")
             );
         }
         return null;
@@ -188,6 +195,16 @@ public class DatabaseDriver {
                 p.getTitle()
                 ,p.getDescription()
                 ,nf.format(p.getPrice()).replace(",",".")
+                ,p.getStock()
+        ));
+    }
+
+    public boolean updateProduct(Product p,int update) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.execute(String.format(
+                Statements.UPDATE_PRODUCT_DECREMENT_STOCK_BY_NUMBER.getQuery()
+                ,update
+                ,p.getId()
         ));
     }
 

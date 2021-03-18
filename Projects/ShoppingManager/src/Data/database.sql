@@ -22,6 +22,7 @@ CREATE TABLE product (
     title           VARCHAR(255) NOT NULL,
     description     VARCHAR(255) NULL,
     price           FLOAT NOT NULL,
+    stock           INT DEFAULT 1,
     PRIMARY KEY (id)
 );
 

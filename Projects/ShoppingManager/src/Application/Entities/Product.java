@@ -27,18 +27,21 @@ public class Product {
     private String title;
     private String description;
     private float price;
+    private int stock;
 
-    public Product(String t, String d, float p) {
+    public Product(String t, String d, float p, int stock) {
         this.title = t;
         this.description = d;
         this.price = p;
+        this.stock = stock;
     }
 
-    public Product(int i, String t, String d, float p) {
+    public Product(int i, String t, String d, float p, int stock) {
         this.id = i;
         this.title = t;
         this.description = d;
         this.price = p;
+        this.stock = stock;
     }
 
     public int getId() {
@@ -52,6 +55,9 @@ public class Product {
     }
     public float getPrice() {
         return price;
+    }
+    public int getStock() {
+        return stock;
     }
 
     @Override

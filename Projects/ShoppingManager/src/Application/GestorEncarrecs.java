@@ -35,20 +35,26 @@ public class GestorEncarrecs {
 
     final private List<String> ALERTS;
     final private int MAX_ERRORS = 5;
-    final private DatabaseDriver DATA_SOURCE;
+    private DatabaseDriver DATA_SOURCE;
     final private BufferedReader USER_INPUT;
 
     private boolean debug = false;
     private String[] debugOptions = new String[]{"Debug 1", "Debug 2"};
 
-    public GestorEncarrecs() throws Exception {
-        // Si MySQL no esta activo, peta, solución, hacer una comprobación de servidor antes de instanciar.
-        DATA_SOURCE = new DatabaseDriver();
+    public GestorEncarrecs() {
         USER_INPUT = new BufferedReader(new InputStreamReader(System.in));
         ALERTS = new ArrayList<>();
+        DATA_SOURCE = new DatabaseDriver();
     }
 
     public void start() throws Exception {
+        System.out.printf("\t%s\n","Utiliza el comando 'help', para mostrar la ayuda de comandos.");
+        try {
+            DATA_SOURCE.stablishConnection();
+        } catch (SQLException e){
+            System.out.printf("\n\t%s\n","Establece la conexión con la base de datos");
+            configureNewConnection();
+        }
         menuPrincipal();
         DATA_SOURCE.close();
     }
@@ -77,11 +83,19 @@ public class GestorEncarrecs {
                 boolean command = false;
                 String order = USER_INPUT.readLine();
 
-                switch (parseCommand(order.toLowerCase())){
-                    case 1 -> menuCliente();
-                    case 2 -> menuProducto();
-                    case 3 -> menuEncargo();
-                    case 4 -> exit = true;
+                switch (parseCommand(order.toLowerCase())) {
+                    case 1:
+                        menuCliente();
+                        break;
+                    case 2:
+                        menuProducto();
+                        break;
+                    case 3:
+                        menuEncargo();
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
                 }
 
             } catch (Exception e){
@@ -93,18 +107,11 @@ public class GestorEncarrecs {
     }
 
     private ArrayList<String> menuSecuencial(String[] sequence){
-
+        
         int step = 0;
         ArrayList<String> out = new ArrayList<>();
 
         while(out.size() < sequence.length){
-
-            // ALERTS
-            if(ALERTS.size() > 0){
-                showMenuStyled("ALERTS", (ArrayList<String>) ALERTS,"\n\t");
-                if(ALERTS.size() >= 5)
-                    ALERTS.clear();
-            }
 
             try {
                 out.add(ask(sequence[step],"\t"));
@@ -143,11 +150,20 @@ public class GestorEncarrecs {
                 String order = USER_INPUT.readLine();
 
                 switch (parseCommand(order.toLowerCase())){
-                    case 1 -> registerNewClient();
-                    case 2 -> showAllClients((ArrayList<Client>) this.DATA_SOURCE.obtenerTodosLosClientes());
-                    case 3 -> showAllClients(searchClientByName());
-                    case 4 -> exit = true;
+                    case 1:
+                        registerNewClient();
+                        break;
+                    case 2:
+                        showAllClients((ArrayList<Client>) this.DATA_SOURCE.obtenerTodosLosClientes());
+                        break;
+                    case 3:
+                        showAllClients(searchClientByName());
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
                 }
+
 
             } catch (Exception e){
                 ALERTS.add(e.getMessage());
@@ -274,17 +290,18 @@ public class GestorEncarrecs {
                 System.out.print("\n\n\t> ");
 
                 switch (parseCommand(USER_INPUT.readLine())){
-                    case 1 -> {
+                    case 1:
                         if(selected == (clients.size() - 1)){
                             selected = 0;
                         } else {
                             selected++;
                         }
-                    }
-                    case 2 -> {
+                        break;
+                    case 2:
                         return clients.get(selected);
-                    }
-                    case 3 -> exit = true;
+                    case 3:
+                        exit = true;
+                        break;
                 }
 
             } catch (Exception e){
@@ -320,10 +337,18 @@ public class GestorEncarrecs {
                 String order = USER_INPUT.readLine();
 
                 switch (parseCommand(order.toLowerCase())){
-                    case 1 -> registerNewProduct();
-                    case 2 -> showAllProducts(searchProductByTitle());
-                    case 3 -> showAllProducts((ArrayList<Product>) DATA_SOURCE.obtenerTodosLosProductos());
-                    case 4 -> exit = true;
+                    case 1:
+                        registerNewProduct();
+                        break;
+                    case 2:
+                        showAllProducts(searchProductByTitle());
+                        break;
+                    case 3:
+                        showAllProducts((ArrayList<Product>) DATA_SOURCE.obtenerTodosLosProductos());
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
                 }
 
             } catch (Exception e){
@@ -339,7 +364,8 @@ public class GestorEncarrecs {
         String[] messages = {
                 "Introduce el título ",
                 "Introduce la descripción ",
-                "Introduce el precio: "
+                "Introduce el precio ",
+                "Introduce el stock "
         };
 
         ArrayList<String> result = menuSecuencial(messages);
@@ -347,7 +373,8 @@ public class GestorEncarrecs {
         DATA_SOURCE.agregarProducto(new Product(
                 result.get(0),
                 result.get(1),
-                Float.parseFloat(result.get(2))
+                Float.parseFloat(result.get(2)),
+                Integer.parseInt(result.get(3))
         ));
 
     }
@@ -368,18 +395,20 @@ public class GestorEncarrecs {
 
     private void showAllProducts(ArrayList<Product> products){
         if(products.size() != 0){
-            System.out.printf("\n\n\t%-5s %-20s %-50s %-8s"
+            System.out.printf("\n\n\t%-5s %-20s %-50s %-8s %-8s"
                     ,"ID"
                     ,"TÍTULO"
                     ,"DESCRIPCIÓN"
                     ,"PRECIO"
+                    ,"STOCK"
             );
             for(Product product : products){
-                System.out.printf("\n\t%-5d %-20s %-50s %-8.2f"
+                System.out.printf("\n\t%-5d %-20s %-50s %-8.2f %-8d"
                         ,product.getId()
                         ,product.getTitle()
                         ,product.getDescription()
                         ,product.getPrice()
+                        ,product.getStock()
                 );
                 System.out.print("\n\t---------------------------------------------");
             }
@@ -401,19 +430,21 @@ public class GestorEncarrecs {
 
             try {
 
-                System.out.printf("\n\n\t%-5s %-30s %-10s"
+                System.out.printf("\n\n\t%-5s %-30s %-10s %-8s"
                         ,"ID"
                         ,"TITULO"
                         ,"PRECIO"
+                        ,"STOCK"
                 );
 
                 for (int i = 0; i < products.size(); i++) {
                     Product p = products.get(i);
 
-                    String format = String.format("%-5d %-30s %-10.2f"
+                    String format = String.format("%-5d %-30s %-10.2f %-8d"
                             ,p.getId()
                             ,p.getTitle()
                             ,p.getPrice()
+                            ,p.getStock()
                     );
 
                     if(i == selected){
@@ -433,17 +464,18 @@ public class GestorEncarrecs {
                 System.out.print("\n\n\t> ");
 
                 switch (parseCommand(USER_INPUT.readLine())){
-                    case 1 -> {
+                    case 1:
                         if(selected == (products.size() - 1)){
                             selected = 0;
                         } else {
                             selected++;
                         }
-                    }
-                    case 2 -> {
+                        break;
+                    case 2:
                         return products.get(selected);
-                    }
-                    case 3 -> exit = true;
+                    case 3:
+                        exit = true;
+                        break;
                 }
 
             } catch (Exception e){
@@ -466,7 +498,6 @@ public class GestorEncarrecs {
 
             showInternalMenus();
 
-            // TODO Carrito heading text to high
             System.out.println("\n\t---------------- CARRITO ----------");
 
             try {
@@ -505,7 +536,7 @@ public class GestorEncarrecs {
                 System.out.print("\n\t> ");
 
                 switch (parseCommand(USER_INPUT.readLine())){
-                    case 1 -> {
+                    case 1:
                         Product product = selectProduct();
                         boolean changed = false;
                         for(Product p : products.keySet()){
@@ -518,20 +549,19 @@ public class GestorEncarrecs {
                         if(!changed){
                             products.put(product,1);
                         }
-                    }
-                    case 2,3 -> {
+                        break;
+                    case 2: case 3:
                         throw new Exception("NOT IMPLEMENTED");
-                    }
-                    case 4 -> {
-                        if(products.size() > 0) {
+                    case 4:
+                        if(products.size() > 0 && validateProducts(products)) {
+                            updateProducts(products);
                             return products;
                         } else {
                             throw new Exception("CART CANNOT BE EMPTY.");
                         }
-                    }
-                    case 5 -> {
+                    case 5:
                         exit = true;
-                    }
+                        break;
                 }
 
             } catch (Exception e){
@@ -541,6 +571,32 @@ public class GestorEncarrecs {
         }
 
         return null;
+    }
+
+    private boolean validateProduct(Product p,int quantity) throws Exception {
+        return DATA_SOURCE.obtenerProductoPorId(p.getId()).getStock() >= quantity;
+    }
+
+    private boolean validateProducts(HashMap<Product,Integer> p) throws Exception {
+        int count = 0;
+        for(Map.Entry<Product,Integer> product : p.entrySet()){
+            if(validateProduct(product.getKey(),product.getValue())) {
+                count++;
+            } else {
+                throw new Exception("PRODUCT: "
+                        + product.getKey().getId()
+                        + " " + product.getKey().getTitle()
+                        + " NO ES VÁLIDO..."
+                );
+            }
+        }
+        return count == p.size();
+    }
+
+    private void updateProducts(HashMap<Product,Integer> p) throws Exception {
+        for(Map.Entry<Product,Integer> product : p.entrySet()){
+            DATA_SOURCE.updateProduct(product.getKey(),product.getValue());
+        }
     }
 
     // TODO Menu Encargo
@@ -568,10 +624,18 @@ public class GestorEncarrecs {
                 String order = USER_INPUT.readLine();
 
                 switch (parseCommand(order.toLowerCase())){
-                    case 1 -> makeOrder();
-                    case 2 -> searchOrderByClientId();
-                    case 3 -> deleteOrder();
-                    case 4 -> exit = true;
+                    case 1:
+                        makeOrder();
+                        break;
+                    case 2:
+                        searchOrderByClientId();
+                        break;
+                    case 3:
+                        deleteOrder();
+                        break;
+                    case 4:
+                        exit = true;
+                        break;
                 }
 
             } catch (Exception e){
@@ -585,9 +649,9 @@ public class GestorEncarrecs {
     private void makeOrder() throws Exception {
         Client selectedUser = selectClient();
         HashMap<Product,Integer> products = productCart();
+        assert products != null;
         DATA_SOURCE.agregarEncargo(selectedUser);
         int encargo = DATA_SOURCE.obtenerIdUltimoEncargoDeUnCliente(selectedUser);
-        assert products != null;
         DATA_SOURCE.agregarProductosAEncargo(encargo,products);
     }
 
@@ -596,7 +660,7 @@ public class GestorEncarrecs {
                 "Introduce el id del encargo: "
         };
         ArrayList<String> result = menuSecuencial(messages);
-        if(!DATA_SOURCE.eliminarEncargo(Integer.parseInt(result.get(0)))){
+        if(DATA_SOURCE.eliminarEncargo(Integer.parseInt(result.get(0)))){
             throw new Exception("ENCARGO NO ENCONTRADO");
         }
     }
@@ -674,6 +738,8 @@ public class GestorEncarrecs {
             showMenuStyled("DEBUG",debugOptions,"\n\t");
         }
     }
+
+    // TODO Ask con validation
     private String ask(String message, String escape) throws Exception {
         System.out.println(escape + message);
         System.out.print(escape + "--> ");
@@ -683,23 +749,113 @@ public class GestorEncarrecs {
     // TODO Comandos
     private int parseCommand(String command) throws Exception {
         switch (command){
-            case "debug" -> debug = true;
-            case "author","test","configure","help" -> {
+            case "help":
+                showHelp();
+                break;
+            case "debug":
+                debug = true;
+                break;
+            case "test":
                 throw new Exception("NOT IMPLEMENTED");
-            }
-            case "reset" -> {
+            case "author":
+                author();
+                break;
+            case "configure":
+                configureNewConnection();
+                break;
+            case "reset":
                 ALERTS.clear();
                 debug = false;
-            }
-            default -> {
+                break;
+            default:
                 try {
                     return Integer.parseInt(command);
                 } catch (Exception exception){
                     //
                 }
-            }
+                break;
         }
         return 0;
+    }
+
+    private void configureNewConnection() throws Exception {
+
+        String[] messages = {
+                "Introduce usuario"
+                ,"Introduce la contraseña"
+                ,"Introduce el hostname (ip)"
+                ,"Introduce la base de datos"
+                ,"Introduce el puerto (vacio=3306)"
+        };
+
+        ArrayList<String> result = menuSecuencial(messages);
+
+        if(result.get(result.size() - 1).equals("")){
+            int i = result.size() - 1;
+            result.remove(result.size() - 1);
+            result.add(i,"3306");
+        }
+
+        for(String r : result){
+            if(r.equals("")){
+                throw new Exception("DATO VACIO, ABORTANDO...");
+            }
+        }
+
+        DATA_SOURCE.configureNewConnection(
+                String.format("jdbc:mysql://%s:%s/%s"
+                        ,result.get(2)
+                        ,result.get(4)
+                        ,result.get(3))
+                ,result.get(0)
+                ,result.get(1)
+        );
+
+        Encapsulate.encapsulateString("CONEXIÓN ESTABLECIDA","\n\t","%");
+
+    }
+    private void author(){
+
+        System.out.printf("\n\t========= %s =========\n","Créditos del autor");
+
+        System.out.print("\t   ______________________________\n" +
+                "\t / \\                             \\.\n" +
+                "\t|   |                            |.\n" +
+                "\t \\_ |  Gracias por probar        |.\n" +
+                "\t    |  esta aplicación,          |.\n" +
+                "\t    |  espero que te haya        |.\n" +
+                "\t    |  gustado y te haya         |.\n" +
+                "\t    |  servido de inspiración,   |.\n" +
+                "\t    |  lo he hecho con cariño    |.\n" +
+                "\t    |  y he intentado aplicar    |.\n" +
+                "\t    |  nuevos conocimientos      |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  Gracias, Carlos Pomares   |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  github.com/pomaretta      |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  https://carlospomares.es  |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |   _________________________|___\n" +
+                "\t    |  /                            /.\n" +
+                "\t    \\_/____________________________/.\n\n");
+
+    }
+    private void showHelp(){
+
+        String[] comandos = {
+                "CONFIGURE -- Te permite configurar una nueva conexión de base de datos."
+                ,"DEBUG -- Activa las opciones de debug."
+                ,"RESET -- Reinicia las alertas y el menu de debug a valores por defecto."
+                ,"AUTHOR -- Te muestra un mensaje hecho por el autor del programa."
+                ,"TEST -- Permite hacer un test de integración con diferentes partes del programa."
+                ,"HELP -- Te muestra una ayuda sobre comandos."
+        };
+
+        System.out.printf("\n\t====== %s ======","COMANDOS");
+
+        showOptions(comandos, "\n\t");
+
     }
 
     public static void main(String[] args) throws Exception {
