@@ -1,9 +1,9 @@
-package Application.Services.Console;
+package Application.Services.Console.Components.Command;
 
 /*
 
     Project     Programming21
-    Package     Application.Services.Console    
+    Package     Application.Services.Console.Components.Command    
     
     Version     1.0      
     Author      Carlos Pomares
@@ -17,6 +17,5 @@ package Application.Services.Console;
  * @author Carlos Pomares
  */
 
-public interface Console {
-    public void start();
+public abstract class DefaultCommand implements Command {
 }
