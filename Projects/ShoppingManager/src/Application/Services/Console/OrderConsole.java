@@ -747,7 +747,6 @@ public class OrderConsole extends DefaultConsole {
         String[] options = {
                 "AGREGAR PRODUCTO"
                 ,"BORRAR PRODUCTO"
-                ,"SIGUIENTE"
                 ,"EJECUTAR Y SALIR"
                 ,"SALIR SIN GUARDAR"
         };
@@ -801,16 +800,28 @@ public class OrderConsole extends DefaultConsole {
                             products.put(product,1);
                         }
                         break;
-                    case 2: case 3:
+                    case 2:
+
+                        ArrayList<Product> currentProducts = new ArrayList<>(products.keySet());
+
+                        Product product1 = productView(currentProducts,true);
+
+                        for(Product p : products.keySet()){
+                            if(p.equals(product1)){
+                                products.remove(p);
+                                break;
+                            }
+                        }
+
                         break;
-                    case 4:
+                    case 3:
                         if(products.size() > 0 && validateProducts(products)) {
                             result.add(products);
                             return -1;
                         } else {
                             throw new Exception("CART CANNOT BE EMPTY.");
                         }
-                    case 5:
+                    case 4:
                         return -1;
                 }
                 return 0;
