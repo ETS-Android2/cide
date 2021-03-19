@@ -912,6 +912,13 @@ public class OrderConsole extends DefaultConsole {
         }
     }
 
+    /**
+     *
+     * Permite devolver el stock a los productos contenidos en la lista con sus cantidades
+     *
+     * @param p la lista de productos a devolver.
+     * @throws Exception si ocurre algún error.
+     */
     private void updateProductsIncrement(HashMap<Product,Integer> p) throws Exception {
         for(Map.Entry<Product,Integer> product : p.entrySet()){
             driver.updateProductStockIncrement(product.getKey(),product.getValue());

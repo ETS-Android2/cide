@@ -315,6 +315,15 @@ public class DatabaseDriver {
         ));
     }
 
+    /**
+     *
+     * Permite incrementar una cierta cantidad al stock del producto.
+     *
+     * @param p el producto a actualizar.
+     * @param update la cantidad a devolver.
+     * @return si la operacion es satisfactoria.
+     * @throws SQLException si ocurre algún error a la hora de ejecutar la operación.
+     */
     public boolean updateProductStockIncrement(Product p, int update) throws SQLException {
         Statement stmt = conn.createStatement();
         return stmt.execute(String.format(
