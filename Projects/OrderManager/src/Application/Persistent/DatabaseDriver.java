@@ -315,6 +315,15 @@ public class DatabaseDriver {
         ));
     }
 
+    public boolean updateProductStockIncrement(Product p, int update) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.execute(String.format(
+                Statements.UPDATE_PRODUCT_INCREMENT_STOCK_BY_NUMBER.getQuery()
+                ,update
+                ,p.getId()
+        ));
+    }
+
     /*
      *
      * ENCARGOS

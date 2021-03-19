@@ -105,6 +105,7 @@ public abstract class SelectionMenu extends DefaultMenu {
         if(this.currentMinSelection - MAX_ITEM_IN_PAGE < 0)
             throw new Exception("MIN PAGE");
         this.currentMinSelection -= MAX_ITEM_IN_PAGE;
+        this.selectionIndex = currentMinSelection;
         this.pageIndex--;
     }
 
@@ -112,6 +113,7 @@ public abstract class SelectionMenu extends DefaultMenu {
         if(this.currentMinSelection + MAX_ITEM_IN_PAGE > items.size() - 1)
             throw new Exception("MAX PAGE");
         this.currentMinSelection += MAX_ITEM_IN_PAGE;
+        this.selectionIndex = currentMinSelection;
         this.pageIndex++;
     }
 

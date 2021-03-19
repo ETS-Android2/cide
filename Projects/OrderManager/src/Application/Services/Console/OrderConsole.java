@@ -704,7 +704,7 @@ public class OrderConsole extends DefaultConsole {
         driver.agregarEncargo(selectedClient);
         int order = driver.obtenerIdUltimoEncargoDeUnCliente(selectedClient);
         driver.agregarProductosAEncargo(order,products);
-        updateProducts(products);
+        updateProductsDecrement(products);
     }
 
     /**
@@ -716,6 +716,7 @@ public class OrderConsole extends DefaultConsole {
     private void removeOrder() throws Exception {
         Order order = orderView(driver.obtenerTodosLosEncargos(),true);
         assert order != null;
+        updateProductsIncrement(order.getProducts());
         driver.eliminarEncargo(order.getId());
     }
 
@@ -905,9 +906,15 @@ public class OrderConsole extends DefaultConsole {
      * @param p el listado a actualizar.
      * @throws Exception si ocurre alguna excepción con la base de datos.
      */
-    private void updateProducts(HashMap<Product,Integer> p) throws Exception {
+    private void updateProductsDecrement(HashMap<Product,Integer> p) throws Exception {
         for(Map.Entry<Product,Integer> product : p.entrySet()){
             driver.updateProductStockDecrement(product.getKey(),product.getValue());
+        }
+    }
+
+    private void updateProductsIncrement(HashMap<Product,Integer> p) throws Exception {
+        for(Map.Entry<Product,Integer> product : p.entrySet()){
+            driver.updateProductStockIncrement(product.getKey(),product.getValue());
         }
     }
 

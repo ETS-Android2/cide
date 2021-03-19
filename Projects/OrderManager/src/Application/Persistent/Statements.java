@@ -48,6 +48,7 @@ public enum Statements {
     GET_PRODUCT_BY_TITLE("SELECT * FROM product WHERE UPPER(title) LIKE '%s'"),
     GET_PRODUCT_BY_ID("SELECT * FROM product WHERE id = %d"),
     UPDATE_PRODUCT_DECREMENT_STOCK_BY_NUMBER("UPDATE product SET stock = stock - %d WHERE id = %d"),
+    UPDATE_PRODUCT_INCREMENT_STOCK_BY_NUMBER("UPDATE product SET stock = stock + %d WHERE id = %d"),
 
     GET_ORDER_BY_ID("SELECT * FROM client_order WHERE id = %d"),
     GET_ALL_PRODUCT_ID_AND_QUANTITY_IN_ORDER("SELECT * FROM order_product WHERE order_id = %d"),
