@@ -19,16 +19,16 @@ import Application.Services.Console.OrderConsole;
  * @author Carlos Pomares
  */
 
-public class GestorEncarrectsEnhanced {
+public class OrderManager {
 
-    private OrderConsole orderConsole = new OrderConsole();
+    private final OrderConsole orderConsole = new OrderConsole();
 
     public void run(){
         this.orderConsole.start();
     }
 
     public static void main(String[] args) {
-        GestorEncarrectsEnhanced gs = new GestorEncarrectsEnhanced();
+        OrderManager gs = new OrderManager();
         gs.run();
     }
 

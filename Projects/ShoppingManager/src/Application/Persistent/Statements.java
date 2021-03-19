@@ -19,6 +19,14 @@ package Application.Persistent;
 
 public enum Statements {
 
+    /**
+     *
+     * En esta enumeración se establecen todas las diferentes consultas,
+     * que se utilizarán en su version actual del programa, con objetivo
+     * de establecer una consulta dinámica el uso de String.format es crucial.
+     *
+     */
+
     // GENERAL
     SELECT_ALL_CLIENTS("SELECT * FROM client"),
     SELECT_ALL_PRODUCTS("SELECT * FROM product"),

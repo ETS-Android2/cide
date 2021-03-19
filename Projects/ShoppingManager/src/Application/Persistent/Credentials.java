@@ -19,11 +19,22 @@ package Application.Persistent;
 
 public enum Credentials {
 
-    USERNAME("dam"),
-    PASSWORD("Cide2050"),
-    DATABASE("order_manager"),
-    HOST("localhost"),
-    PORT("3306");
+    /**
+     *
+     * Enumeración de las diferentes credenciales utilizadas
+     * para la conexión con el sistem de BBDD.
+     *
+     * Establecer aquí las credenciales permite hacer una conexión
+     * directa con la base de datos y no tener que configurarla dentro
+     * del programa.
+     *
+     */
+
+    USERNAME("USERNAME"),
+    PASSWORD("PASSWORD"),
+    DATABASE("DATABASE"),
+    HOST("HOST"),
+    PORT("PORT");
 
     private final String data;
 

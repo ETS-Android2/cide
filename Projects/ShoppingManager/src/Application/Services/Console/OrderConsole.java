@@ -19,12 +19,11 @@ import Application.Entities.Product;
 import Application.Persistent.DatabaseDriver;
 import Application.Services.Console.Components.Command.OrderParser;
 import Application.Services.Console.Components.Menu.*;
-import Application.Services.Encapsulate;
+import Application.Services.Console.Components.Menu.Encapsulate;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -43,6 +42,12 @@ public class OrderConsole extends DefaultConsole {
         try {
             driver.stablishConnection();
         } catch (Exception e){
+            System.out.printf("\n\t%s\n","Establece la conexión con la base de datos");
+            try {
+                configure();
+            } catch (Exception e2){
+                errorLog.add(e2.getMessage());
+            }
             errorLog.add(e.getMessage());
         }
 
@@ -93,7 +98,8 @@ public class OrderConsole extends DefaultConsole {
 
             @Override
             protected void outsideLoop() {
-
+                System.out.printf("\n\t%s\n"
+                        ,"Utiliza el comando 'help', para mostrar la ayuda de comandos.");
             }
 
             @Override
@@ -629,9 +635,8 @@ public class OrderConsole extends DefaultConsole {
 
     private void removeOrder() throws Exception {
         Order order = orderView(driver.obtenerTodosLosEncargos(),true);
-        if(driver.eliminarEncargo(order.getId())){
-            throw new Exception("ENCARGO NO ENCONTRADO");
-        }
+        assert order != null;
+        driver.eliminarEncargo(order.getId());
     }
 
     private void searchOrderByClient() throws Exception {
@@ -772,7 +777,7 @@ public class OrderConsole extends DefaultConsole {
 
     private void updateProducts(HashMap<Product,Integer> p) throws Exception {
         for(Map.Entry<Product,Integer> product : p.entrySet()){
-            driver.updateProduct(product.getKey(),product.getValue());
+            driver.updateProductStockDecrement(product.getKey(),product.getValue());
         }
     }
 
@@ -884,7 +889,10 @@ public class OrderConsole extends DefaultConsole {
         return selected[0];
     }
 
-    // TODO COMMANDS
+    /*
+        COMANDOS
+     */
+
     public void help(){
 
         String[] comandos = {
@@ -928,10 +936,55 @@ public class OrderConsole extends DefaultConsole {
     public void reset(){
         errorLog.clear();
     }
+    public void configure() throws Exception {
+
+        String[] messages = {
+                "Introduce usuario"
+                ,"Introduce la contraseña"
+                ,"Introduce el hostname (ip)"
+                ,"Introduce la base de datos"
+                ,"Introduce el puerto (vacio=3306)"
+        };
+
+        SequentialMenu menu = new SequentialMenu(messages,reader,"\t",errorLog);
+        menu.show();
+
+        ArrayList<String> result = menu.getOutput();
+
+        if(result.get(result.size() - 1).equals("")){
+            int i = result.size() - 1;
+            result.remove(result.size() - 1);
+            result.add(i,"3306");
+        }
+
+        for(String r : result){
+            if(r.equals("")){
+                throw new Exception("DATO VACIO, ABORTANDO...");
+            }
+        }
+
+        driver.configureNewConnection(
+                String.format("jdbc:mysql://%s:%s/%s"
+                        ,result.get(2)
+                        ,result.get(4)
+                        ,result.get(3))
+                ,result.get(0)
+                ,result.get(1)
+        );
+
+        Encapsulate.encapsulateString("CONEXIÓN ESTABLECIDA","\n\t","%");
+
+    }
 
     @Override
     protected void main() {
         init();
+        try {
+            driver.close();
+        } catch (SQLException e){
+            //
+        }
+
     }
 
 }

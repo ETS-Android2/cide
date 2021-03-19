@@ -17,7 +17,7 @@ import Application.Entities.Client;
 import Application.Entities.Order;
 import Application.Entities.Product;
 import Application.Persistent.DatabaseDriver;
-import Application.Services.Encapsulate;
+import Application.Services.Console.Components.Menu.Encapsulate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -31,7 +31,7 @@ import java.util.Map;
  * @author Carlos Pomares
  */
 
-public class GestorEncarrecs {
+public class GestorEncarrecsOLD {
 
     final private List<String> ALERTS;
     final private int MAX_ERRORS = 5;
@@ -41,7 +41,7 @@ public class GestorEncarrecs {
     private boolean debug = false;
     private String[] debugOptions = new String[]{"Debug 1", "Debug 2"};
 
-    public GestorEncarrecs() {
+    public GestorEncarrecsOLD() {
         USER_INPUT = new BufferedReader(new InputStreamReader(System.in));
         ALERTS = new ArrayList<>();
         DATA_SOURCE = new DatabaseDriver();
@@ -594,7 +594,7 @@ public class GestorEncarrecs {
 
     private void updateProducts(HashMap<Product,Integer> p) throws Exception {
         for(Map.Entry<Product,Integer> product : p.entrySet()){
-            DATA_SOURCE.updateProduct(product.getKey(),product.getValue());
+            DATA_SOURCE.updateProductStockDecrement(product.getKey(),product.getValue());
         }
     }
 
@@ -858,7 +858,7 @@ public class GestorEncarrecs {
     }
 
     public static void main(String[] args) throws Exception {
-        GestorEncarrecs ge = new GestorEncarrecs();
+        GestorEncarrecsOLD ge = new GestorEncarrecsOLD();
         ge.start();
     }
 

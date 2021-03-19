@@ -32,9 +32,14 @@ public abstract class OrderParser extends CommandParser {
             case "author":
                 console.author();
                 break;
+            case "configure":
+                console.configure();
+                break;
+            case "reset":
+                console.reset();
+                break;
             case "debug": case "test":
-                    case "configure": case "reset":
-                        throw new Exception("NOT IMPLEMENTED");
+                throw new Exception("NOT IMPLEMENTED");
             default:
                 return callBack(command.toLowerCase());
         }

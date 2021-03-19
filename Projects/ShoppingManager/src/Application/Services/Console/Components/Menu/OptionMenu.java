@@ -68,20 +68,7 @@ public class OptionMenu extends OptionsMenu {
     }
 
     private String generateTitle(){
-        // TITLE 6 CHARS
-        // MAX LENGHT 35 CHARS
-        // SPACING CHARS 2
-        // FIRST STEP 15 - 1 = 14 CEIL((MAX - TITLE) / 2) - (SPACING / 2)
-        // SECOND STEP 14 - 1 = 13 FLOOR((MAX - TITLE) / 2) - (SPACING / 2)
-        double firstStage = Math.ceil(((double)(TITLE_LENGHT - this.title.length()) / 2)) - Math.ceil((double)SPACING / 2);
-        double secondStage = Math.floor(((double)(TITLE_LENGHT - this.title.length()) / 2)) - Math.floor((double)SPACING / 2);
-        double firstSpacing = Math.ceil((double)SPACING / 2);
-        double secondSpacing = Math.floor((double)SPACING / 2);
-        return StringGenerator.generateStringByChar("-",firstStage)
-                + StringGenerator.generateStringByChar(" ",firstSpacing)
-                + this.title
-                + StringGenerator.generateStringByChar(" ",secondSpacing)
-                + StringGenerator.generateStringByChar("-",secondStage);
+        return Encapsulate.inlineEncapsulate(this.title,TITLE_LENGHT,SPACING);
     }
 
     private String generateBottom(){

@@ -23,12 +23,36 @@ import java.util.Objects;
 
 public class Product {
 
+    /**
+     * Identificador del producto
+     */
     private int id;
-    private String title;
-    private String description;
-    private float price;
-    private int stock;
+    /**
+     * Título del producto
+     */
+    private final String title;
+    /**
+     * Descripción del producto
+     */
+    private final String description;
+    /**
+     * Precio del producto.
+     */
+    private final float price;
+    /**
+     * Stock del producto.
+     */
+    private final int stock;
 
+    /**
+     *
+     * Entidad producto, permite crear un producto nuevo sin saber el ID.
+     *
+     * @param t el título del producto.
+     * @param d la descripción del producto.
+     * @param p el precio del producto.
+     * @param stock la cantidad de stock del producto.
+     */
     public Product(String t, String d, float p, int stock) {
         this.title = t;
         this.description = d;
@@ -36,6 +60,17 @@ public class Product {
         this.stock = stock;
     }
 
+    /**
+     *
+     * Entidad producto, con conocimiento de su identificador, uso en
+     * resultado provinientes de la base de datos.
+     *
+     * @param i el identificador del producto.
+     * @param t el título del producto.
+     * @param d la descripción del producto.
+     * @param p el precio del producto.
+     * @param stock la cantidad de stock del producto.
+     */
     public Product(int i, String t, String d, float p, int stock) {
         this.id = i;
         this.title = t;
@@ -60,6 +95,13 @@ public class Product {
         return stock;
     }
 
+    /**
+     *
+     * Comprueba si el id del producto es igual al del producto obtenido por parámetros.
+     *
+     * @param o un objecto de tipo Product.
+     * @return si el id es igual al del producto pasado por parámetros.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
