@@ -31,6 +31,7 @@ public class Queries {
     private PreparedStatement insertNewPerson;
     private PreparedStatement updatePerson;
     private PreparedStatement removePerson;
+    private PreparedStatement getIdExists;
     // constructor
     public Queries()
     {
@@ -57,6 +58,7 @@ public class Queries {
                     + " WHERE ADDRESSID = ?");
             // remove address from the database
             removePerson = connection.prepareStatement("DELETE FROM ADDRESSES WHERE ADDRESSID = ?");
+            getIdExists = connection.prepareStatement("SELECT * FROM ADDRESSES WHERE ADDRESSID = ?");
         }
         catch (SQLException sqlException)
         {
@@ -166,7 +168,7 @@ public class Queries {
         return result;
     }
 
-    public int generateNewId(){
+    /*public int generateNewId(){
         int result = 0;
         try {
             ResultSet rs = getLastId.executeQuery();
@@ -177,6 +179,18 @@ public class Queries {
             close();
         }
         return result + 1;
+    }*/
+
+    public int generateNewId(){
+        int result = generateRandomNewId();
+        if(!idExists(result))
+            return result;
+        else
+            return generateNewId();
+    }
+
+    public int generateRandomNewId(){
+        return (int)(Math.random() * 9999) + 1;
     }
 
     public int updatePerson(int id,String fname, String lname, String email, String num){
@@ -200,6 +214,20 @@ public class Queries {
         try {
             removePerson.setInt(1,id);
             result = removePerson.executeUpdate();
+        } catch (SQLException sqlException){
+            sqlException.printStackTrace();
+            close();
+        }
+        return result;
+    }
+
+    public boolean idExists(int id){
+        boolean result = false;
+        try {
+            getIdExists.setInt(1,id);
+            ResultSet rs = getIdExists.executeQuery();
+            if(rs.next())
+                result = true;
         } catch (SQLException sqlException){
             sqlException.printStackTrace();
             close();
