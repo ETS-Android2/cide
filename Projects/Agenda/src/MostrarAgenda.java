@@ -357,6 +357,13 @@ public class MostrarAgenda extends JFrame
         browseButtonActionPerformed(evt);
     }
 
+    /**
+     *
+     * Maneja el evento del botón de "Update This Entry", donde obtendra los valores actuales de los diferentes campos
+     * editables y se los pasara a la query "updatePerson()".
+     *
+     * @param e el evento del ActionListener.
+     */
     private void updateButtonActionPerformed(ActionEvent e){
 
         int result = personQueries.updatePerson(
@@ -376,6 +383,13 @@ public class MostrarAgenda extends JFrame
         browseButtonActionPerformed(e);
     }
 
+    /**
+     *
+     * Maneja el evento del botón de "Delete This Entry", donde obtendra el valor actual del campo no editable "idTextField"
+     * y se los pasara a la query "removePerson()".
+     *
+     * @param e el evento del ActionListener.
+     */
     private void removeButtonActionPerformed(ActionEvent e){
 
         int result = personQueries.removePerson(Integer.parseInt(idTextField.getText()));
@@ -390,6 +404,11 @@ public class MostrarAgenda extends JFrame
         browseButtonActionPerformed(e);
     }
 
+    /**
+     *
+     * Permite vaciar los contenidos de los campos editables y no editables.
+     *
+     */
     private void clearFields(){
         idTextField.setText("");
         firstNameTextField.setText("");

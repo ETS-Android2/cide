@@ -29,9 +29,16 @@ public class Queries {
     private PreparedStatement selectPeopleByLastName;
     private PreparedStatement getLastId;
     private PreparedStatement insertNewPerson;
+
+    // Permite editar los campos de una entrada en la base de datos por ID.
     private PreparedStatement updatePerson;
+
+    // Permite eliminar una entrada a partir del ID.
     private PreparedStatement removePerson;
+
+    // Permite obtener un resultado de una entrada a partir de su ID.
     private PreparedStatement getIdExists;
+
     // constructor
     public Queries()
     {
@@ -44,7 +51,7 @@ public class Queries {
                     connection.prepareStatement("SELECT * FROM ADDRESSES");
             // create query that selects entries with a specific last name
             selectPeopleByLastName = connection.prepareStatement(
-                    "SELECT * FROM ADDRESSES WHERE LastName = ?");
+                    "SELECT * FROM ADDRESSES WHERE UPPER(LastName) LIKE ?");
             // get max id from the database and increment in 1
             getLastId = connection.prepareStatement("SELECT MAX(ADDRESSID) as ID FROM ADDRESSES");
             // create insert that adds a new entry into the database
@@ -111,7 +118,7 @@ public class Queries {
         ResultSet resultSet = null;
         try
         {
-            selectPeopleByLastName.setString(1, name); // specify last name
+            selectPeopleByLastName.setString(1, name + "%"); // specify last name
 
             // executeQuery returns ResultSet containing matching entries
             resultSet = selectPeopleByLastName.executeQuery();
@@ -181,6 +188,14 @@ public class Queries {
         return result + 1;
     }*/
 
+    /**
+     *
+     * Permite generar un nuevo ID de forma aleatoria.
+     * De forma recursiva irá probando identificadores hasta encontrar
+     * uno que no este ocupado por una entranda en la base de datos.
+     *
+     * @return el id generado.
+     */
     public int generateNewId(){
         int result = generateRandomNewId();
         if(!idExists(result))
@@ -189,10 +204,29 @@ public class Queries {
             return generateNewId();
     }
 
+    /**
+     *
+     * Genera un número aleatorio entre 0 y 999.999
+     *
+     * @return un número aleatorio entre 0 y 999.999
+     */
     public int generateRandomNewId(){
-        return (int)(Math.random() * 9999) + 1;
+        return (int)(Math.random() * 999999) + 1;
     }
 
+    /**
+     *
+     * Permite actualizar los valores de una cierta entrada en la base de datos.
+     * Donde se introducen los nuevos valores y actuales. A través de su identificador
+     * actualizamos los valores.
+     *
+     * @param id el identificador de la entrada.
+     * @param fname el nombre a determinar.
+     * @param lname el apellido a determinar.
+     * @param email el email a determinar.
+     * @param num el número de teléfono a determinar.
+     * @return 1 si se ha completado el cambio en la base de datos, 0 si no se ha completado.
+     */
     public int updatePerson(int id,String fname, String lname, String email, String num){
         int result = 0;
         try {
@@ -209,6 +243,13 @@ public class Queries {
         return result;
     }
 
+    /**
+     *
+     * Permite eliminar una entrada en la base de datos pasando su identificador.
+     *
+     * @param id el identificador de la entrada a eliminar.
+     * @return 1 si se ha completado satisfactoriamente, 0 si no.
+     */
     public int removePerson(int id){
         int result = 0;
         try {
@@ -221,6 +262,13 @@ public class Queries {
         return result;
     }
 
+    /**
+     *
+     * Comprueba si el id pasado por parámetros obtiene alguna respuesta de la base de datos.
+     *
+     * @param id el id a comprobar en la base de datos.
+     * @return true si el id existe, false si no existe.
+     */
     public boolean idExists(int id){
         boolean result = false;
         try {
