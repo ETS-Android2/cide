@@ -2,19 +2,19 @@ package common.data;
 
 public class Data {
 
-    private final Character[] raw;
+    private final Byte[] raw;
     private Float floatValue;
     private Integer intValue;
 
-    public Data(Character[] raw) {
+    public Data(Byte[] raw) {
         this.raw = raw;
         parseData();
     }
 
-    private String parseRaw(Character[] flow){
+    private String parseRaw(Byte[] flow){
         String raw = "";
-        for(char c : flow){
-            raw += c;
+        for(byte c : flow){
+            raw += (char) c;
         }
         return raw;
     }

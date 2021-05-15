@@ -16,16 +16,15 @@ public abstract class FileAPI {
 
     public ArrayList<Line> parseLines(byte[] data,char delimiter,int numberOfData){
         ArrayList<Line> output = new ArrayList<>();
-        ArrayList<Character> currentData = new ArrayList<>();
+        ArrayList<Byte> currentData = new ArrayList<>();
         int delimiterCount = 0;
         for(byte b : data){
-            char x = (char) b;
-            currentData.add(x);
-            if (x == delimiter){
+            currentData.add(b);
+            if (b == delimiter){
                 delimiterCount++;
             }
             if (delimiterCount == (numberOfData + 1)){
-                Character[] flow = new Character[currentData.size()];
+                Byte[] flow = new Byte[currentData.size()];
                 output.add(new Line(currentData.toArray(flow),delimiter));
                 delimiterCount = 0;
                 currentData.clear();
@@ -36,21 +35,19 @@ public abstract class FileAPI {
 
     public ArrayList<Line> parseLinesArray(byte[] data,char delimiter,int positionOfIndex){
         ArrayList<Line> output = new ArrayList<>();
-        ArrayList<Character> currentData = new ArrayList<>();
+        ArrayList<Byte> currentData = new ArrayList<>();
 
         int delimiterCount = 0;
 
-        ArrayList<Character> indexData = new ArrayList<>();
+        ArrayList<Byte> indexData = new ArrayList<>();
         boolean index = false;
         Integer numberOfItems = null;
 
         for(byte b : data){
 
-            char x = (char) b;
+            currentData.add(b);
 
-            currentData.add(x);
-
-            if (x == delimiter){
+            if (b == delimiter){
                 delimiterCount++;
             }
 
@@ -59,17 +56,17 @@ public abstract class FileAPI {
             }
 
             if (index){
-                indexData.add(x);
+                indexData.add(b);
             }
 
             if (delimiterCount == positionOfIndex + 1){
-                Character[] flow = new Character[currentData.size()];
+                Byte[] flow = new Byte[currentData.size()];
                 numberOfItems = Integer.parseInt(parseRaw(indexData.toArray(flow)).replace(delimiter,' ').trim());
                 index = false;
             }
 
             if(numberOfItems != null && delimiterCount == numberOfItems + 1){
-                Character[] flow = new Character[currentData.size()];
+                Byte[] flow = new Byte[currentData.size()];
                 output.add(new Line(currentData.toArray(flow),delimiter));
                 currentData.clear();
                 delimiterCount = 0;
@@ -80,10 +77,10 @@ public abstract class FileAPI {
         return output;
     }
 
-    private String parseRaw(Character[] flow){
+    private String parseRaw(Byte[] flow){
         String raw = "";
-        for(char c : flow){
-            raw += c;
+        for(byte c : flow){
+            raw += (char) c;
         }
         return raw;
     }
