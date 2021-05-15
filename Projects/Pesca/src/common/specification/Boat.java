@@ -4,12 +4,12 @@ import common.data.Data;
 
 import java.util.ArrayList;
 
-public class Boats {
+public class Boat {
 
     private Data name;
     private ArrayList<Data> users;
 
-    public Boats(Data name, ArrayList<Data> users) {
+    public Boat(Data name, ArrayList<Data> users) {
         this.name = name;
         this.users = users;
     }

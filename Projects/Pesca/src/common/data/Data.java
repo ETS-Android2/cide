@@ -32,6 +32,10 @@ public class Data {
         }
     }
 
+    public Byte[] getRaw() {
+        return raw;
+    }
+
     public String getStringValue() {
         return parseRaw(this.raw);
     }

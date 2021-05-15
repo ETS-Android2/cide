@@ -2,11 +2,11 @@ package common.specification;
 
 import common.data.Data;
 
-public class Users {
+public class User {
 
     private Data identifier;
 
-    public Users(Data identifier) {
+    public User(Data identifier) {
         this.identifier = identifier;
     }
 

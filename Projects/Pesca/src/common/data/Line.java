@@ -1,6 +1,7 @@
 package common.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Line {
 
@@ -29,6 +30,29 @@ public class Line {
         }
         Data[] flow = new Data[data.size()];
         return data.toArray(flow);
+    }
+
+    public Data[] getData() {
+        return data;
+    }
+
+    public byte[] exportData(char delimiter){
+        ArrayList<Byte> data = new ArrayList<>();
+        data.add((byte)delimiter);
+        for(Data d : this.data){
+            Collections.addAll(data, d.getRaw());
+            data.add((byte)delimiter);
+        }
+        Byte[] flow = new Byte[data.size()];
+        return toPrimitive(data.toArray(flow));
+    }
+
+    public byte[] toPrimitive(Byte[] bytes){
+        byte[] output = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            output[i] = bytes[i];
+        }
+        return output;
     }
 
 }
