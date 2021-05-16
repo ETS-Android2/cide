@@ -8,6 +8,16 @@ import java.io.IOException;
 public class PescaAPITest {
 
     @Test
+    public void fileTest(){
+        PescaAPI api = null;
+        try {
+            api = new PescaAPI();
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+    }
+
+    @Test
     public void userTest(){
 
         PescaAPI api = null;
@@ -26,12 +36,6 @@ public class PescaAPITest {
 
         try {
             Assert.assertTrue(api.getUserByIdentifier("carlos"));
-        } catch (IOException ioException) {
-            Assert.fail(ioException.getMessage());
-        }
-
-        try {
-            api.closeFlows();
         } catch (IOException ioException) {
             Assert.fail(ioException.getMessage());
         }

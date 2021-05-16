@@ -18,6 +18,8 @@ public class Line {
         for(byte c : input){
             if(c == delimiter){
                 delimiterCount++;
+            } else if (c == '\n'){
+                continue;
             } else {
                 currentData.add(c);
             }
@@ -43,6 +45,7 @@ public class Line {
             Collections.addAll(data, d.getRaw());
             data.add((byte)delimiter);
         }
+        data.add((byte)'\n');
         Byte[] flow = new Byte[data.size()];
         return toPrimitive(data.toArray(flow));
     }
