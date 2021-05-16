@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 public class PescaAPI extends FileAPI {
 
+    private final String pescaDirectory = "pesca";
+
     private InputStream florida;
     private InputStream mediterrania;
 
@@ -25,36 +27,37 @@ public class PescaAPI extends FileAPI {
         this.florida = new FileInputStream(getClass().getResource("/data/florida.txt").getFile());
         this.mediterrania = new FileInputStream(getClass().getResource("/data/mediterrania.txt").getFile());
 
+        createFlowContainer();
+
         boolean flow;
         do {
              flow = establishDataFlows();
         } while (!flow);
-
     }
 
     private boolean establishDataFlows() throws IOException {
 
         try {
-            this.usersIn = new FileInputStream(getClass().getResource("/flow/users.txt").getFile());
-            this.usersOut = new FileOutputStream(getClass().getResource("/flow/users.txt").getFile());
+            this.usersIn = new FileInputStream(parseKey("flow","users.txt"));
+            this.usersOut = new FileOutputStream(parseKey("flow","users.txt"));
         } catch (FileNotFoundException e){
-            createFileEmpty(System.getProperty("file.separator") + "flow","users.txt");
+            createFileEmpty("flow","users.txt");
             return false;
         }
 
         try {
-            this.boatsIn = new FileInputStream(getClass().getResource("/flow/boats.txt").getFile());
-            this.boatsOut = new FileOutputStream(getClass().getResource("/flow/boats.txt").getFile());
+            this.boatsIn = new FileInputStream(parseKey("flow","boats.txt"));
+            this.boatsOut = new FileOutputStream(parseKey("flow","boats.txt"));
         } catch (FileNotFoundException e){
-            createFileEmpty(System.getProperty("file.separator") + "flow","boats.txt");
+            createFileEmpty("flow","boats.txt");
             return false;
         }
 
         try {
-            this.registersIn = new FileInputStream(getClass().getResource("/flow/registers.txt").getFile());
-            this.registersOut = new FileOutputStream(getClass().getResource("/flow/registers.txt").getFile());
+            this.registersIn = new FileInputStream(parseKey("flow","registers.txt"));
+            this.registersOut = new FileOutputStream(parseKey("flow","registers.txt"));
         } catch (FileNotFoundException e){
-            createFileEmpty(System.getProperty("file.separator") + "flow","registers.txt");
+            createFileEmpty("flow","registers.txt");
             return false;
         }
 
@@ -62,21 +65,46 @@ public class PescaAPI extends FileAPI {
     }
 
     private void createFileEmpty(String bucket, String key) throws IOException {
+        try {
+            FileOutputStream outputStream = new FileOutputStream(parseKey(bucket,key));
+            outputStream.write(' ');
+            outputStream.close();
+        } catch (FileNotFoundException e){
+            createBucket(bucket);
+            createFileEmpty(bucket,key);
+        } catch (IOException e){
+            throw new IOException(e.getMessage());
+        }
+    }
 
-        ClassLoader loader = ClassLoader.getSystemClassLoader();
-        URL resource = loader.getResource(bucket);
-
-        FileOutputStream outputStream = new FileOutputStream(resource.getFile() + System.getProperty("file.separator") + key);
-        outputStream.write(' ');
-        outputStream.close();
-
+    private boolean createBucket(String bucket) {
+        File path = new File(parseBucket(bucket));
+        return path.mkdir();
     }
 
     private String parseKey(String bucket,String key){
-        return bucket + System.getProperty("file.separator") + key;
+        return parseBucket(bucket) + System.getProperty("file.separator") + key;
     }
 
-    private void closeFlows() throws IOException {
+    private String parseBucket(String bucket){
+        return System.getProperty("user.home") + System.getProperty("file.separator") + pescaDirectory + System.getProperty("file.separator") + bucket;
+    }
+
+    private String parseBucket(String home, String bucket){
+        return System.getProperty("user.home") + System.getProperty("file.separator") + home + System.getProperty("file.separator") + bucket;
+    }
+
+    private boolean createFlowContainer(){
+        File path = new File(System.getProperty("user.home") + System.getProperty("file.separator") + pescaDirectory);
+        boolean exists = path.exists();
+        if(exists){
+            return true;
+        } else {
+            return path.mkdir();
+        }
+    }
+
+    public void closeFlows() throws IOException {
         florida.close();
         mediterrania.close();
         usersOut.close();
