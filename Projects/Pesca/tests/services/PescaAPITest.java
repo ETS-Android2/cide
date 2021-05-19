@@ -1,7 +1,7 @@
 package services;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ public class PescaAPITest {
         try {
             api = new PescaAPI();
         } catch (IOException e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
     }
 
@@ -25,19 +25,20 @@ public class PescaAPITest {
         try {
             api = new PescaAPI();
         } catch (IOException e){
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         }
 
         try {
             api.registerUser("carlos");
+            api.registerUser("adan");
         } catch (IOException ioException) {
-            Assert.fail(ioException.getMessage());
+            Assertions.fail(ioException.getMessage());
         }
 
         try {
-            Assert.assertTrue(api.getUserByIdentifier("carlos"));
+            Assertions.assertTrue(api.getUserByIdentifier("adan"));
         } catch (IOException ioException) {
-            Assert.fail(ioException.getMessage());
+            Assertions.fail(ioException.getMessage());
         }
 
     }

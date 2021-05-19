@@ -91,10 +91,6 @@ public class PescaAPI extends FileAPI {
         return System.getProperty("user.home") + System.getProperty("file.separator") + pescaDirectory + System.getProperty("file.separator") + bucket;
     }
 
-    private String parseBucket(String home, String bucket){
-        return System.getProperty("user.home") + System.getProperty("file.separator") + home + System.getProperty("file.separator") + bucket;
-    }
-
     private boolean createFlowContainer(){
         File path = new File(System.getProperty("user.home") + System.getProperty("file.separator") + pescaDirectory);
         boolean exists = path.exists();
@@ -123,7 +119,7 @@ public class PescaAPI extends FileAPI {
     public void registerUser(String identifier) throws IOException {
 
         // Prepare data for file
-        identifier = '#' + identifier + '#';
+        identifier = '#' + identifier + '#' + '\n';
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
         FileOutputStream outputStream = execute(parseKey("flow","users.txt"));

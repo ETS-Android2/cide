@@ -18,9 +18,7 @@ public class Line {
         for(byte c : input){
             if(c == delimiter){
                 delimiterCount++;
-            } else if (c == '\n'){
-                continue;
-            } else {
+            } else if (c != '\n'){
                 currentData.add(c);
             }
             if(delimiterCount == 2){
