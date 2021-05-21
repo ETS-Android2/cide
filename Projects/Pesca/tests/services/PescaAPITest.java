@@ -1,7 +1,9 @@
 package services;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import common.data.Data;
+import common.specification.Fish;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.IOException;
 
@@ -13,7 +15,7 @@ public class PescaAPITest {
         try {
             api = new PescaAPI();
         } catch (IOException e){
-            Assertions.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -25,20 +27,76 @@ public class PescaAPITest {
         try {
             api = new PescaAPI();
         } catch (IOException e){
-            Assertions.fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
 
         try {
             api.registerUser("carlos");
             api.registerUser("adan");
-        } catch (IOException ioException) {
-            Assertions.fail(ioException.getMessage());
+        } catch (Exception ioException) {
+            Assert.fail(ioException.getMessage());
         }
 
         try {
-            Assertions.assertTrue(api.getUserByIdentifier("adan"));
+            Assert.assertTrue(api.getUserByIdentifier("adan"));
         } catch (IOException ioException) {
-            Assertions.fail(ioException.getMessage());
+            Assert.fail(ioException.getMessage());
+        }
+
+    }
+
+    @Test
+    public void deleteUser(){
+
+        PescaAPI api = null;
+
+        try {
+            api = new PescaAPI();
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            api.registerUser("DELETETEST");
+        } catch (Exception ioException) {
+            Assert.fail(ioException.getMessage());
+        }
+
+        try {
+            Assert.assertTrue(api.getUserByIdentifier("DELETETEST"));
+        } catch (IOException ioException) {
+            Assert.fail(ioException.getMessage());
+        }
+
+        try {
+            api.deleteUser("DELETETEST");
+        } catch (Exception ioException){
+            Assert.fail(ioException.getMessage());
+        }
+
+        try {
+            Assert.assertFalse(api.getUserByIdentifier("DELETETEST"));
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void fishTest(){
+
+        PescaAPI api = null;
+
+        try {
+            api = new PescaAPI();
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            api.registerNewAction("carlos","Cap Roig",0.45f);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
         }
 
     }

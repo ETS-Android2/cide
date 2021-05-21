@@ -75,7 +75,7 @@ public abstract class FileAPI {
                 Byte[] flow = new Byte[currentData.size()];
                 output.add(new Line(currentData.toArray(flow),delimiter));
                 currentData.clear();
-                delimiterCount = 0;
+                delimiterCount = 1;
                 indexData.clear();
             }
 

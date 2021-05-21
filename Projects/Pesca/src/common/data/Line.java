@@ -24,7 +24,7 @@ public class Line {
             if(delimiterCount == 2){
                 Byte[] raw = new Byte[currentData.size()];
                 data.add(new Data(currentData.toArray(raw)));
-                delimiterCount = 0;
+                delimiterCount = 1;
                 currentData.clear();
             }
         }
