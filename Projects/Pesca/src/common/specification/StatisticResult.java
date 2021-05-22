@@ -39,10 +39,10 @@ public class StatisticResult {
             }
 
             // FISH SIZES
-            if(fishSizes.containsKey(s.getFlag()) && fishSizes.get(s.getFlag()) < s.getData()){
-                fishSizes.replace(s.getFlag(),s.getData());
-            } else {
+            if (!fishSizes.containsKey(s.getFlag())){
                 fishSizes.put(s.getFlag(),s.getData());
+            } else if(fishSizes.containsKey(s.getFlag()) && fishSizes.get(s.getFlag()) < s.getData()){
+                fishSizes.replace(s.getFlag(),s.getData());
             }
 
             average += s.getData();
@@ -56,8 +56,7 @@ public class StatisticResult {
         ArrayList<Statistics> mean = this.statistics;
         mean.sort(Comparator.comparing(Statistics::getData));
 
-        this.mean = mean.get(mean.size() / 2).getData() + mean.get((mean.size() / 2) + 1).getData() / 2;
-
+        this.mean = mean.get((mean.size() / 2) - 1).getData() + mean.get(mean.size() / 2).getData() / 2;
 
     }
 
