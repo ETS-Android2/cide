@@ -1,38 +1,23 @@
 package common.specification;
 
+import common.data.Data;
+
 public class Statistics {
 
-    private float sum;
-    private float mean;
-    private float average;
-    private float max;
-    private float min;
+    private Data flag;
+    private Data data;
 
-    public Statistics(float sum, float mean, float average, float max, float min) {
-        this.sum = sum;
-        this.mean = mean;
-        this.average = average;
-        this.max = max;
-        this.min = min;
+    public Statistics(Data flag, Data data) {
+        this.flag = flag;
+        this.data = data;
     }
 
-    public float getSum() {
-        return sum;
+    public String getFlag() {
+        return flag.getStringValue();
     }
 
-    public float getMean() {
-        return mean;
+    protected float getData() {
+        return data.getFloatValue();
     }
 
-    public float getAverage() {
-        return average;
-    }
-
-    public float getMax() {
-        return max;
-    }
-
-    public float getMin() {
-        return min;
-    }
 }

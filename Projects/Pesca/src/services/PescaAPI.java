@@ -3,6 +3,7 @@ package services;
 import common.data.Data;
 import common.data.Line;
 import common.specification.Fish;
+import common.specification.StatisticResult;
 import common.specification.Statistics;
 import common.specification.User;
 
@@ -208,11 +209,32 @@ public class PescaAPI extends FileAPI {
         STATISTICS METHODS
      ====================================== */
 
-    public Statistics getStatistics() throws IOException {
+    public StatisticResult getStatistics() throws IOException {
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
+        ArrayList<Line> lines = parseLines(raw,'#',4);
+        ArrayList<Statistics> statistics = new ArrayList<>();
 
-        return null;
+        for(Line l : lines){
+            statistics.add(new Statistics(l.getData()[1],l.getData()[3]));
+        }
+
+        return new StatisticResult(statistics);
+    }
+
+    public StatisticResult getStatistics(String user) throws IOException {
+
+        byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
+        ArrayList<Line> lines = parseLines(raw,'#',4);
+        ArrayList<Statistics> statistics = new ArrayList<>();
+
+        for(Line l : lines){
+            if(l.getData()[0].getStringValue().equals(user)){
+                statistics.add(new Statistics(l.getData()[1],l.getData()[3]));
+            }
+        }
+
+        return new StatisticResult(statistics);
     }
 
     /* ======================================
