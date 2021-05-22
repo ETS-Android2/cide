@@ -15,10 +15,10 @@ public abstract class FileAPI {
     }
 
     public byte[] getDataFromFlow(InputStream stream) throws IOException {
-        return stream.readAllBytes();
+        byte[] b = stream.readAllBytes();
+        stream.close();
+        return b;
     }
-
-    public void appendDataToFlow(Data[] currentData,OutputStream stream) throws IOException {}
 
     public ArrayList<Line> parseLines(byte[] data,char delimiter,int numberOfData){
         ArrayList<Line> output = new ArrayList<>();

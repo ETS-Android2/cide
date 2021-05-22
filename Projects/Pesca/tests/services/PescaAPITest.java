@@ -83,6 +83,25 @@ public class PescaAPITest {
     }
 
     @Test
+    public void actionTest(){
+
+        PescaAPI api = null;
+
+        try {
+            api = new PescaAPI();
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            api.registerNewAction("carlos",api.getFish(getClass().getResource("/data/florida.txt").getFile()));
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
+    @Test
     public void fishTest(){
 
         PescaAPI api = null;
@@ -94,8 +113,9 @@ public class PescaAPITest {
         }
 
         try {
-            api.registerNewAction("carlos","Cap Roig",0.45f);
-        } catch (Exception e){
+            Fish f = api.getFish(getClass().getResource("/data/florida.txt").getFile());
+            Assert.assertNotEquals("", f.getName());
+        } catch (IOException e){
             Assert.fail(e.getMessage());
         }
 

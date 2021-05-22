@@ -164,25 +164,44 @@ public class PescaAPI extends FileAPI {
         REGISTER METHODS
      ====================================== */
 
-    public void registerNewAction(String user, String fish, float size) throws IOException {
+    public void registerNewAction(String user, Fish fish) throws IOException {
 
         // Prepare data for insert
         LocalDate date = LocalDate.now();
-        user = '#' + user + '#' + fish + '#' + size + '#' + date + '#' + '\n';
+        user = '#' + user + '#' + fish.getName() + '#' + fish.getSize() + '#' + date + '#' + '\n';
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
         FileOutputStream outputStream = execute(parseKey("flow","registers.txt"));
         ArrayList<Line> lines = parseLines(raw,'#',4);
 
         for (Line l : lines){
-            for(Data d : l.getData()){
-                System.out.println(d.getStringValue());
-            }
             outputStream.write(l.exportData('#'));
         }
 
         outputStream.write(toPrimitive(user.toCharArray()));
         outputStream.close();
+    }
+
+    /* ======================================
+        FISH METHODS
+     ====================================== */
+
+    public Fish getFish(String key) throws IOException {
+
+        byte[] raw = getDataFromFlow(read(key));
+        ArrayList<Line> lines = parseLines(raw,'#',4);
+
+        float random = (float) (Math.random() * 1.5f);
+        Fish higherFish = null;
+
+        for(Line l : lines){
+            Fish f = new Fish(l.getData()[0],l.getData()[1],l.getData()[2],l.getData()[3]);
+            if (random >= f.getPercentage()){
+                higherFish = f;
+            }
+        }
+
+        return higherFish;
     }
 
     /* ======================================

@@ -8,28 +8,38 @@ public class Fish {
     private final Data percentage;
     private final Data lowerSize;
     private final Data higherSize;
+    private final float size;
 
     public Fish(Data name, Data percentage, Data lowerSize, Data higherSize) {
         this.name = name;
         this.percentage = percentage;
         this.lowerSize = lowerSize;
         this.higherSize = higherSize;
+        this.size = generateSize();
     }
 
-    public Data getName() {
-        return name;
+    public String getName() {
+        return name.getStringValue();
     }
 
-    public Data getPercentage() {
-        return percentage;
+    public float getPercentage() {
+        return percentage.getFloatValue();
     }
 
-    public Data getLowerSize() {
-        return lowerSize;
+    public float getSize() {
+        return size;
     }
 
-    public Data getHigherSize() {
-        return higherSize;
+    private float getLowerSize() {
+        return lowerSize.getFloatValue();
+    }
+
+    private float getHigherSize() {
+        return higherSize.getFloatValue();
+    }
+
+    private float generateSize(){
+        return (float) (Math.random() * this.getHigherSize() + this.getLowerSize());
     }
 
 }

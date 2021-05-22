@@ -16,7 +16,11 @@ public class Data {
         for(byte c : flow){
             raw += (char) c;
         }
-        return raw;
+        return normalize(raw);
+    }
+
+    private String normalize(String s){
+        return s.replace((char) 0x0d,'&').replaceAll("&","");
     }
 
     private void parseData(){
