@@ -2,6 +2,7 @@ package services;
 
 import common.data.Data;
 import common.specification.Fish;
+import common.specification.StatisticResult;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -116,6 +117,25 @@ public class PescaAPITest {
             Fish f = api.getFish(getClass().getResource("/data/florida.txt").getFile());
             Assert.assertNotEquals("", f.getName());
         } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void statisticsTest(){
+
+        PescaAPI api = null;
+
+        try {
+            api = new PescaAPI();
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            StatisticResult result = api.getStatistics("manolo");
+        } catch (Exception e){
             Assert.fail(e.getMessage());
         }
 

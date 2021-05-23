@@ -5,9 +5,9 @@ import common.data.Data;
 public class Statistics {
 
     private Data flag;
-    private Data data;
+    private float data;
 
-    public Statistics(Data flag, Data data) {
+    public Statistics(Data flag, float data) {
         this.flag = flag;
         this.data = data;
     }
@@ -17,7 +17,7 @@ public class Statistics {
     }
 
     protected float getData() {
-        return data.getFloatValue();
+        return data;
     }
 
 }

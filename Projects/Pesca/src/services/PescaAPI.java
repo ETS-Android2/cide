@@ -220,7 +220,7 @@ public class PescaAPI extends FileAPI {
         ArrayList<Statistics> statistics = new ArrayList<>();
 
         for(Line l : lines){
-            statistics.add(new Statistics(l.getData()[1],l.getData()[3]));
+            statistics.add(new Statistics(l.getData()[1],l.getData()[2].getFloatValue()));
         }
 
         return new StatisticResult(statistics);
@@ -234,7 +234,7 @@ public class PescaAPI extends FileAPI {
 
         for(Line l : lines){
             if(l.getData()[0].getStringValue().equals(user)){
-                statistics.add(new Statistics(l.getData()[1],l.getData()[3]));
+                statistics.add(new Statistics(l.getData()[1],l.getData()[2].getFloatValue()));
             }
         }
 

@@ -10,6 +10,7 @@ import termux.Components.Menu.SequentialMenu;
 import termux.DefaultConsole;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PescaConsole extends DefaultConsole {
@@ -204,16 +205,21 @@ public class PescaConsole extends DefaultConsole {
         System.out.printf("\n\tMáximo peso registrado: %.2f",statistics.getMax());
         System.out.printf("\n\tMínimo peso registrado: %.2f",statistics.getMin());
         System.out.printf("\n\tMedia de peso registrado: %.2f",statistics.getAverage());
-        System.out.printf("\n\tMediana de peso registrado: %.2f",statistics.getMean());
+        System.out.printf("\n\tMediana de peso registrado: %.2f\n",statistics.getMean());
 
         Encapsulate.encapsulateString("STADÍSTICAS ESPECÍFICAS","\t");
 
-        System.out.print("\n\tMáximo peso por pescado capturado\n");
+        showStatisticsHashMaps(statistics.getFishSizes(),"Máximo peso por pescado capturado","PESCADO: %s -- MÁXIMO PESO: %.2f");
+        showStatisticsHashMaps(statistics.getFishCatches(),"Máximas capturas por pescado","PESCADO: %s -- CAPTURAS: %.0f");
 
-        for(Map.Entry<String,Float> entry : statistics.getFishSizes().entrySet()){
-            System.out.printf("\n\tPESCADO: %s -- MÁXIMO PESO: %.2f",entry.getKey(),entry.getValue());
+    }
+
+    private void showStatisticsHashMaps(HashMap<String,Float> hashMap,String header, String format){
+        System.out.printf("\n\t%s:",header);
+        for(Map.Entry<String,Float> entry : hashMap.entrySet()){
+            System.out.printf("\n\t" + format,entry.getKey(),entry.getValue());
         }
-
+        System.out.print("\n");
     }
 
     @Override

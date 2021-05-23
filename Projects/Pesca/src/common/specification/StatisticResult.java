@@ -13,12 +13,14 @@ public class StatisticResult {
     private float average;
     private float mean;
     private HashMap<String, Float> fishSizes;
+    private HashMap<String, Float> fishCatches;
 
     private ArrayList<Statistics> statistics;
 
     public StatisticResult(ArrayList<Statistics> statistics) {
         this.statistics = statistics;
         this.fishSizes = new HashMap<>();
+        this.fishCatches = new HashMap<>();
         this.parseStatistic();
     }
 
@@ -33,6 +35,11 @@ public class StatisticResult {
                 max = s.getData();
             }
 
+            // FIRST MIN
+            if(min == 0){
+                min = s.getData();
+            }
+
             // MIN
             if(min > s.getData()){
                 min = s.getData();
@@ -43,6 +50,13 @@ public class StatisticResult {
                 fishSizes.put(s.getFlag(),s.getData());
             } else if(fishSizes.containsKey(s.getFlag()) && fishSizes.get(s.getFlag()) < s.getData()){
                 fishSizes.replace(s.getFlag(),s.getData());
+            }
+
+            // FISH CATCHES
+            if (!fishCatches.containsKey(s.getFlag())){
+                fishCatches.put(s.getFlag(),1f);
+            } else if(fishCatches.containsKey(s.getFlag())){
+                fishCatches.replace(s.getFlag(),fishCatches.get(s.getFlag()) + 1);
             }
 
             average += s.getData();
@@ -56,7 +70,9 @@ public class StatisticResult {
         ArrayList<Statistics> mean = this.statistics;
         mean.sort(Comparator.comparing(Statistics::getData));
 
-        this.mean = mean.get((mean.size() / 2) - 1).getData() + mean.get(mean.size() / 2).getData() / 2;
+        if(mean.size() != 0){
+            this.mean = mean.get((mean.size() / 2) - 1).getData() + mean.get(mean.size() / 2).getData() / 2;
+        }
 
     }
 
@@ -78,6 +94,10 @@ public class StatisticResult {
 
     public HashMap<String, Float> getFishSizes() {
         return fishSizes;
+    }
+
+    public HashMap<String, Float> getFishCatches() {
+        return fishCatches;
     }
 
 }

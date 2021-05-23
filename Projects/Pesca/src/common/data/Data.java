@@ -37,7 +37,7 @@ public class Data {
     }
 
     public Byte[] getRaw() {
-        return raw;
+        return this.raw;
     }
 
     public String getStringValue() {
@@ -45,11 +45,11 @@ public class Data {
     }
 
     public float getFloatValue() {
-        return floatValue;
+        return this.floatValue;
     }
 
     public int getIntValue() {
-        return intValue;
+        return this.intValue;
     }
 
 }
