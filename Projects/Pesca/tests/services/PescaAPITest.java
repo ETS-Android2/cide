@@ -1,6 +1,7 @@
 package services;
 
 import common.data.Data;
+import common.specification.Boat;
 import common.specification.Fish;
 import common.specification.StatisticResult;
 import org.junit.Assert;
@@ -153,8 +154,10 @@ public class PescaAPITest {
         }
 
         try {
-            Assert.assertTrue(api.getBoatByIdentifier("papito"));
+            api.deleteUserInBoat(api.getBoat("elpatron"), api.getUser("carlos"));
+            Assert.assertTrue(api.getBoatByIdentifier("elpatron"));
         } catch (Exception e){
+            System.out.println(e.getMessage());
             Assert.fail(e.getMessage());
         }
 

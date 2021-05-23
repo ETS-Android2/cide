@@ -2,10 +2,7 @@ package services;
 
 import common.data.Data;
 import common.data.Line;
-import common.specification.Fish;
-import common.specification.StatisticResult;
-import common.specification.Statistics;
-import common.specification.User;
+import common.specification.*;
 
 import java.io.*;
 import java.net.URL;
@@ -14,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PescaAPI extends FileAPI {
-
-    private final String pescaDirectory = "pesca";
 
     public PescaAPI() throws IOException {
 
@@ -93,11 +88,11 @@ public class PescaAPI extends FileAPI {
     }
 
     private String parseBucket(String bucket){
-        return System.getProperty("user.home") + System.getProperty("file.separator") + pescaDirectory + System.getProperty("file.separator") + bucket;
+        return System.getProperty("user.home") + System.getProperty("file.separator") + "pesca" + System.getProperty("file.separator") + bucket;
     }
 
     private boolean createFlowContainer(){
-        File path = new File(System.getProperty("user.home") + System.getProperty("file.separator") + pescaDirectory);
+        File path = new File(System.getProperty("user.home") + System.getProperty("file.separator") + "pesca");
         boolean exists = path.exists();
         if(exists){
             return true;
@@ -159,6 +154,24 @@ public class PescaAPI extends FileAPI {
         }
 
         outputStream.close();
+    }
+
+    public User getUser(String identifier) throws Exception {
+
+        if(!getUserByIdentifier(identifier)){
+            throw new Exception("User does not exist.");
+        }
+
+        byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
+        ArrayList<Line> lines = parseLines(raw,'#',1);
+
+        for (Line l : lines){
+            if(l.getData()[0].getStringValue().equals(identifier)){
+                return new User(l.getData()[0]);
+            }
+        }
+
+        return null;
     }
 
     /* ======================================
@@ -247,17 +260,102 @@ public class PescaAPI extends FileAPI {
 
     public boolean getBoatByIdentifier(String boat) throws IOException {
         byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
-        ArrayList<Line> lines = parseLinesArray(raw,'#',2);
+        ArrayList<Line> lines = parseLinesArray(raw,'#');
+        ArrayList<Boat> boats = Boat.parseBoats(lines);
 
-        System.out.println(lines.size());
+        for(Boat b : boats){
+            if (b.getName().getStringValue().equals(boat)){
+                return true;
+            }
+        }
 
-//        for (Line l : lines){
-//            System.out.println(l.getData().length);
-//            if(l.getData()[0].getStringValue().equals(boat)){
-//                return true;
-//            }
-//        }
-        return true;
+        return false;
+    }
+
+    public void registerBoat(String identifier) throws IOException {
+
+        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
+        ArrayList<Line> lines = parseLinesArray(raw,'#');
+        ArrayList<Boat> boats = Boat.parseBoats(lines);
+
+        FileOutputStream stream = execute(parseKey("flow","boats.txt"));
+        identifier = '#' + identifier + '#' + '\n';
+
+        for(Boat b : boats){
+            stream.write(b.exportData('#'));
+        }
+
+        stream.write(toPrimitive(identifier.toCharArray()));
+        stream.close();
+    }
+
+    public Boat getBoat(String identifier) throws Exception {
+
+        if(!getBoatByIdentifier(identifier)){
+            throw new Exception("Boat in not registered.");
+        }
+
+        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
+        ArrayList<Line> lines = parseLinesArray(raw,'#');
+        ArrayList<Boat> boats = Boat.parseBoats(lines);
+
+        for(Boat b : boats){
+            if(b.getName().getStringValue().equals(identifier)){
+                return b;
+            }
+        }
+
+        return null;
+    }
+
+    public void registerUserInBoat(Boat boat,User user) throws Exception {
+
+        if(boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
+            throw new Exception("User already registered in boat.");
+        }
+
+        boat.add(user.getIdentifier().getStringValue());
+
+        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
+        ArrayList<Line> lines = parseLinesArray(raw,'#');
+        ArrayList<Boat> boats = Boat.parseBoats(lines);
+
+        FileOutputStream stream = execute(parseKey("flow","boats.txt"));
+
+        for(Boat b : boats){
+            if(b.getName().getStringValue().equals(boat.getName().getStringValue())){
+                stream.write(boat.exportData('#'));
+            } else {
+                stream.write(b.exportData('#'));
+            }
+        }
+
+        stream.close();
+    }
+
+    public void deleteUserInBoat(Boat boat, User user) throws Exception {
+
+        if(!boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
+            throw new Exception("User is not registered in boat.");
+        }
+
+        boat.remove(user.getIdentifier().getStringValue());
+
+        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
+        ArrayList<Line> lines = parseLinesArray(raw,'#');
+        ArrayList<Boat> boats = Boat.parseBoats(lines);
+
+        FileOutputStream stream = execute(parseKey("flow","boats.txt"));
+
+        for(Boat b : boats){
+            if(b.getName().getStringValue().equals(boat.getName().getStringValue())){
+                stream.write(boat.exportData('#'));
+            } else {
+                stream.write(b.exportData('#'));
+            }
+        }
+
+        stream.close();
     }
 
     /* ======================================

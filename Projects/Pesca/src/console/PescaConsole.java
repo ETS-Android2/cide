@@ -161,16 +161,25 @@ public class PescaConsole extends DefaultConsole {
         try {
             api.registerNewAction(
                     result.get(0)
-                    ,api.getFish(
-                            result.get(1).equals("mediterrania")
-                            ? getClass().getResource("/data/mediterrania.txt").getFile()
-                            : getClass().getResource("/data/florida.txt").getFile()
-                    )
+                    ,api.getFish(getClass().getResource(parseBoat(result.get(1))).getFile())
             );
         } catch (Exception e){
             errorLog.add(e.getMessage());
         }
 
+    }
+
+    private String parseBoat(String input){
+        switch (input) {
+            case "florida":
+                return "/data/florida.txt";
+            case "pacifico":
+                return "/data/pacifico.txt";
+            case "indico":
+                return "/data/indico.txt";
+            default:
+                return "/data/mediterrania.txt";
+        }
     }
 
     private void userStatistics(){
@@ -200,14 +209,14 @@ public class PescaConsole extends DefaultConsole {
 
     private void showStatistics(StatisticResult statistics){
 
-        Encapsulate.encapsulateString("STADÍSTICAS GENERALES","\t");
+        Encapsulate.encapsulateString("ESTADÍSTICAS GENERALES","\t");
 
         System.out.printf("\n\tMáximo peso registrado: %.2f",statistics.getMax());
         System.out.printf("\n\tMínimo peso registrado: %.2f",statistics.getMin());
         System.out.printf("\n\tMedia de peso registrado: %.2f",statistics.getAverage());
         System.out.printf("\n\tMediana de peso registrado: %.2f\n",statistics.getMean());
 
-        Encapsulate.encapsulateString("STADÍSTICAS ESPECÍFICAS","\t");
+        Encapsulate.encapsulateString("ESTADÍSTICAS ESPECÍFICAS","\t");
 
         showStatisticsHashMaps(statistics.getFishSizes(),"Máximo peso por pescado capturado","PESCADO: %s -- MÁXIMO PESO: %.2f");
         showStatisticsHashMaps(statistics.getFishCatches(),"Máximas capturas por pescado","PESCADO: %s -- CAPTURAS: %.0f");
