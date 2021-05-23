@@ -165,7 +165,11 @@ public class PescaAPI extends FileAPI {
         REGISTER METHODS
      ====================================== */
 
-    public void registerNewAction(String user, Fish fish) throws IOException {
+    public void registerNewAction(String user, Fish fish) throws Exception {
+
+        if(!getUserByIdentifier(user)){
+            throw new Exception("The user not exists.");
+        }
 
         // Prepare data for insert
         LocalDate date = LocalDate.now();
