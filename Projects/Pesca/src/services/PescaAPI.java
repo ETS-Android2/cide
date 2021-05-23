@@ -242,6 +242,25 @@ public class PescaAPI extends FileAPI {
     }
 
     /* ======================================
+        BOAT METHODS
+     ====================================== */
+
+    public boolean getBoatByIdentifier(String boat) throws IOException {
+        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
+        ArrayList<Line> lines = parseLinesArray(raw,'#',2);
+
+        System.out.println(lines.size());
+
+//        for (Line l : lines){
+//            System.out.println(l.getData().length);
+//            if(l.getData()[0].getStringValue().equals(boat)){
+//                return true;
+//            }
+//        }
+        return true;
+    }
+
+    /* ======================================
         UTILITY METHODS
      ====================================== */
 

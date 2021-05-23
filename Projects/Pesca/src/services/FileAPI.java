@@ -9,18 +9,18 @@ import java.util.ArrayList;
 
 public abstract class FileAPI {
 
-    public byte[] getDataFromFile(String path) throws IOException {
+    protected byte[] getDataFromFile(String path) throws IOException {
         InputStream inputStream = new FileInputStream(new File(path));
         return inputStream.readAllBytes();
     }
 
-    public byte[] getDataFromFlow(InputStream stream) throws IOException {
+    protected byte[] getDataFromFlow(InputStream stream) throws IOException {
         byte[] b = stream.readAllBytes();
         stream.close();
         return b;
     }
 
-    public ArrayList<Line> parseLines(byte[] data,char delimiter,int numberOfData){
+    protected ArrayList<Line> parseLines(byte[] data,char delimiter,int numberOfData){
         ArrayList<Line> output = new ArrayList<>();
         ArrayList<Byte> currentData = new ArrayList<>();
         int delimiterCount = 0;
@@ -39,14 +39,13 @@ public abstract class FileAPI {
         return output;
     }
 
-    public ArrayList<Line> parseLinesArray(byte[] data,char delimiter,int positionOfIndex){
+    protected ArrayList<Line> parseLinesArray(byte[] data,char delimiter,int positionOfIndex){
         ArrayList<Line> output = new ArrayList<>();
         ArrayList<Byte> currentData = new ArrayList<>();
 
         int delimiterCount = 0;
 
         ArrayList<Byte> indexData = new ArrayList<>();
-        boolean index = false;
         Integer numberOfItems = null;
 
         for(byte b : data){
@@ -57,33 +56,29 @@ public abstract class FileAPI {
                 delimiterCount++;
             }
 
-            if (delimiterCount == positionOfIndex){
-                index = true;
-            }
-
-            if (index){
+            if(delimiterCount == positionOfIndex){
                 indexData.add(b);
             }
 
-            if (delimiterCount == positionOfIndex + 1){
-                Byte[] flow = new Byte[currentData.size()];
-                numberOfItems = Integer.parseInt(parseRaw(indexData.toArray(flow)).replace(delimiter,' ').trim());
-                index = false;
+            if(delimiterCount == positionOfIndex + 1){
+                Byte[] flow = new Byte[indexData.size()];
+                numberOfItems = Integer.parseInt(parseRaw(indexData.toArray(flow)).replaceAll("#",""));
             }
 
-            if(numberOfItems != null && delimiterCount == numberOfItems + 1){
+            if (numberOfItems != null && delimiterCount == (2 + numberOfItems + 1)){
                 Byte[] flow = new Byte[currentData.size()];
                 output.add(new Line(currentData.toArray(flow),delimiter));
-                currentData.clear();
-                delimiterCount = 1;
+                delimiterCount = 0;
+                numberOfItems = null;
                 indexData.clear();
+                currentData.clear();
             }
 
         }
         return output;
     }
 
-    private String parseRaw(Byte[] flow){
+    protected String parseRaw(Byte[] flow){
         String raw = "";
         for(byte c : flow){
             raw += (char) c;

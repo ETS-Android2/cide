@@ -141,4 +141,23 @@ public class PescaAPITest {
 
     }
 
+    @Test
+    public void boatTest(){
+
+        PescaAPI api = null;
+
+        try {
+            api = new PescaAPI();
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+        try {
+            Assert.assertTrue(api.getBoatByIdentifier("papito"));
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
 }
