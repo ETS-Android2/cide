@@ -70,7 +70,7 @@ public class StatisticResult {
         ArrayList<Statistics> mean = this.statistics;
         mean.sort(Comparator.comparing(Statistics::getData));
 
-        if(mean.size() != 0){
+        if(mean.size() > 1){
             this.mean = mean.get((mean.size() / 2) - 1).getData() + mean.get(mean.size() / 2).getData() / 2;
         }
 
