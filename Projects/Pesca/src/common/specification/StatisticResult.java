@@ -8,15 +8,41 @@ import java.util.HashMap;
 
 public class StatisticResult {
 
+    /**
+     * The maximum size of all the fish.
+     */
     private float max;
+    /**
+     * The minimum size of all the fish
+     */
     private float min;
+    /**
+     * The average size of all the fish.
+     */
     private float average;
+    /**
+     * The mean size of all the fish.
+     */
     private float mean;
+    /**
+     * The sizes of all the fish group by type of fish.
+     */
     private HashMap<String, Float> fishSizes;
+    /**
+     * The number of catches of all the fish group by the fish identifier.
+     */
     private HashMap<String, Float> fishCatches;
-
+    /**
+     * The raw statistics.
+     */
     private ArrayList<Statistics> statistics;
 
+    /**
+     *
+     * The class to parse all the statistics.
+     *
+     * @param statistics the input data.
+     */
     public StatisticResult(ArrayList<Statistics> statistics) {
         this.statistics = statistics;
         this.fishSizes = new HashMap<>();
@@ -24,6 +50,11 @@ public class StatisticResult {
         this.parseStatistic();
     }
 
+    /**
+     *
+     * The method that iterates on the data an calculates the different metrics.
+     *
+     */
     private void parseStatistic(){
 
         float average = 0;

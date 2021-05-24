@@ -57,50 +57,6 @@ public class PescaAPI extends FileAPI {
         return true;
     }
 
-    private FileOutputStream execute(String key) throws IOException {
-        return new FileOutputStream(key);
-    }
-
-    private FileInputStream read(String key) throws IOException {
-        return new FileInputStream(key);
-    }
-
-    private void createFileEmpty(String bucket, String key) throws IOException {
-        try {
-            FileOutputStream outputStream = new FileOutputStream(parseKey(bucket,key));
-            outputStream.write(' ');
-            outputStream.close();
-        } catch (FileNotFoundException e){
-            createBucket(bucket);
-            createFileEmpty(bucket,key);
-        } catch (IOException e){
-            throw new IOException(e.getMessage());
-        }
-    }
-
-    private boolean createBucket(String bucket) {
-        File path = new File(parseBucket(bucket));
-        return path.mkdir();
-    }
-
-    private String parseKey(String bucket,String key){
-        return parseBucket(bucket) + System.getProperty("file.separator") + key;
-    }
-
-    private String parseBucket(String bucket){
-        return System.getProperty("user.home") + System.getProperty("file.separator") + "pesca" + System.getProperty("file.separator") + bucket;
-    }
-
-    private boolean createFlowContainer(){
-        File path = new File(System.getProperty("user.home") + System.getProperty("file.separator") + "pesca");
-        boolean exists = path.exists();
-        if(exists){
-            return true;
-        } else {
-            return path.mkdir();
-        }
-    }
-
     /* ======================================
         USERS METHODS
      ====================================== */

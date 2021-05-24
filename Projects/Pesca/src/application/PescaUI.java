@@ -9,12 +9,33 @@ import java.util.HashMap;
 
 public class PescaUI {
 
+    /**
+     * Singleton Instace
+     */
     private static PescaUI pescaUI;
 
-    private FormManager formManager;
-    private HashMap<String, Form> forms;
-    private PescaAPI api;
+    /**
+     * Form Manager to manage forms scenes.
+     */
+    private final FormManager formManager;
 
+    /**
+     * HashMap of forms to switch inside controllers.
+     */
+    private final HashMap<String, Form> forms;
+
+    /**
+     * API to access with the application.
+     */
+    private final PescaAPI api;
+
+    /**
+     *
+     * Initializes some services, the form manager,
+     * the forms hashmap, the API and registers some predefined forms.
+     *
+     * @throws Exception if some flow produces an error.
+     */
     private PescaUI() throws Exception {
         formManager = new FormManager(this);
         forms = new HashMap<>();
@@ -22,11 +43,19 @@ public class PescaUI {
         registerForms();
     }
 
+    /**
+     *
+     * Initialize the PescaUI class and if is instantiated returns self.
+     *
+     * @return the instance of PescaUI.
+     * @throws Exception if some flow produces an error.
+     */
     public static PescaUI init() throws Exception {
         if(pescaUI != null){
-            throw new Exception("Application already started.");
+            return pescaUI;
         }
-        return new PescaUI();
+        pescaUI = new PescaUI();
+        return pescaUI;
     }
 
     public FormManager getFormManager() {
@@ -41,11 +70,12 @@ public class PescaUI {
         return forms;
     }
 
+    /**
+     * Registers some predefined forms.
+     */
     private void registerForms(){
-
         Form mainForm = new MainForm(this.formManager);
         this.forms.put("main",mainForm);
-
     }
 
 }

@@ -11,9 +11,23 @@ import java.util.List;
 
 public class Boat {
 
+    /**
+     * The identifier of the boat.
+     */
     private Data name;
+
+    /**
+     * The users of the boat.
+     */
     private ArrayList<Data> users;
 
+    /**
+     *
+     * The boat is the container of the users that go to fish.
+     *
+     * @param name the identifier of the boat.
+     * @param users the users that contains the boat.
+     */
     public Boat(Data name, ArrayList<Data> users) {
         this.name = name;
         this.users = users;
@@ -27,6 +41,13 @@ public class Boat {
         return users;
     }
 
+    /**
+     *
+     * Return if the input identifier is in the different users in the boat.
+     *
+     * @param identifier the identifier of the user.
+     * @return if the user is in the boat.
+     */
     public boolean getUserByIdentifier(String identifier){
         for(Data d : this.users){
             if(d.getStringValue().equals(identifier)){
@@ -36,6 +57,13 @@ public class Boat {
         return false;
     }
 
+    /**
+     *
+     * Allow to add a user in the boat.
+     *
+     * @param user the user to add in the boat.
+     * @throws Exception if the user is already registered in the boat.
+     */
     public void add(String user) throws Exception {
         if(getUserByIdentifier(user)){
             throw new Exception("User already registered in boat");
@@ -43,6 +71,13 @@ public class Boat {
         this.users.add(new Data(toComplex(user.getBytes())));
     }
 
+    /**
+     *
+     * Allow to remove some user of the boat.
+     *
+     * @param user the user to remove in the boat.
+     * @throws Exception if the user is not registered in the boat.
+     */
     public void remove(String user) throws Exception {
         if(!getUserByIdentifier(user)){
             throw new Exception("User does not exist in boat.");
@@ -50,9 +85,19 @@ public class Boat {
         this.users.removeIf(d -> d.getStringValue().equals(user));
     }
 
+    /**
+     *
+     * Allow to convert the complex data of the boat
+     * to an array of bytes that can be written inside a file.
+     *
+     * @param delimiter to separate the data.
+     * @return array of bytes to write in a file.
+     */
     public byte[] exportData(char delimiter){
 
         ArrayList<Byte> data = new ArrayList<>();
+
+        // The identifier of the boat #example#
         data.add((byte)delimiter);
         Collections.addAll(data,this.name.getRaw());
         data.add((byte)delimiter);
@@ -64,7 +109,9 @@ public class Boat {
             }
         }
 
+        // Last char, the new line.
         data.add((byte)'\n');
+
         Byte[] flow = new Byte[data.size()];
         return toPrimitive(data.toArray(flow));
     }
@@ -77,15 +124,20 @@ public class Boat {
         return output;
     }
 
-    public static ArrayList<Data> toComplex(Data[] bytes){
-        return new ArrayList<>(Arrays.asList(bytes));
-    }
-
+    /**
+     *
+     * With a list of lines, can be used to detect the identifier and the
+     * grow number of users.
+     *
+     * @param lines the lines to convert to boat class.
+     * @return an arraylist of Boats.
+     */
     public static ArrayList<Boat> parseBoats(ArrayList<Line> lines) {
 
         ArrayList<Boat> boats = new ArrayList<>();
 
         for(Line l : lines){
+
             ArrayList<Data> users = Boat.toComplex(l.getData());
             // Remove boat name
             users.remove(0);
@@ -101,7 +153,25 @@ public class Boat {
         return boats;
     }
 
-    public Byte[] toComplex(byte[] bytes){
+    /**
+     *
+     * Return an arraylist with a simple list.
+     *
+     * @param bytes the input simple bytes.
+     * @return an arraylist of data.
+     */
+    public static ArrayList<Data> toComplex(Data[] bytes){
+        return new ArrayList<>(Arrays.asList(bytes));
+    }
+
+    /**
+     *
+     * Convert primitive array to more complex array.
+     *
+     * @param bytes the primitive bytes.
+     * @return an array of Byte.
+     */
+    public static Byte[] toComplex(byte[] bytes){
         Byte[] output = new Byte[bytes.length];
         for (int i = 0; i < bytes.length; i++) {
             output[i] = bytes[i];
