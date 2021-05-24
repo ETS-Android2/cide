@@ -4,7 +4,7 @@ import application.PescaUI;
 
 public class FormManager {
 
-    private PescaUI pescaUI;
+    private final PescaUI pescaUI;
     private Form currentForm;
 
     public FormManager(PescaUI pescaUI) {
@@ -12,6 +12,7 @@ public class FormManager {
     }
 
     private void loadForm(){
+        getCurrentForm().show();
         getCurrentForm().run();
     }
 
@@ -28,6 +29,10 @@ public class FormManager {
 
     public Form getCurrentForm() {
         return currentForm;
+    }
+
+    public PescaUI getPescaUI() {
+        return pescaUI;
     }
 
     public void changeForm(Form chatForm){

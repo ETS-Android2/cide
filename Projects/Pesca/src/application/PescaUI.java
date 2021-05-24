@@ -3,6 +3,7 @@ package application;
 import services.PescaAPI;
 import ui.Form;
 import ui.FormManager;
+import ui.forms.MainForm;
 
 import java.util.HashMap;
 
@@ -18,6 +19,7 @@ public class PescaUI {
         formManager = new FormManager(this);
         forms = new HashMap<>();
         api = new PescaAPI();
+        registerForms();
     }
 
     public static PescaUI init() throws Exception {
@@ -35,7 +37,14 @@ public class PescaUI {
         return api;
     }
 
+    public HashMap<String, Form> getForms() {
+        return forms;
+    }
+
     private void registerForms(){
+
+        Form mainForm = new MainForm(this.formManager);
+        this.forms.put("main",mainForm);
 
     }
 

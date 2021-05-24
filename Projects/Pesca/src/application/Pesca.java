@@ -20,11 +20,12 @@ public class Pesca {
             pescaConsole.start();
         } else {
             pescaUI = PescaUI.init();
+            pescaUI.getFormManager().changeForm(pescaUI.getForms().get("main"));
         }
     }
 
     public static void main(String[] args) throws Exception {
-        Pesca application = new Pesca("cli");
+        Pesca application = new Pesca("graphics");
         application.run();
     }
 
