@@ -21,6 +21,9 @@ public class PescaConsole extends DefaultConsole {
         api = new PescaAPI();
     }
 
+    /**
+     * Main menu, shows the main actions that the user can do.
+     */
     private void init(){
 
         String[] options = {
@@ -84,22 +87,12 @@ public class PescaConsole extends DefaultConsole {
 
     }
 
+    /**
+     * Obtain the identifier of the user and register it.
+     */
     private void registerNewUser(){
 
-        String[] messages = {
-                "Introduce el identificador del usuario"
-        };
-
-        SequentialMenu menu = new SequentialMenu(
-                messages
-                ,reader
-                ,"\t"
-                ,errorLog
-        );
-
-        menu.show();
-
-        ArrayList<String> result = menu.getOutput();
+        ArrayList<String> result = getUser();
 
         try {
             api.registerUser(result.get(0));
@@ -109,22 +102,12 @@ public class PescaConsole extends DefaultConsole {
 
     }
 
+    /**
+     * Obtain the identifier of the user and delete it.
+     */
     private void deleteUser(){
 
-        String[] messages = {
-                "Introduce el identificador del usuario"
-        };
-
-        SequentialMenu menu = new SequentialMenu(
-                messages
-                ,reader
-                ,"\t"
-                ,errorLog
-        );
-
-        menu.show();
-
-        ArrayList<String> result = menu.getOutput();
+        ArrayList<String> result = getUser();
 
         try {
             api.deleteUser(result.get(0));
@@ -134,16 +117,19 @@ public class PescaConsole extends DefaultConsole {
 
     }
 
+    /**
+     * Sequential menu to register new fish action.
+     */
     private void newAction(){
 
         String[] messages = {
                 "Introduce el identificador del usuario",
-                "Donde quieres pescar (mediterrania | florida)"
+                "Donde quieres pescar (mediterrania | florida | indico | pacifico)"
         };
 
         String[] validation = {
                 "^[a-zA-Z0-9]+$"
-                ,"^(florida|mediterrania)$"
+                ,"^(florida|mediterrania|indico|pacifico)$"
         };
 
         SequentialMenu menu = new SequentialMenu(
@@ -169,6 +155,10 @@ public class PescaConsole extends DefaultConsole {
 
     }
 
+    /**
+     * @param input name of the boat to go fish.
+     * @return the selected path.
+     */
     private String parseBoat(String input){
         switch (input) {
             case "florida":
@@ -182,22 +172,12 @@ public class PescaConsole extends DefaultConsole {
         }
     }
 
+    /**
+     * Sequential menu to obtain the statistics of the user.
+     */
     private void userStatistics(){
 
-        String[] messages = {
-                "Introduce el identificador del usuario"
-        };
-
-        SequentialMenu menu = new SequentialMenu(
-                messages
-                ,reader
-                ,"\t"
-                ,errorLog
-        );
-
-        menu.show();
-
-        ArrayList<String> result = menu.getOutput();
+        ArrayList<String> result = getUser();
 
         try {
             showStatistics(api.getStatistics(result.get(0)));
@@ -207,6 +187,35 @@ public class PescaConsole extends DefaultConsole {
 
     }
 
+    /**
+     *
+     * Sequential menu to obtain the identifier of the user.
+     *
+     * @return the result of the menu.
+     */
+    private ArrayList<String> getUser() {
+        String[] messages = {
+                "Introduce el identificador del usuario"
+        };
+
+        SequentialMenu menu = new SequentialMenu(
+                messages
+                , reader
+                , "\t"
+                , errorLog
+        );
+
+        menu.show();
+
+        return menu.getOutput();
+    }
+
+    /**
+     *
+     * Show the statistics of the StatisticsResult.
+     *
+     * @param statistics the statistics to show.
+     */
     private void showStatistics(StatisticResult statistics){
 
         Encapsulate.encapsulateString("ESTADÍSTICAS GENERALES","\t");
@@ -223,6 +232,14 @@ public class PescaConsole extends DefaultConsole {
 
     }
 
+    /**
+     *
+     * Show a hashmap in the CLI application.
+     *
+     * @param hashMap to show.
+     * @param header to show with the hashmap, usually specifies what data is being viewed.
+     * @param format the format of the data to show.
+     */
     private void showStatisticsHashMaps(HashMap<String,Float> hashMap,String header, String format){
         System.out.printf("\n\t%s:",header);
         for(Map.Entry<String,Float> entry : hashMap.entrySet()){
