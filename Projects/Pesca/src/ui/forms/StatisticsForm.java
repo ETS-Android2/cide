@@ -13,19 +13,19 @@ import java.util.Map;
 
 public class StatisticsForm extends PescaForm {
 
-    private StatisticResult result;
-    private String user;
+    private final StatisticResult result;
+    private final String user;
 
     private JTextField maximoPesoField;
     private JTextField minimoPesoField;
     private JTextField mediaPesoField;
     private JTextField medianaPesoField;
 
-    private JList fishSizesList;
-    private JList fishCatchesList;
+    private JList<String> fishSizesList;
+    private JList<String> fishCatchesList;
 
-    private DefaultListModel fishSizesModel;
-    private DefaultListModel fishCatchesModel;
+    private DefaultListModel<String> fishSizesModel;
+    private DefaultListModel<String> fishCatchesModel;
 
     public StatisticsForm(FormManager manager, StatisticResult statistic, String user) {
         super(manager);
@@ -88,11 +88,11 @@ public class StatisticsForm extends PescaForm {
         medianaPesoField.setBounds(220, 153, 68, 24);
         root.getContentPane().add(medianaPesoField);
 
-        fishSizesList = new JList();
+        fishSizesList = new JList<String>();
         fishSizesList.setBounds(10, 221, 276, 104);
         root.getContentPane().add(fishSizesList);
 
-        fishCatchesList = new JList();
+        fishCatchesList = new JList<String>();
         fishCatchesList.setBounds(316, 221, 276, 104);
         root.getContentPane().add(fishCatchesList);
 
@@ -112,10 +112,10 @@ public class StatisticsForm extends PescaForm {
         lblNewLabel_3.setBounds(120, 18, 208, 14);
         root.getContentPane().add(lblNewLabel_3);
 
-        fishSizesModel = new DefaultListModel();
+        fishSizesModel = new DefaultListModel<String>();
         this.fishSizesList.setModel(fishSizesModel);
 
-        fishCatchesModel = new DefaultListModel();
+        fishCatchesModel = new DefaultListModel<String>();
         this.fishCatchesList.setModel(fishCatchesModel);
 
         exitButton.addActionListener(new ActionListener() {
@@ -129,6 +129,9 @@ public class StatisticsForm extends PescaForm {
 
     }
 
+    /**
+     * Updates all fields with the StatisticsResult data.
+     */
     private void updateFields(){
 
         this.maximoPesoField.setText(String.format("%.2f",this.result.getMax()));
@@ -136,21 +139,31 @@ public class StatisticsForm extends PescaForm {
         this.mediaPesoField.setText(String.format("%.2f",this.result.getAverage()));
         this.medianaPesoField.setText(String.format("%.2f",this.result.getMean()));
 
-        this.fishSizesModel = updateList(fishSizesModel,this.result.getFishSizes(),"KG");
-        this.fishCatchesModel = updateList(fishCatchesModel,this.result.getFishCatches(),"veces");
+        updateList(fishSizesModel,this.result.getFishSizes(),"KG");
+        updateList(fishCatchesModel,this.result.getFishCatches(),"veces");
 
     }
 
-    private DefaultListModel updateList(DefaultListModel list, HashMap<String,Float> data,String unit){
+    /**
+     *
+     * Updates the list with teh data and can show an specified unit.
+     *
+     * @param list the list to update.
+     * @param data the data to add in the list.
+     * @param unit the unit of the data.
+     */
+    private void updateList(DefaultListModel<String> list, HashMap<String,Float> data, String unit){
         list.clear();
         for(Map.Entry<String,Float> entry : data.entrySet()){
             String d = String.format("%s, %.2f %s",entry.getKey(), entry.getValue(),unit);
             System.out.println(d);
             list.addElement(d);
         }
-        return list;
     }
 
+    /**
+     * Allows to return to the main menu.
+     */
     private void goToMenu(){
         this.manager.changeForm(this.manager.getPescaUI().getForms().get("main"));
     }

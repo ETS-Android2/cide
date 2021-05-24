@@ -135,6 +135,12 @@ public class MainForm extends PescaForm {
 
     }
 
+    /**
+     *
+     * Allows to register new user.
+     *
+     * @throws Exception if the field is empty or the user already exists.
+     */
     private void registerUser() throws Exception {
 
         if(this.altaDeUsuarioField.getText().equals("")){
@@ -146,6 +152,12 @@ public class MainForm extends PescaForm {
 
     }
 
+    /**
+     *
+     * Allows to delete an user.
+     *
+     * @throws Exception if the field is empty or the user doesnt exists.
+     */
     private void deleteUser() throws Exception {
 
         if(this.bajaDeUsuarioField.getText().equals("")){
@@ -157,6 +169,13 @@ public class MainForm extends PescaForm {
 
     }
 
+    /**
+     *
+     * Creates a new statistics view, if the field is empty is Global, and if the user field is with some text,
+     * then creates the statistics with the user.
+     *
+      * @throws Exception if something fails.
+     */
     private void showStatistics() throws Exception {
 
         StatisticsForm form;
@@ -170,6 +189,12 @@ public class MainForm extends PescaForm {
         this.manager.changeForm(form);
     }
 
+    /**
+     *
+     * Allow to register new action with the specified user.
+     *
+     * @throws Exception if the user field is empty or the users doesnt exist.
+     */
     private void registerNewAction() throws Exception {
 
         if(this.pescaField.getText().equals("")){
@@ -185,6 +210,12 @@ public class MainForm extends PescaForm {
 
     }
 
+    /**
+     *
+     * With the JRadioButtons selection return one path or another.
+     *
+     * @return the path of the boat to go fish.
+     */
     private String parseBoat() {
         if(floridaButton.isSelected()){
             return "/data/florida.txt";

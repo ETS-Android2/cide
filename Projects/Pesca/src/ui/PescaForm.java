@@ -4,9 +4,19 @@ import javax.swing.*;
 
 public abstract class PescaForm implements Form {
 
+    /**
+     * The manager of the form.
+     */
     protected FormManager manager;
+
+    /**
+     * The root of the form.
+     */
     protected JFrame root;
 
+    /**
+     * @param manager to manage the form.
+     */
     public PescaForm(FormManager manager){
         this.manager = manager;
         this.root = new JFrame();

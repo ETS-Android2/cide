@@ -9,6 +9,13 @@ public class NotificationWindow {
     private static final JTextArea errorArea = new JTextArea();
     private static final JLabel lblNewLabel = new JLabel("Error:");
 
+    /**
+     *
+     * Loads a window to display notification messages.
+     *
+     * @param message the message to display.
+     * @param flag the flag of the type of the message ex. Error, Success, etc...
+     */
     public static void run(String message,String flag) {
 
         root.setBounds(100, 100, 450, 139);
