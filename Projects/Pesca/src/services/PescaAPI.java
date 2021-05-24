@@ -1,17 +1,21 @@
 package services;
 
-import common.data.Data;
 import common.data.Line;
 import common.specification.*;
 
 import java.io.*;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PescaAPI extends FileAPI {
 
+    /**
+     *
+     * The instance of the API, at first time, tries to create flow container in the user home.
+     * Then tries to establish all data flows needed by the API.
+     *
+     * @throws IOException if something of the Input/Output fails.
+     */
     public PescaAPI() throws IOException {
 
         createFlowContainer();
@@ -22,6 +26,14 @@ public class PescaAPI extends FileAPI {
         } while (!flow);
     }
 
+    /**
+     *
+     * Creates all the flows needed by the API, detects if exists, if not,
+     * then tries to create it.
+     *
+     * @return if all flows are successfully created or already exists.
+     * @throws IOException if something of the Input/Output fails.
+     */
     private boolean establishDataFlows() throws IOException {
 
         try {
@@ -61,6 +73,16 @@ public class PescaAPI extends FileAPI {
         USERS METHODS
      ====================================== */
 
+    /**
+     *
+     * Obtain all data in the users.txt, then parse all lines and
+     * for each line check if the user input is equal to one of them.
+     * If there is some coincidence then returns true else returns false.
+     *
+     * @param user the user to check.
+     * @return if the users exists or not.
+     * @throws IOException if something of the Input/Output fails.
+     */
     public boolean getUserByIdentifier(String user) throws IOException {
         byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
         ArrayList<Line> lines = parseLines(raw,'#',1);
@@ -72,6 +94,16 @@ public class PescaAPI extends FileAPI {
         return false;
     }
 
+    /**
+     *
+     * Allow to write a new users in the users.txt. At first time
+     * checks if the user is already registered in the flow, if not, proceed
+     * to register the new users and for that, reads all users and write all of it
+     * again, then writes the new user.
+     *
+     * @param identifier the user to register.
+     * @throws Exception if the user is already registered.
+     */
     public void registerUser(String identifier) throws Exception {
 
         if(getUserByIdentifier(identifier)){
@@ -93,6 +125,16 @@ public class PescaAPI extends FileAPI {
         outputStream.close();
     }
 
+    /**
+     *
+     * Allow to delete an user of the users.txt flow, at first time check if the user is registered into
+     * the flow and read all the users including the one who will be deleted, an then write all of it, when
+     * the user is reached and is equal to the input identifier doesn't write it, continues to the next one.
+     * The method to delete an user is not writing it again.
+     *
+     * @param identifier the identifier to delete.
+     * @throws Exception if the user is not registered.
+     */
     public void deleteUser(String identifier) throws Exception {
 
         if (!getUserByIdentifier(identifier)){
@@ -112,6 +154,14 @@ public class PescaAPI extends FileAPI {
         outputStream.close();
     }
 
+    /**
+     *
+     * Allow to obtain an user by the class specificaction for usage in another methods.
+     *
+     * @param identifier to search.
+     * @return an User class containing the identifier.
+     * @throws Exception if the user does not exists.
+     */
     public User getUser(String identifier) throws Exception {
 
         if(!getUserByIdentifier(identifier)){
@@ -131,9 +181,19 @@ public class PescaAPI extends FileAPI {
     }
 
     /* ======================================
-        REGISTER METHODS
+        FISH ACTION METHODS
      ====================================== */
 
+    /**
+     *
+     * Allows to register a new fishing action to the registers.txt.
+     * At first time check if the user exists and then get the date of now.
+     * Then creates the string that follows this pattern #<USER>#<FISH>#<SIZE>#<DATE>#.
+     *
+     * @param user the user to register the fish action.
+     * @param fish the fish to register to the fish action.
+     * @throws Exception if the user does not exists at the time of the action.
+     */
     public void registerNewAction(String user, Fish fish) throws Exception {
 
         if(!getUserByIdentifier(user)){
@@ -160,6 +220,15 @@ public class PescaAPI extends FileAPI {
         FISH METHODS
      ====================================== */
 
+    /**
+     *
+     * Obtain all the fish data inside the data flows, then for each fish generates a
+     * random number and tries to get the higher fish between the ranges of the random.
+     *
+     * @param key the key to search the data of the fish /data/florida.txt
+     * @return a fish instance containing all fish data.
+     * @throws IOException if something of the Input/Output fails.
+     */
     public Fish getFish(String key) throws IOException {
 
         byte[] raw = getDataFromFlow(read(key));
@@ -182,6 +251,13 @@ public class PescaAPI extends FileAPI {
         STATISTICS METHODS
      ====================================== */
 
+    /**
+     *
+     * Get all statistics of the registers.txt
+     *
+     * @return the statistics parsed.
+     * @throws IOException if something of the Input/Output fails.
+     */
     public StatisticResult getStatistics() throws IOException {
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
@@ -195,6 +271,14 @@ public class PescaAPI extends FileAPI {
         return new StatisticResult(statistics);
     }
 
+    /**
+     *
+     * Get all statistics filtered by the user.
+     *
+     * @param user the user to filter.
+     * @return the statistics parsed.
+     * @throws IOException if something of the Input/Output fails.
+     */
     public StatisticResult getStatistics(String user) throws IOException {
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
@@ -214,6 +298,14 @@ public class PescaAPI extends FileAPI {
         BOAT METHODS
      ====================================== */
 
+    /**
+     *
+     * Get all boats inside the boats.txt. Then return if exists.
+     *
+     * @param boat the boat to determine his existence.
+     * @return if the boat exists in boats.txt.
+     * @throws IOException if something of the Input/Output fails.
+     */
     public boolean getBoatByIdentifier(String boat) throws IOException {
         byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
         ArrayList<Line> lines = parseLinesArray(raw,'#');
@@ -228,7 +320,18 @@ public class PescaAPI extends FileAPI {
         return false;
     }
 
-    public void registerBoat(String identifier) throws IOException {
+    /**
+     *
+     * Allow to register new boat with the desired identifier.
+     *
+     * @param identifier the identfier to register.
+     * @throws Exception if the boat is already registered.
+     */
+    public void registerBoat(String identifier) throws Exception {
+
+        if(getBoatByIdentifier(identifier)){
+            throw new Exception("Boat already exists.");
+        }
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
         ArrayList<Line> lines = parseLinesArray(raw,'#');
@@ -245,6 +348,14 @@ public class PescaAPI extends FileAPI {
         stream.close();
     }
 
+    /**
+     *
+     * Returns a boat with the users and his identifier.
+     *
+     * @param identifier of the boat.
+     * @return the boat instance.
+     * @throws Exception if the boat is not registered.
+     */
     public Boat getBoat(String identifier) throws Exception {
 
         if(!getBoatByIdentifier(identifier)){
@@ -264,6 +375,15 @@ public class PescaAPI extends FileAPI {
         return null;
     }
 
+    /**
+     *
+     * Allow to register a user inside a boat, the steps to do that is
+     * with the boat object, add an user in it and then write again that boat.
+     *
+     * @param boat the boat to register the user.
+     * @param user the user to register in the boat.
+     * @throws Exception if the user already exists in the boat.
+     */
     public void registerUserInBoat(Boat boat,User user) throws Exception {
 
         if(boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
@@ -272,23 +392,17 @@ public class PescaAPI extends FileAPI {
 
         boat.add(user.getIdentifier().getStringValue());
 
-        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
-        ArrayList<Line> lines = parseLinesArray(raw,'#');
-        ArrayList<Boat> boats = Boat.parseBoats(lines);
-
-        FileOutputStream stream = execute(parseKey("flow","boats.txt"));
-
-        for(Boat b : boats){
-            if(b.getName().getStringValue().equals(boat.getName().getStringValue())){
-                stream.write(boat.exportData('#'));
-            } else {
-                stream.write(b.exportData('#'));
-            }
-        }
-
-        stream.close();
+        replaceBoat(boat);
     }
 
+    /**
+     * 
+     * Allow to delete an user inside boat.
+     * 
+     * @param boat the boat to delete the user.
+     * @param user the user to delete.
+     * @throws Exception if the user is not registered in the boat.
+     */
     public void deleteUserInBoat(Boat boat, User user) throws Exception {
 
         if(!boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
@@ -297,14 +411,25 @@ public class PescaAPI extends FileAPI {
 
         boat.remove(user.getIdentifier().getStringValue());
 
-        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
-        ArrayList<Line> lines = parseLinesArray(raw,'#');
+        replaceBoat(boat);
+    }
+
+    /**
+     *
+     * Allow to replace a boat in the boats.txt.
+     *
+     * @param boat to replace.
+     * @throws IOException if something of the Input/Output fails.
+     */
+    private void replaceBoat(Boat boat) throws IOException {
+        byte[] raw = getDataFromFlow(read(parseKey("flow", "boats.txt")));
+        ArrayList<Line> lines = parseLinesArray(raw, '#');
         ArrayList<Boat> boats = Boat.parseBoats(lines);
 
-        FileOutputStream stream = execute(parseKey("flow","boats.txt"));
+        FileOutputStream stream = execute(parseKey("flow", "boats.txt"));
 
-        for(Boat b : boats){
-            if(b.getName().getStringValue().equals(boat.getName().getStringValue())){
+        for (Boat b : boats) {
+            if (b.getName().getStringValue().equals(boat.getName().getStringValue())) {
                 stream.write(boat.exportData('#'));
             } else {
                 stream.write(b.exportData('#'));
