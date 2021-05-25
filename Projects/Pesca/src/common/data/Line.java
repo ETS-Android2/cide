@@ -1,5 +1,6 @@
 package common.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -30,7 +31,7 @@ public class Line {
      * @param delimiter the delimiter that separates de data.
      * @return an arraylist of data.
      */
-    private Data[] parseLine(Byte[] input,char delimiter){
+    protected Data[] parseLine(Byte[] input,char delimiter){
         ArrayList<Data> data = new ArrayList<>();
         ArrayList<Byte> currentData = new ArrayList<>();
         int delimiterCount = 0;
@@ -89,6 +90,40 @@ public class Line {
             output[i] = bytes[i];
         }
         return output;
+    }
+
+    public static Data getDataInParsedLine(Byte[] input,char delimiter,int position) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int positionCount = 0;
+
+        for(byte c : input){
+
+            if(c == delimiter){
+                delimiterCount++;
+            } else if (c != '\n'){
+                currentData.add(c);
+            }
+            // The data is limited by 2 delimiters #<DATA>#.
+            if(delimiterCount == 2){
+                Byte[] raw = new Byte[currentData.size()];
+                Data d = new Data(currentData.toArray(raw));
+                delimiterCount = 1;
+                currentData.clear();
+
+                if(positionCount == (position - 1)){
+                    return d;
+                }
+
+                positionCount++;
+
+            }
+
+
+        }
+
+        throw new IOException("Data not found.");
     }
 
 }

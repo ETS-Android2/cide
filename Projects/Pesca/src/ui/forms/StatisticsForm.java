@@ -156,7 +156,6 @@ public class StatisticsForm extends PescaForm {
         list.clear();
         for(Map.Entry<String,Float> entry : data.entrySet()){
             String d = String.format("%s, %.2f %s",entry.getKey(), entry.getValue(),unit);
-            System.out.println(d);
             list.addElement(d);
         }
     }

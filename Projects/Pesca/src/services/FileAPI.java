@@ -4,7 +4,6 @@ import common.data.Data;
 import common.data.Line;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public abstract class FileAPI {
@@ -183,6 +182,416 @@ public abstract class FileAPI {
 
         }
         return output;
+    }
+
+    /* ======================================
+        SEARCH METHODS
+     ====================================== */
+
+    protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,String toSearch) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(d.getStringValue().equals(toSearch)){
+                    return true;
+                }
+
+            }
+
+        }
+
+        return false;
+    }
+
+    protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,Integer toSearch) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(d.getIntValue() == toSearch){
+                    return true;
+                }
+
+            }
+
+        }
+
+        return false;
+    }
+
+    protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,Float toSearch) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(d.getFloatValue() == toSearch){
+                    return true;
+                }
+
+            }
+
+        }
+
+        return false;
+    }
+
+    /* ======================================
+        POSITION METHODS
+     ====================================== */
+
+    protected int getLinePositionInFlow(InputStream stream,char delimiter,int numberOfData,int position,String toSearch) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(d.getStringValue().equals(toSearch)){
+                    return lineCount;
+                }
+
+                lineCount++;
+
+            }
+
+        }
+
+        return -1;
+    }
+
+    protected int getLinePositionInFlow(InputStream stream,char delimiter,int numberOfData,int position,Integer toSearch) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(d.getIntValue() == toSearch){
+                    return lineCount;
+                }
+
+                lineCount++;
+
+            }
+
+        }
+
+        return -1;
+    }
+
+    protected int getLinePositionInFlow(InputStream stream,char delimiter,int numberOfData,int position,Float toSearch) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(d.getFloatValue() == toSearch){
+                    return lineCount;
+                }
+
+                lineCount++;
+
+            }
+
+        }
+
+        return -1;
+    }
+
+    /* ======================================
+        GET METHODS
+     ====================================== */
+
+    protected Line getLineDataInFlow(InputStream stream,char delimiter,int numberOfData,int position) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Line l = new Line(currentData.toArray(flow),delimiter);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(lineCount == position - 1){
+                    return l;
+                }
+
+                lineCount++;
+
+            }
+
+        }
+
+        return null;
+    }
+
+    protected Data getDataInLinePosition(InputStream stream,char delimiter,int numberOfData,int position,int dataPosition) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                delimiterCount = 0;
+
+                if(lineCount == position){
+                    return Line.getDataInParsedLine(currentData.toArray(flow),delimiter,dataPosition);
+                }
+
+                currentData.clear();
+
+                lineCount++;
+
+            }
+
+
+        }
+
+        return null;
+    }
+
+    /* ======================================
+        OPERATION METHODS
+     ====================================== */
+
+    protected int getLineWhereCondition(InputStream stream,char delimiter,int numberOfData,int position,Integer initial, DataOperation operation) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        int line = -1;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                switch (operation){
+                    case EQUAL:
+                        if(d.getIntValue() == initial)
+                            return lineCount;
+                    case LOWER:
+                        if(d.getIntValue() < initial)
+                            line = lineCount;
+                    case HIGHER:
+                        if(d.getIntValue() > initial)
+                            line = lineCount;
+                    case LOWER_OR_EQUAL:
+                        if(d.getIntValue() <= initial)
+                            line = lineCount;
+                    case HIGHER_OR_EQUAL:
+                        if(d.getIntValue() >= initial)
+                            line = lineCount;
+                    default:
+                        throw new IOException("Operation not supplied.");
+                }
+
+            }
+
+            lineCount++;
+
+        }
+
+        return line;
+    }
+
+    protected int getLineWhereCondition(InputStream stream,char delimiter,int numberOfData,int position,Float initial, DataOperation operation) throws IOException {
+
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        int line = -1;
+
+        while((b = (byte) stream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+
+                Byte[] flow = new Byte[currentData.size()];
+
+                Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                switch (operation){
+                    case EQUAL:
+                        if(d.getFloatValue() == initial)
+                            return lineCount;
+                        break;
+                    case LOWER:
+                        if(initial < d.getFloatValue())
+                            line = lineCount;
+                        break;
+                    case HIGHER:
+                        if(initial > d.getFloatValue())
+                            line = lineCount;
+                        break;
+                    case LOWER_OR_EQUAL:
+                        if(initial <= d.getFloatValue())
+                            line = lineCount;
+                        break;
+                    case HIGHER_OR_EQUAL:
+                        if(initial >= d.getFloatValue())
+                            line = lineCount;
+                        break;
+                    default:
+                        throw new IOException("Operation not supplied.");
+                }
+
+                lineCount++;
+
+            }
+
+        }
+
+        return line;
     }
 
 }
