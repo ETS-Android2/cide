@@ -7,7 +7,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class PescaAPI extends FileAPI implements PescaService {
+public class PescaAPI extends FileAPI {
 
     /**
      *
@@ -83,7 +83,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @return if the users exists or not.
      * @throws IOException if something of the Input/Output fails.
      */
-    @Override
     public boolean getUserByIdentifier(String user) throws IOException {
         byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
         ArrayList<Line> lines = parseLines(raw,'#',1);
@@ -105,7 +104,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @param identifier the user to register.
      * @throws Exception if the user is already registered.
      */
-    @Override
     public void registerUser(String identifier) throws Exception {
 
         if(getUserByIdentifier(identifier)){
@@ -137,7 +135,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @param identifier the identifier to delete.
      * @throws Exception if the user is not registered.
      */
-    @Override
     public void deleteUser(String identifier) throws Exception {
 
         if (!getUserByIdentifier(identifier)){
@@ -165,7 +162,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @return an User class containing the identifier.
      * @throws Exception if the user does not exists.
      */
-    @Override
     public User getUser(String identifier) throws Exception {
 
         if(!getUserByIdentifier(identifier)){
@@ -198,7 +194,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @param fish the fish to register to the fish action.
      * @throws Exception if the user does not exists at the time of the action.
      */
-    @Override
     public void registerNewAction(String user, Fish fish) throws Exception {
 
         if(!getUserByIdentifier(user)){
@@ -234,7 +229,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @return a fish instance containing all fish data.
      * @throws IOException if something of the Input/Output fails.
      */
-    @Override
     public Fish getFish(String key) throws IOException {
 
         byte[] raw = getDataFromFlow(read(key));
@@ -264,7 +258,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @return the statistics parsed.
      * @throws IOException if something of the Input/Output fails.
      */
-    @Override
     public StatisticResult getStatistics() throws IOException {
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
@@ -286,7 +279,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @return the statistics parsed.
      * @throws IOException if something of the Input/Output fails.
      */
-    @Override
     public StatisticResult getStatistics(String user) throws IOException {
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
@@ -314,7 +306,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @return if the boat exists in boats.txt.
      * @throws IOException if something of the Input/Output fails.
      */
-    @Override
     public boolean getBoatByIdentifier(String boat) throws IOException {
         byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
         ArrayList<Line> lines = parseLinesArray(raw,'#');
@@ -336,7 +327,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @param identifier the identfier to register.
      * @throws Exception if the boat is already registered.
      */
-    @Override
     public void registerBoat(String identifier) throws Exception {
 
         if(getBoatByIdentifier(identifier)){
@@ -366,7 +356,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @return the boat instance.
      * @throws Exception if the boat is not registered.
      */
-    @Override
     public Boat getBoat(String identifier) throws Exception {
 
         if(!getBoatByIdentifier(identifier)){
@@ -395,7 +384,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @param user the user to register in the boat.
      * @throws Exception if the user already exists in the boat.
      */
-    @Override
     public void registerUserInBoat(Boat boat,User user) throws Exception {
 
         if(boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
@@ -415,7 +403,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @param user the user to delete.
      * @throws Exception if the user is not registered in the boat.
      */
-    @Override
     public void deleteUserInBoat(Boat boat, User user) throws Exception {
 
         if(!boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
@@ -434,7 +421,6 @@ public class PescaAPI extends FileAPI implements PescaService {
      * @param boat to replace.
      * @throws IOException if something of the Input/Output fails.
      */
-    @Override
     public void replaceBoat(Boat boat) throws IOException {
         byte[] raw = getDataFromFlow(read(parseKey("flow", "boats.txt")));
         ArrayList<Line> lines = parseLinesArray(raw, '#');
@@ -451,18 +437,6 @@ public class PescaAPI extends FileAPI implements PescaService {
         }
 
         stream.close();
-    }
-
-    /* ======================================
-        UTILITY METHODS
-     ====================================== */
-
-    protected byte[] toPrimitive(char[] chars){
-        byte[] output = new byte[chars.length];
-        for (int i = 0; i < chars.length; i++) {
-            output[i] = (byte) chars[i];
-        }
-        return output;
     }
 
 }

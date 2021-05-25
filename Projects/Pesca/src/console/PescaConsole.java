@@ -2,6 +2,7 @@ package console;
 
 import common.specification.StatisticResult;
 import services.PescaAPI;
+import services.PescaAPISimple;
 import termux.Components.Command.CommandParser;
 import termux.Components.Menu.DefaultInteractiveMenu;
 import termux.Components.Menu.Encapsulate;
@@ -15,10 +16,10 @@ import java.util.Map;
 
 public class PescaConsole extends DefaultConsole {
 
-    private final PescaAPI api;
+    private final PescaAPISimple api;
 
     public PescaConsole() throws Exception {
-        api = new PescaAPI();
+        api = new PescaAPISimple();
     }
 
     /**

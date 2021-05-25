@@ -56,10 +56,10 @@ public class Pesca {
 
     public static void main(String[] args) throws Exception {
         // Graphical
-        Pesca application = new Pesca("graphics");
+        //Pesca application = new Pesca("graphics");
 
         // CLI
-        //Pesca application = new Pesca("cli");
+        Pesca application = new Pesca("cli");
 
         application.run();
     }

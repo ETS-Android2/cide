@@ -5,6 +5,7 @@ import common.data.Line;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class FileAPI {
 
@@ -133,7 +134,7 @@ public abstract class FileAPI {
      * into a Line class.
      *
      * @param data the data to parse.
-     * @param delimiter the delimiter to separate the informtion.
+     * @param delimiter the delimiter to separate the information.
      * @param numberOfData the number of items that contains one line.
      * @return an array of Lines.
      */
@@ -156,6 +157,36 @@ public abstract class FileAPI {
         return output;
     }
 
+    /**
+     *
+     * Split the lines in the file by the number of items specified, doesnt detect lines.
+     * When detect the number of items specified reading byte per byte, converts that flow of data
+     * into a Line class.
+     *
+     * @param stream the data stream to manipulate.
+     * @param delimiter the delimiter to separate the information.
+     * @param numberOfData the number of items that contains one line.
+     * @return an array of Lines.
+     */
+    protected ArrayList<Line> parseLines(InputStream stream,char delimiter,int numberOfData) throws IOException {
+        ArrayList<Line> output = new ArrayList<>();
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        byte b;
+        while((b = (byte) stream.read()) != -1){
+            currentData.add(b);
+            if (b == delimiter){
+                delimiterCount++;
+            }
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+                output.add(new Line(currentData.toArray(flow),delimiter));
+                delimiterCount = 0;
+                currentData.clear();
+            }
+        }
+        return output;
+    }
 
     /**
      *
@@ -211,6 +242,7 @@ public abstract class FileAPI {
                 currentData.clear();
 
                 if(d.getStringValue().equals(toSearch)){
+                    stream.close();
                     return true;
                 }
 
@@ -218,6 +250,7 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return false;
     }
 
@@ -592,6 +625,104 @@ public abstract class FileAPI {
         }
 
         return line;
+    }
+
+    /* ======================================
+        APPEND METHODS
+     ====================================== */
+
+    protected void appendData(String key,char delimiter, Line line) throws IOException {
+
+        ArrayList<Byte> bytes = new ArrayList<>();
+        byte b;
+
+        FileInputStream inputStream = this.read(key);
+
+        while((b = (byte) inputStream.read()) != -1){
+            bytes.add(b);
+        }
+
+        FileOutputStream outputStream = this.execute(key);
+
+        for(byte data : bytes){
+            outputStream.write(data);
+        }
+
+        outputStream.write(line.exportData(delimiter));
+        outputStream.close();
+    }
+
+    protected void removeData(String key,char delimiter,int numberOfData, int position) throws IOException {
+
+        ArrayList<Byte> data = new ArrayList<>();
+        ArrayList<Byte> currentData = new ArrayList<>();
+        int delimiterCount = 0;
+        int lineCount = 0;
+        byte b;
+
+        FileInputStream inputStream = this.read(key);
+
+        while((b = (byte) inputStream.read()) != -1){
+
+            currentData.add(b);
+
+            if(b == delimiter){
+                delimiterCount++;
+            }
+
+            if (delimiterCount == (numberOfData + 1)){
+                Byte[] flow = new Byte[currentData.size()];
+
+                Line l = new Line(currentData.toArray(flow),delimiter);
+
+                delimiterCount = 0;
+                currentData.clear();
+
+                if(lineCount != position){
+                    data.addAll(Arrays.asList(toComplex(l.exportData(delimiter))));
+                }
+
+                lineCount++;
+
+            }
+
+        }
+
+        FileOutputStream outputStream = this.execute(key);
+
+        for(byte d : data){
+            outputStream.write(d);
+        }
+
+        outputStream.close();
+    }
+
+    /* ======================================
+        UTILITY METHODS
+     ====================================== */
+
+    protected byte[] toPrimitive(char[] chars){
+        byte[] output = new byte[chars.length];
+        for (int i = 0; i < chars.length; i++) {
+            output[i] = (byte) chars[i];
+        }
+        return output;
+    }
+
+    protected byte[] toPrimitive(Byte[] bytes){
+        byte[] output = new byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            output[i] = bytes[i];
+        }
+        return output;
+    }
+
+    protected static Byte[] toComplex(byte[] bytes){
+        Byte[] output = new Byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            output[i] = bytes[i];
+        }
+        return output;
     }
 
 }

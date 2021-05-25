@@ -7,6 +7,7 @@ import common.specification.StatisticResult;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class PescaAPITest {
@@ -24,23 +25,23 @@ public class PescaAPITest {
     @Test
     public void userTest(){
 
-        PescaAPI api = null;
+        PescaAPISimple api = null;
 
         try {
-            api = new PescaAPI();
+            api = new PescaAPISimple();
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
 
         try {
             api.registerUser("carlos");
-            api.registerUser("adan");
         } catch (Exception ioException) {
+            System.out.println(ioException.getMessage());
             Assert.fail(ioException.getMessage());
         }
 
         try {
-            Assert.assertTrue(api.getUserByIdentifier("adan"));
+            Assert.assertTrue(api.getUserByIdentifier("carlos"));
         } catch (IOException ioException) {
             Assert.fail(ioException.getMessage());
         }
@@ -50,10 +51,10 @@ public class PescaAPITest {
     @Test
     public void deleteUser(){
 
-        PescaAPI api = null;
+        PescaAPISimple api = null;
 
         try {
-            api = new PescaAPI();
+            api = new PescaAPISimple();
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
@@ -87,10 +88,10 @@ public class PescaAPITest {
     @Test
     public void actionTest(){
 
-        PescaAPI api = null;
+        PescaAPISimple api = null;
 
         try {
-            api = new PescaAPI();
+            api = new PescaAPISimple();
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
@@ -106,10 +107,10 @@ public class PescaAPITest {
     @Test
     public void fishTest(){
 
-        PescaAPI api = null;
+        PescaAPISimple api = null;
 
         try {
-            api = new PescaAPI();
+            api = new PescaAPISimple();
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
@@ -135,7 +136,7 @@ public class PescaAPITest {
         }
 
         try {
-            StatisticResult result = api.getStatistics("manolo");
+            StatisticResult result = api.getStatistics("carlos");
         } catch (Exception e){
             Assert.fail(e.getMessage());
         }
