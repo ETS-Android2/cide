@@ -34,14 +34,14 @@ public class PescaAPITest {
         }
 
         try {
-            api.registerUser("carlos");
+            api.registerUser("carlos2");
         } catch (Exception ioException) {
             System.out.println(ioException.getMessage());
             Assert.fail(ioException.getMessage());
         }
 
         try {
-            Assert.assertTrue(api.getUserByIdentifier("carlos"));
+            Assert.assertTrue(api.getUserByIdentifier("carlos2"));
         } catch (IOException ioException) {
             Assert.fail(ioException.getMessage());
         }

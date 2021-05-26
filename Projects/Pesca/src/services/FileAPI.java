@@ -219,6 +219,18 @@ public abstract class FileAPI {
         SEARCH METHODS
      ====================================== */
 
+    /**
+     *
+     * Search string by desired position of data in all lines that contains a file.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the item to search.
+     * @param toSearch the string to search.
+     * @return if the string exists in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,String toSearch) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -254,6 +266,18 @@ public abstract class FileAPI {
         return false;
     }
 
+    /**
+     *
+     * Search integer by desired position of data in all lines that contains a file.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the item to search.
+     * @param toSearch the integer to search.
+     * @return if the string exists in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,Integer toSearch) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -277,6 +301,7 @@ public abstract class FileAPI {
                 currentData.clear();
 
                 if(d.getIntValue() == toSearch){
+                    stream.close();
                     return true;
                 }
 
@@ -284,9 +309,22 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return false;
     }
 
+    /**
+     *
+     * Search float by desired position of data in all lines that contains a file.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the item to search.
+     * @param toSearch the float to search.
+     * @return if the float exists in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,Float toSearch) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -310,6 +348,7 @@ public abstract class FileAPI {
                 currentData.clear();
 
                 if(d.getFloatValue() == toSearch){
+                    stream.close();
                     return true;
                 }
 
@@ -317,6 +356,7 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return false;
     }
 
@@ -324,6 +364,18 @@ public abstract class FileAPI {
         POSITION METHODS
      ====================================== */
 
+    /**
+     *
+     * Search string and get the line in the file that contains the search result.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the item to search.
+     * @param toSearch the string to search.
+     * @return if the string exists in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected int getLinePositionInFlow(InputStream stream,char delimiter,int numberOfData,int position,String toSearch) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -348,6 +400,7 @@ public abstract class FileAPI {
                 currentData.clear();
 
                 if(d.getStringValue().equals(toSearch)){
+                    stream.close();
                     return lineCount;
                 }
 
@@ -357,9 +410,22 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return -1;
     }
 
+    /**
+     *
+     * Search integer and get the line in the file that contains the search result.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the item to search.
+     * @param toSearch the integer to search.
+     * @return if the integer exists in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected int getLinePositionInFlow(InputStream stream,char delimiter,int numberOfData,int position,Integer toSearch) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -384,6 +450,7 @@ public abstract class FileAPI {
                 currentData.clear();
 
                 if(d.getIntValue() == toSearch){
+                    stream.close();
                     return lineCount;
                 }
 
@@ -393,9 +460,22 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return -1;
     }
 
+    /**
+     *
+     * Search float and get the line in the file that contains the search result.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the item to search.
+     * @param toSearch the float to search.
+     * @return if the float exists in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected int getLinePositionInFlow(InputStream stream,char delimiter,int numberOfData,int position,Float toSearch) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -420,6 +500,7 @@ public abstract class FileAPI {
                 currentData.clear();
 
                 if(d.getFloatValue() == toSearch){
+                    stream.close();
                     return lineCount;
                 }
 
@@ -429,6 +510,7 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return -1;
     }
 
@@ -436,6 +518,18 @@ public abstract class FileAPI {
         GET METHODS
      ====================================== */
 
+
+    /**
+     *
+     * Get line object by passing the line number in the file to read.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the line.
+     * @return a line object containing all the data.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected Line getLineDataInFlow(InputStream stream,char delimiter,int numberOfData,int position) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -459,7 +553,8 @@ public abstract class FileAPI {
                 delimiterCount = 0;
                 currentData.clear();
 
-                if(lineCount == position - 1){
+                if(lineCount == position){
+                    stream.close();
                     return l;
                 }
 
@@ -469,9 +564,21 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return null;
     }
 
+    /**
+     *
+     * Get data object by passing the line number and the data position in the file to read.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the line.
+     * @return a data object.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected Data getDataInLinePosition(InputStream stream,char delimiter,int numberOfData,int position,int dataPosition) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -487,7 +594,7 @@ public abstract class FileAPI {
                 delimiterCount++;
             }
 
-            if (delimiterCount == (numberOfData + 1)){
+            if (delimiterCount == (numberOfData)){
                 Byte[] flow = new Byte[currentData.size()];
 
                 delimiterCount = 0;
@@ -512,6 +619,19 @@ public abstract class FileAPI {
         OPERATION METHODS
      ====================================== */
 
+    /**
+     *
+     * Get a line position by an integer where apply a condition with the DataOperation enum.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the data to compare.
+     * @param initial value of data to compare.
+     * @param operation to make on comparison.
+     * @return the line number in the file that applies the condition. If not find something returns -1.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected int getLineWhereCondition(InputStream stream,char delimiter,int numberOfData,int position,Integer initial, DataOperation operation) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -567,6 +687,19 @@ public abstract class FileAPI {
         return line;
     }
 
+    /**
+     *
+     * Get a line position by float where apply a condition with the DataOperation enum.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data
+     * @param numberOfData items that contains one line.
+     * @param position of the data to compare.
+     * @param initial value of data to compare.
+     * @param operation to make on comparison.
+     * @return the line number in the file that applies the condition. If not find something returns -1.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected int getLineWhereCondition(InputStream stream,char delimiter,int numberOfData,int position,Float initial, DataOperation operation) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -628,9 +761,18 @@ public abstract class FileAPI {
     }
 
     /* ======================================
-        APPEND METHODS
+        MANIPULATION METHODS
      ====================================== */
 
+    /**
+     *
+     * Allows to write all containing data in a InputStream and write one more line passed by parameters.
+     *
+     * @param key the key of the file to read and write.
+     * @param delimiter to separate the data
+     * @param line to write.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected void appendData(String key,char delimiter, Line line) throws IOException {
 
         ArrayList<Byte> bytes = new ArrayList<>();
@@ -652,6 +794,16 @@ public abstract class FileAPI {
         outputStream.close();
     }
 
+    /**
+     *
+     * Allows to remove data by line number.
+     *
+     * @param key the key of the file to read and write.
+     * @param delimiter to separate the data
+     * @param numberOfData the number of items that contains the file.
+     * @param position of the line to remove.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected void removeData(String key,char delimiter,int numberOfData, int position) throws IOException {
 
         ArrayList<Byte> data = new ArrayList<>();

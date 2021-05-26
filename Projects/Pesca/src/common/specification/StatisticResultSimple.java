@@ -23,6 +23,17 @@ public class StatisticResultSimple extends StatisticResult {
         parseStatistic(stream,delimiter,numberOfData,flag,data,identifier,id);
     }
 
+    /**
+     *
+     * Read all data and build the metrics in the same moment of parsing.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data.
+     * @param numberOfData items in the line.
+     * @param flag position in the data.
+     * @param data position in the data.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected void parseStatistic(InputStream stream, char delimiter, int numberOfData, int flag, int data) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -103,6 +114,19 @@ public class StatisticResultSimple extends StatisticResult {
 
     }
 
+    /**
+     *
+     * Read all data and build the metrics in the same moment of parsing, filtered by identifier.
+     *
+     * @param stream to read from.
+     * @param delimiter to separate the data.
+     * @param numberOfData items in the line.
+     * @param flag position in the data.
+     * @param data position in the data.
+     * @param identifier position in the data.
+     * @param id String to filter.
+     * @throws IOException if something of the Input/Output fails.
+     */
     protected void parseStatistic(InputStream stream, char delimiter, int numberOfData, int flag, int data, int identifier, String id) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();

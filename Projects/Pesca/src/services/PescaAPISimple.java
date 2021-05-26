@@ -39,22 +39,27 @@ public class PescaAPISimple extends PescaAPI {
                 read(parseKey("flow","users.txt"))
                 ,'#'
                 ,1
-                ,1
+                ,0
                 ,user
         );
     }
 
 
-    public int getUserLine(String user) throws Exception {
-
-        if(!getUserByIdentifier(user))
-            throw new Exception("User not exists.");
-
+    /**
+     *
+     * Implementation of User methods to retrieve the line number
+     * where the user is identified.
+     *
+     * @param user the user to identify.
+     * @return the line in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
+    private int getUserLine(String user) throws IOException {
         return getLinePositionInFlow(
                 read(parseKey("flow","users.txt"))
                 ,'#'
                 ,1
-                ,1
+                ,0
                 ,user
         );
     }
@@ -167,7 +172,7 @@ public class PescaAPISimple extends PescaAPI {
 
         Line l = new Line(toComplex(user.getBytes()),'#');
 
-        appendData(
+        this.appendData(
                 parseKey("flow","registers.txt")
                 ,'#'
                 ,l

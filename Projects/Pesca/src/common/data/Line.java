@@ -92,6 +92,16 @@ public class Line {
         return output;
     }
 
+    /**
+     *
+     * Return single Data object contained in a Line.
+     *
+     * @param input the raw input of data.
+     * @param delimiter to separate the data.
+     * @param position of the data to return.
+     * @return a Data Object with the values.
+     * @throws IOException if something of the Input/Output fails.
+     */
     public static Data getDataInParsedLine(Byte[] input,char delimiter,int position) throws IOException {
 
         ArrayList<Byte> currentData = new ArrayList<>();
@@ -112,7 +122,7 @@ public class Line {
                 delimiterCount = 1;
                 currentData.clear();
 
-                if(positionCount == (position - 1)){
+                if(positionCount == (position)){
                     return d;
                 }
 
