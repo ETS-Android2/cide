@@ -11,31 +11,33 @@ public class StatisticResult {
     /**
      * The maximum size of all the fish.
      */
-    private float max;
+    protected float max;
     /**
      * The minimum size of all the fish
      */
-    private float min;
+    protected float min;
     /**
      * The average size of all the fish.
      */
-    private float average;
+    protected float average;
     /**
      * The mean size of all the fish.
      */
-    private float mean;
+    protected float mean;
     /**
      * The sizes of all the fish group by type of fish.
      */
-    private HashMap<String, Float> fishSizes;
+    protected HashMap<String, Float> fishSizes;
     /**
      * The number of catches of all the fish group by the fish identifier.
      */
-    private HashMap<String, Float> fishCatches;
+    protected HashMap<String, Float> fishCatches;
     /**
      * The raw statistics.
      */
     private ArrayList<Statistics> statistics;
+
+    public StatisticResult(){}
 
     /**
      *
@@ -55,7 +57,7 @@ public class StatisticResult {
      * The method that iterates on the data an calculates the different metrics.
      *
      */
-    private void parseStatistic(){
+    protected void parseStatistic(){
 
         float average = 0;
 

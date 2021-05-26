@@ -1,10 +1,7 @@
 package services;
 
 import common.data.Line;
-import common.specification.Fish;
-import common.specification.StatisticResult;
-import common.specification.Statistics;
-import common.specification.User;
+import common.specification.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -232,19 +229,13 @@ public class PescaAPISimple extends PescaAPI {
      */
     @Override
     public StatisticResult getStatistics() throws IOException {
-
-        ArrayList<Line> lines = parseLines(
+        return new StatisticResultSimple(
                 read(parseKey("flow","registers.txt"))
                 ,'#'
                 ,4
+                ,1
+                ,2
         );
-        ArrayList<Statistics> statistics = new ArrayList<>();
-
-        for(Line l : lines){
-            statistics.add(new Statistics(l.getData()[1],l.getData()[2].getFloatValue()));
-        }
-
-        return new StatisticResult(statistics);
     }
 
     /**
@@ -257,21 +248,15 @@ public class PescaAPISimple extends PescaAPI {
      */
     @Override
     public StatisticResult getStatistics(String user) throws IOException {
-
-        ArrayList<Line> lines = parseLines(
+        return new StatisticResultSimple(
                 read(parseKey("flow","registers.txt"))
                 ,'#'
                 ,4
+                ,1
+                ,2
+                ,0
+                ,user
         );
-        ArrayList<Statistics> statistics = new ArrayList<>();
-
-        for(Line l : lines){
-            if(l.getData()[0].getStringValue().equals(user)){
-                statistics.add(new Statistics(l.getData()[1],l.getData()[2].getFloatValue()));
-            }
-        }
-
-        return new StatisticResult(statistics);
     }
 
 }

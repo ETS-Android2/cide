@@ -127,10 +127,10 @@ public class PescaAPITest {
     @Test
     public void statisticsTest(){
 
-        PescaAPI api = null;
+        PescaAPISimple api = null;
 
         try {
-            api = new PescaAPI();
+            api = new PescaAPISimple();
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
@@ -138,6 +138,7 @@ public class PescaAPITest {
         try {
             StatisticResult result = api.getStatistics("carlos");
         } catch (Exception e){
+            System.out.println(e.getMessage());
             Assert.fail(e.getMessage());
         }
 
