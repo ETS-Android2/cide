@@ -1,13 +1,16 @@
 package ui.forms;
 
 import common.specification.StatisticResult;
+import common.specification.StatisticResultSimple;
 import ui.FormManager;
+import ui.NotificationWindow;
 import ui.PescaForm;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,8 +142,18 @@ public class StatisticsForm extends PescaForm {
         this.mediaPesoField.setText(String.format("%.2f",this.result.getAverage()));
         this.medianaPesoField.setText(String.format("%.2f",this.result.getMean()));
 
-        updateList(fishSizesModel,this.result.getFishSizes(),"KG");
-        updateList(fishCatchesModel,this.result.getFishCatches(),"veces");
+        StatisticResultSimple s = (StatisticResultSimple) this.result;
+
+        //updateList(fishSizesModel,this.result.getFishSizes(),"KG");
+        //updateList(fishCatchesModel,this.result.getFishCatches(),"veces");
+
+        try {
+            updateList(fishSizesModel,s.getStatisticsFromFile("tmp","sizes.txt",'#',2,0,1),"KG");
+            updateList(fishCatchesModel,s.getStatisticsFromFile("tmp","catches.txt",'#',2,0,1),"veces");
+        } catch (IOException e){
+            NotificationWindow.run(e.getMessage(),"Error");
+        }
+
 
     }
 

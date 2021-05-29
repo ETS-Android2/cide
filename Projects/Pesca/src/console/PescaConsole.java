@@ -1,6 +1,7 @@
 package console;
 
 import common.specification.StatisticResult;
+import common.specification.StatisticResultSimple;
 import services.PescaAPI;
 import services.PescaAPISimple;
 import termux.Components.Command.CommandParser;
@@ -10,6 +11,7 @@ import termux.Components.Menu.OptionMenu;
 import termux.Components.Menu.SequentialMenu;
 import termux.DefaultConsole;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -217,7 +219,9 @@ public class PescaConsole extends DefaultConsole {
      *
      * @param statistics the statistics to show.
      */
-    private void showStatistics(StatisticResult statistics){
+    private void showStatistics(StatisticResult statistics) throws IOException {
+
+        StatisticResultSimple s = (StatisticResultSimple) statistics;
 
         Encapsulate.encapsulateString("ESTADÍSTICAS GENERALES","\t");
 
@@ -228,8 +232,11 @@ public class PescaConsole extends DefaultConsole {
 
         Encapsulate.encapsulateString("ESTADÍSTICAS ESPECÍFICAS","\t");
 
-        showStatisticsHashMaps(statistics.getFishSizes(),"Máximo peso por pescado capturado","PESCADO: %s -- MÁXIMO PESO: %.2f");
-        showStatisticsHashMaps(statistics.getFishCatches(),"Máximas capturas por pescado","PESCADO: %s -- CAPTURAS: %.0f");
+        showStatisticsFiles(s,"tmp","sizes.txt","Máximo peso por pescado capturado","\n\tPESCADO: %s -- MÁXIMO PESO: %.2f");
+        showStatisticsFiles(s,"tmp","catches.txt","Máximas capturas por pescado","\n\tPESCADO: %s -- CAPTURAS: %.0f");
+
+        // showStatisticsHashMaps(statistics.getFishSizes(),"Máximo peso por pescado capturado","PESCADO: %s -- MÁXIMO PESO: %.2f");
+        // showStatisticsHashMaps(statistics.getFishCatches(),"Máximas capturas por pescado","PESCADO: %s -- CAPTURAS: %.0f");
 
     }
 
@@ -246,6 +253,20 @@ public class PescaConsole extends DefaultConsole {
         for(Map.Entry<String,Float> entry : hashMap.entrySet()){
             System.out.printf("\n\t" + format,entry.getKey(),entry.getValue());
         }
+        System.out.print("\n");
+    }
+
+    private void showStatisticsFiles(StatisticResultSimple statistics,String bucket,String key,String header,String format) throws IOException {
+        System.out.printf("\n\t%s:",header);
+        statistics.showStatisticsConsole(
+                bucket
+                ,key
+                ,'#'
+                ,2
+                ,0
+                ,1
+                ,format
+        );
         System.out.print("\n");
     }
 

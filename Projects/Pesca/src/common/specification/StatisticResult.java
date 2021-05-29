@@ -1,12 +1,12 @@
 package common.specification;
 
-import common.data.Data;
+import services.FileAPI;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class StatisticResult {
+public class StatisticResult extends FileAPI  {
 
     /**
      * The maximum size of all the fish.

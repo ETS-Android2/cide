@@ -4,6 +4,7 @@ import common.data.Data;
 import common.specification.Boat;
 import common.specification.Fish;
 import common.specification.StatisticResult;
+import common.specification.StatisticResultSimple;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,14 +35,14 @@ public class PescaAPITest {
         }
 
         try {
-            api.registerUser("carlos2");
+            api.registerUser("carlos_test");
         } catch (Exception ioException) {
             System.out.println(ioException.getMessage());
             Assert.fail(ioException.getMessage());
         }
 
         try {
-            Assert.assertTrue(api.getUserByIdentifier("carlos2"));
+            Assert.assertTrue(api.getUserByIdentifier("carlos_test"));
         } catch (IOException ioException) {
             Assert.fail(ioException.getMessage());
         }
@@ -160,6 +161,49 @@ public class PescaAPITest {
             Assert.assertTrue(api.getBoatByIdentifier("elpatron"));
         } catch (Exception e){
             System.out.println(e.getMessage());
+            Assert.fail(e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void statisticsFileTest(){
+
+        PescaAPISimple api = null;
+
+        try {
+            api = new PescaAPISimple();
+        } catch (IOException e){
+            Assert.fail(e.getMessage());
+        }
+
+        /*try {
+            StatisticResultSimple simple = new StatisticResultSimple(
+                    api.read(api.parseKey("flow","registers.txt"))
+                    ,'#'
+                    ,4
+                    ,1
+                    ,2
+                    ,0
+                    ,"carlos"
+            );
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            Assert.fail(e.getMessage());
+        }*/
+
+        try {
+            StatisticResultSimple n = new StatisticResultSimple(api.read(api.parseKey("flow","registers.txt")),'#',4,1,2);
+            n.showStatisticsConsole(
+                    "tmp"
+                    ,"sizes.txt"
+                    ,'#'
+                    ,2
+                    ,0
+                    ,1
+                    ,"%s - %.2f\n"
+            );
+        } catch (IOException e){
             Assert.fail(e.getMessage());
         }
 

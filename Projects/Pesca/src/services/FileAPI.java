@@ -27,6 +27,18 @@ public abstract class FileAPI {
 
     /**
      *
+     * Returns a FileOutputStream with the specified path.
+     *
+     * @param key the path to a file.
+     * @return FileOutputStream of the key.
+     * @throws IOException if something of the Input/Output fails.
+     */
+    protected FileOutputStream execute(String key, boolean append) throws IOException {
+        return new FileOutputStream(key,append);
+    }
+
+    /**
+     *
      * Returns a FileInputStream with the specified path.
      *
      * @param key the path to a file.
@@ -47,14 +59,14 @@ public abstract class FileAPI {
      */
     protected void createFileEmpty(String bucket, String key) throws IOException {
         try {
-            FileOutputStream outputStream = execute(parseKey(bucket,key));
-            outputStream.write(' ');
-            outputStream.close();
-        } catch (FileNotFoundException e){
+            File f = new File(parseKey(bucket,key));
+            f.createNewFile();
+        } catch (IOException e){
+            if(!e.getMessage().equals("The system cannot find the path specified")){
+                throw new IOException(e.getMessage());
+            }
             createBucket(bucket);
             createFileEmpty(bucket,key);
-        } catch (IOException e){
-            throw new IOException(e.getMessage());
         }
     }
 
@@ -411,7 +423,7 @@ public abstract class FileAPI {
         }
 
         stream.close();
-        return -1;
+        throw new IOException("Line not found.");
     }
 
     /**
@@ -594,12 +606,13 @@ public abstract class FileAPI {
                 delimiterCount++;
             }
 
-            if (delimiterCount == (numberOfData)){
+            if (delimiterCount == (numberOfData + 1)){
                 Byte[] flow = new Byte[currentData.size()];
 
                 delimiterCount = 0;
 
                 if(lineCount == position){
+                    stream.close();
                     return Line.getDataInParsedLine(currentData.toArray(flow),delimiter,dataPosition);
                 }
 
@@ -612,6 +625,7 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return null;
     }
 
@@ -774,22 +788,7 @@ public abstract class FileAPI {
      * @throws IOException if something of the Input/Output fails.
      */
     protected void appendData(String key,char delimiter, Line line) throws IOException {
-
-        ArrayList<Byte> bytes = new ArrayList<>();
-        byte b;
-
-        FileInputStream inputStream = this.read(key);
-
-        while((b = (byte) inputStream.read()) != -1){
-            bytes.add(b);
-        }
-
-        FileOutputStream outputStream = this.execute(key);
-
-        for(byte data : bytes){
-            outputStream.write(data);
-        }
-
+        FileOutputStream outputStream = this.execute(key,true);
         outputStream.write(line.exportData(delimiter));
         outputStream.close();
     }
@@ -806,13 +805,16 @@ public abstract class FileAPI {
      */
     protected void removeData(String key,char delimiter,int numberOfData, int position) throws IOException {
 
-        ArrayList<Byte> data = new ArrayList<>();
+        createFileEmpty("tmp","replace.txt");
+        String replacedFile = parseKey("tmp","replace.txt");
+
         ArrayList<Byte> currentData = new ArrayList<>();
         int delimiterCount = 0;
         int lineCount = 0;
         byte b;
 
         FileInputStream inputStream = this.read(key);
+        FileOutputStream outputStream = this.execute(replacedFile);
 
         while((b = (byte) inputStream.read()) != -1){
 
@@ -831,7 +833,7 @@ public abstract class FileAPI {
                 currentData.clear();
 
                 if(lineCount != position){
-                    data.addAll(Arrays.asList(toComplex(l.exportData(delimiter))));
+                    outputStream.write(l.exportData(delimiter));
                 }
 
                 lineCount++;
@@ -840,13 +842,77 @@ public abstract class FileAPI {
 
         }
 
-        FileOutputStream outputStream = this.execute(key);
+        inputStream.close();
+        outputStream.close();
 
-        for(byte d : data){
-            outputStream.write(d);
+        replaceFile(replacedFile,key);
+
+    }
+
+    protected void replaceFile(String oldValue,String newValue) throws IOException {
+
+        File f = new File(oldValue);
+        File f2 = new File(newValue);
+
+        if (!f.exists()){
+            throw new IOException("File to replace dont exist.");
         }
 
-        outputStream.close();
+        f2.createNewFile();
+
+        InputStream input = read(oldValue);
+        OutputStream output = execute(newValue);
+        byte b;
+
+        while ((b = (byte) input.read()) != -1){
+            output.write(b);
+        }
+
+        input.close();
+        output.close();
+
+        if (!f.delete()) {
+            throw new IOException("Old file cannot be deleted.");
+        }
+
+    }
+
+    protected void copyFile(String oldValue, String newValue) throws IOException {
+
+        File f = new File(oldValue);
+        File f2 = new File(newValue);
+
+        if (!f.exists()){
+            throw new IOException("File to replace dont exist.");
+        }
+
+        f2.createNewFile();
+
+        InputStream input = read(oldValue);
+        OutputStream output = execute(newValue);
+        byte b;
+
+        while ((b = (byte) input.read()) != -1){
+            output.write(b);
+        }
+
+        input.close();
+        output.close();
+
+    }
+
+    protected void removeFile(String key) throws IOException {
+
+        File f = new File(key);
+
+        if (!f.exists()) {
+            throw new IOException("File dont exist.");
+        }
+
+        if (!f.delete()) {
+            throw new IOException("Old file cannot be deleted.");
+        }
+
     }
 
     /* ======================================
@@ -873,6 +939,14 @@ public abstract class FileAPI {
         Byte[] output = new Byte[bytes.length];
         for (int i = 0; i < bytes.length; i++) {
             output[i] = bytes[i];
+        }
+        return output;
+    }
+
+    protected static Byte[] toComplexFromChars(char[] bytes){
+        Byte[] output = new Byte[bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            output[i] = (byte) bytes[i];
         }
         return output;
     }

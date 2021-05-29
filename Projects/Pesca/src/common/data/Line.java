@@ -119,10 +119,11 @@ public class Line {
             if(delimiterCount == 2){
                 Byte[] raw = new Byte[currentData.size()];
                 Data d = new Data(currentData.toArray(raw));
+
                 delimiterCount = 1;
                 currentData.clear();
 
-                if(positionCount == (position)){
+                if(position == positionCount){
                     return d;
                 }
 
@@ -133,7 +134,7 @@ public class Line {
 
         }
 
-        throw new IOException("Data not found.");
+        throw new IOException(String.format("Data not found. Search for %d and stopped on %d",position,positionCount));
     }
 
 }
