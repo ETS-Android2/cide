@@ -5,6 +5,8 @@ import common.specification.*;
 import transformation.Transform;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 

@@ -120,8 +120,6 @@ public class PescaAPITest {
         try {
             Fish f = api.getFish(getClass().getResource("/data/florida.txt").getFile());
             Assert.assertNotEquals("", f.getName());
-            System.out.println(f.getName());
-            System.out.println(f.getPercentage());
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
