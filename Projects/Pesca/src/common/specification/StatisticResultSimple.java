@@ -257,7 +257,6 @@ public class StatisticResultSimple extends StatisticResult {
                 //Byte[] flow = new Byte[currentData.size()];
                 //Line l = new Line(currentData.toArray(flow),delimiter);
 
-                Byte[] flow = new Byte[currentData.toCharArray().length];
                 Line l = new Line(Transform.toComplexFromChars(currentData.toCharArray()),delimiter);
 
                 delimiterCount = 0;
@@ -324,7 +323,8 @@ public class StatisticResultSimple extends StatisticResult {
         createFileEmpty("tmp","sizes.txt");
         createFileEmpty("tmp","catches.txt");
 
-        ArrayList<Byte> currentData = new ArrayList<>();
+        // ArrayList<Byte> currentData = new ArrayList<>();
+        String currentData = "";
         int delimiterCount = 0;
         byte b;
 
@@ -334,7 +334,8 @@ public class StatisticResultSimple extends StatisticResult {
 
         while((b = (byte) stream.read()) != -1){
 
-            currentData.add(b);
+            // currentData.add(b);
+            currentData += (char) b;
 
             if(b == delimiter){
                 delimiterCount++;
@@ -342,11 +343,14 @@ public class StatisticResultSimple extends StatisticResult {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                Byte[] flow = new Byte[currentData.size()];
-                Line l = new Line(currentData.toArray(flow),delimiter);
+                // Byte[] flow = new Byte[currentData.size()];
+                //Line l = new Line(currentData.toArray(flow),delimiter);
+
+                Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 
                 delimiterCount = 0;
-                currentData.clear();
+                // currentData.clear();
+                currentData = "";
 
                 if (l.getData()[identifier].getStringValue().equals(id)){
 
@@ -540,13 +544,15 @@ public class StatisticResultSimple extends StatisticResult {
 
         InputStream stream = read(parseKey(bucket,key));
 
-        ArrayList<Byte> currentData = new ArrayList<>();
+        // ArrayList<Byte> currentData = new ArrayList<>();
+        String currentData = "";
         int delimiterCount = 0;
         byte b;
 
         while((b = (byte) stream.read()) != -1){
 
-            currentData.add(b);
+            // currentData.add(b);
+            currentData += (char) b;
 
             if(b == delimiter){
                 delimiterCount++;
@@ -554,11 +560,14 @@ public class StatisticResultSimple extends StatisticResult {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                Byte[] flow = new Byte[currentData.size()];
-                Line l = new Line(currentData.toArray(flow),delimiter);
+                // Byte[] flow = new Byte[currentData.size()];
+                // Line l = new Line(currentData.toArray(flow),delimiter);
+
+                Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 
                 delimiterCount = 0;
-                currentData.clear();
+                // currentData.clear();
+                currentData = "";
 
                 String dataFlag = l.getData()[flag].getStringValue();
                 Float dataValue = l.getData()[data].getFloatValue();
