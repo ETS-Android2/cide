@@ -6,6 +6,7 @@ import common.specification.Fish;
 import common.specification.StatisticResult;
 import common.specification.StatisticResultSimple;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -15,14 +16,15 @@ public class PescaAPITest {
 
     @Test
     public void fileTest(){
-        PescaAPI api = null;
+        PescaAPISimple api = null;
         try {
-            api = new PescaAPI();
+            api = new PescaAPISimple();
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
     }
 
+    @Ignore
     @Test
     public void userTest(){
 
@@ -37,7 +39,6 @@ public class PescaAPITest {
         try {
             api.registerUser("carlos_test");
         } catch (Exception ioException) {
-            System.out.println(ioException.getMessage());
             Assert.fail(ioException.getMessage());
         }
 
@@ -119,6 +120,8 @@ public class PescaAPITest {
         try {
             Fish f = api.getFish(getClass().getResource("/data/florida.txt").getFile());
             Assert.assertNotEquals("", f.getName());
+            System.out.println(f.getName());
+            System.out.println(f.getPercentage());
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }
@@ -139,12 +142,12 @@ public class PescaAPITest {
         try {
             StatisticResult result = api.getStatistics("carlos");
         } catch (Exception e){
-            System.out.println(e.getMessage());
             Assert.fail(e.getMessage());
         }
 
     }
 
+    @Ignore
     @Test
     public void boatTest(){
 
@@ -160,7 +163,6 @@ public class PescaAPITest {
             api.deleteUserInBoat(api.getBoat("elpatron"), api.getUser("carlos"));
             Assert.assertTrue(api.getBoatByIdentifier("elpatron"));
         } catch (Exception e){
-            System.out.println(e.getMessage());
             Assert.fail(e.getMessage());
         }
 
@@ -177,24 +179,9 @@ public class PescaAPITest {
             Assert.fail(e.getMessage());
         }
 
-        /*try {
-            StatisticResultSimple simple = new StatisticResultSimple(
-                    api.read(api.parseKey("flow","registers.txt"))
-                    ,'#'
-                    ,4
-                    ,1
-                    ,2
-                    ,0
-                    ,"carlos"
-            );
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-            Assert.fail(e.getMessage());
-        }*/
-
         try {
             StatisticResultSimple n = new StatisticResultSimple(api.read(api.parseKey("flow","registers.txt")),'#',4,1,2);
-            n.showStatisticsConsole(
+            /*n.showStatisticsConsole(
                     "tmp"
                     ,"sizes.txt"
                     ,'#'
@@ -202,7 +189,7 @@ public class PescaAPITest {
                     ,0
                     ,1
                     ,"%s - %.2f\n"
-            );
+            );*/
         } catch (IOException e){
             Assert.fail(e.getMessage());
         }

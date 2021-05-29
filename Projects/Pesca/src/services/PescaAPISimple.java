@@ -2,6 +2,7 @@ package services;
 
 import common.data.Line;
 import common.specification.*;
+import transformation.Transform;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -84,7 +85,7 @@ public class PescaAPISimple extends PescaAPI {
         // Prepare data for file
         identifier = '#' + identifier + '#' + '\n';
 
-        Line l = new Line(toComplex(identifier.getBytes()),'#');
+        Line l = new Line(Transform.toComplex(identifier.getBytes()),'#');
 
         this.appendData(
                 parseKey("flow","users.txt")
@@ -170,7 +171,7 @@ public class PescaAPISimple extends PescaAPI {
         LocalDate date = LocalDate.now();
         user = '#' + user + '#' + fish.getName() + '#' + fish.getSize() + '#' + date + '#' + '\n';
 
-        Line l = new Line(toComplex(user.getBytes()),'#');
+        Line l = new Line(Transform.toComplex(user.getBytes()),'#');
 
         this.appendData(
                 parseKey("flow","registers.txt")
@@ -195,13 +196,13 @@ public class PescaAPISimple extends PescaAPI {
     @Override
     public Fish getFish(String key) throws IOException {
 
-        float random = (float) (Math.random() * 1.5f);
+        float random = (float) (Math.random() * 1.2f);
 
         int line = getLineWhereCondition(
                 read(key)
                 ,'#'
                 ,4
-                ,2
+                ,1
                 ,random
                 ,DataOperation.HIGHER_OR_EQUAL
         );

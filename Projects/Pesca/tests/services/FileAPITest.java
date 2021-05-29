@@ -24,7 +24,7 @@ public class FileAPITest {
                         api.read(api.parseKey("flow","users.txt"))
                         ,'#'
                         ,1
-                        ,1
+                        ,0
                         ,"carlos")
             );
         } catch (Exception ioException) {
@@ -37,7 +37,7 @@ public class FileAPITest {
                             api.read(api.parseKey("flow","registers.txt"))
                             ,'#'
                             ,4
-                            ,3
+                            ,2
                             ,2.554789f)
             );
         } catch (Exception ioException) {
@@ -50,7 +50,7 @@ public class FileAPITest {
                     api.read(getClass().getResource("/data/florida.txt").getFile())
                     ,'#'
                     ,4
-                    ,1
+                    ,0
                     ,"Pargo de cola amarilla"
             );
 
@@ -77,12 +77,12 @@ public class FileAPITest {
                     api.read(getClass().getResource("/data/florida.txt").getFile())
                     ,'#'
                     ,4
-                    ,2
+                    ,1
                     ,0.5f
                     ,DataOperation.HIGHER_OR_EQUAL
             );
 
-            Assert.assertEquals(8,line);
+            Assert.assertEquals(7,line);
 
             Line l = api.getLineDataInFlow(
                     api.read(getClass().getResource("/data/florida.txt").getFile())

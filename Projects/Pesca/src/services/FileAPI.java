@@ -915,40 +915,4 @@ public abstract class FileAPI {
 
     }
 
-    /* ======================================
-        UTILITY METHODS
-     ====================================== */
-
-    protected byte[] toPrimitive(char[] chars){
-        byte[] output = new byte[chars.length];
-        for (int i = 0; i < chars.length; i++) {
-            output[i] = (byte) chars[i];
-        }
-        return output;
-    }
-
-    protected byte[] toPrimitive(Byte[] bytes){
-        byte[] output = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            output[i] = bytes[i];
-        }
-        return output;
-    }
-
-    protected static Byte[] toComplex(byte[] bytes){
-        Byte[] output = new Byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            output[i] = bytes[i];
-        }
-        return output;
-    }
-
-    protected static Byte[] toComplexFromChars(char[] bytes){
-        Byte[] output = new Byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            output[i] = (byte) bytes[i];
-        }
-        return output;
-    }
-
 }

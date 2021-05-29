@@ -1,5 +1,7 @@
 package common.data;
 
+import transformation.Transform;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,22 +76,7 @@ public class Line {
         }
         data.add((byte)'\n');
         Byte[] flow = new Byte[data.size()];
-        return toPrimitive(data.toArray(flow));
-    }
-
-    /**
-     *
-     * Allows to convert Byte[] to byte[]
-     *
-     * @param bytes the incoming Byte[] array.
-     * @return an output byte[] array.
-     */
-    public byte[] toPrimitive(Byte[] bytes){
-        byte[] output = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            output[i] = bytes[i];
-        }
-        return output;
+        return Transform.toPrimitive(data.toArray(flow));
     }
 
     /**

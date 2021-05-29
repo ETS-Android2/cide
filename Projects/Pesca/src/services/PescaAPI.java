@@ -2,6 +2,7 @@ package services;
 
 import common.data.Line;
 import common.specification.*;
+import transformation.Transform;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -121,7 +122,7 @@ public class PescaAPI extends FileAPI {
             outputStream.write(l.exportData('#'));
         }
 
-        outputStream.write(toPrimitive(identifier.toCharArray()));
+        outputStream.write(Transform.toPrimitive(identifier.toCharArray()));
         outputStream.close();
     }
 
@@ -212,7 +213,7 @@ public class PescaAPI extends FileAPI {
             outputStream.write(l.exportData('#'));
         }
 
-        outputStream.write(toPrimitive(user.toCharArray()));
+        outputStream.write(Transform.toPrimitive(user.toCharArray()));
         outputStream.close();
     }
 
@@ -344,7 +345,7 @@ public class PescaAPI extends FileAPI {
             stream.write(b.exportData('#'));
         }
 
-        stream.write(toPrimitive(identifier.toCharArray()));
+        stream.write(Transform.toPrimitive(identifier.toCharArray()));
         stream.close();
     }
 

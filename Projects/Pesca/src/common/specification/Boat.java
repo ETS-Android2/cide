@@ -2,6 +2,7 @@ package common.specification;
 
 import common.data.Data;
 import common.data.Line;
+import transformation.Transform;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class Boat {
         if(getUserByIdentifier(user)){
             throw new Exception("User already registered in boat");
         }
-        this.users.add(new Data(toComplex(user.getBytes())));
+        this.users.add(new Data(Transform.toComplex(user.getBytes())));
     }
 
     /**
@@ -113,15 +114,7 @@ public class Boat {
         data.add((byte)'\n');
 
         Byte[] flow = new Byte[data.size()];
-        return toPrimitive(data.toArray(flow));
-    }
-
-    public byte[] toPrimitive(Byte[] bytes){
-        byte[] output = new byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            output[i] = bytes[i];
-        }
-        return output;
+        return Transform.toPrimitive(data.toArray(flow));
     }
 
     /**
@@ -138,7 +131,7 @@ public class Boat {
 
         for(Line l : lines){
 
-            ArrayList<Data> users = Boat.toComplex(l.getData());
+            ArrayList<Data> users = Transform.toComplex(l.getData());
             // Remove boat name
             users.remove(0);
 
@@ -151,32 +144,6 @@ public class Boat {
         }
 
         return boats;
-    }
-
-    /**
-     *
-     * Return an arraylist with a simple list.
-     *
-     * @param bytes the input simple bytes.
-     * @return an arraylist of data.
-     */
-    public static ArrayList<Data> toComplex(Data[] bytes){
-        return new ArrayList<>(Arrays.asList(bytes));
-    }
-
-    /**
-     *
-     * Convert primitive array to more complex array.
-     *
-     * @param bytes the primitive bytes.
-     * @return an array of Byte.
-     */
-    public static Byte[] toComplex(byte[] bytes){
-        Byte[] output = new Byte[bytes.length];
-        for (int i = 0; i < bytes.length; i++) {
-            output[i] = bytes[i];
-        }
-        return output;
     }
 
 }

@@ -2,6 +2,7 @@ package common.specification;
 
 import common.data.Data;
 import common.data.Line;
+import transformation.Transform;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -257,7 +258,7 @@ public class StatisticResultSimple extends StatisticResult {
                 //Line l = new Line(currentData.toArray(flow),delimiter);
 
                 Byte[] flow = new Byte[currentData.toCharArray().length];
-                Line l = new Line(toComplexFromChars(currentData.toCharArray()),delimiter);
+                Line l = new Line(Transform.toComplexFromChars(currentData.toCharArray()),delimiter);
 
                 delimiterCount = 0;
                 // currentData.clear();
@@ -494,7 +495,7 @@ public class StatisticResultSimple extends StatisticResult {
 
     protected Byte[] convertToBytes(String flag, Float data,char delimiter){
         String output = delimiter + flag + delimiter + data + delimiter + '\n';
-        return toComplex(output.getBytes());
+        return Transform.toComplex(output.getBytes());
     }
 
     public void showStatisticsConsole(String bucket, String key, char delimiter, int numberOfData, int flag, int data, String format) throws IOException {
@@ -515,7 +516,7 @@ public class StatisticResultSimple extends StatisticResult {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                Line l = new Line(toComplexFromChars(currentData.toCharArray()),delimiter);
+                Line l = new Line(Transform.toComplexFromChars(currentData.toCharArray()),delimiter);
 
                 delimiterCount = 0;
                 currentData = "";
