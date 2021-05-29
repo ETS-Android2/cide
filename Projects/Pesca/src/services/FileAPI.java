@@ -63,9 +63,6 @@ public abstract class FileAPI {
             File f = new File(parseKey(bucket,key));
             f.createNewFile();
         } catch (IOException e){
-            if(!e.getMessage().equals("The system cannot find the path specified")){
-                throw new IOException(e.getMessage());
-            }
             createBucket(bucket);
             createFileEmpty(bucket,key);
         }
