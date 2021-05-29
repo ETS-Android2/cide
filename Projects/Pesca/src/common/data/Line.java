@@ -81,7 +81,7 @@ public class Line {
             data += delimiter;
         }
         // data.add((byte)'\n');
-        data += delimiter;
+        data += '\n';
         // Byte[] flow = new Byte[data.size()];
         // return Transform.toPrimitive(data.toArray(flow));
         return data.getBytes();
