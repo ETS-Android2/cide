@@ -39,7 +39,7 @@ public class PescaConsole extends DefaultConsole {
                 ,"Salir"
         };
 
-        OptionMenu optionMenu = new OptionMenu(options,"\t","Menu principal","%s",1,true);
+        OptionMenu optionMenu = new OptionMenu(options,"\t","Menú principal","%s",1,true);
 
         CommandParser parser = new PescaParser() {
             @Override
@@ -217,20 +217,16 @@ public class PescaConsole extends DefaultConsole {
 
     /**
      *
-     * Show a hashmap in the CLI application.
+     * Show the different rows in a statistics file, specifying the bucket and key to read from.
+     * A header can be setup and a format for each row. This method will read directly from the files.
      *
-     * @param hashMap to show.
-     * @param header to show with the hashmap, usually specifies what data is being viewed.
-     * @param format the format of the data to show.
+     * @param statistics the statistics object to use to show up the data.
+     * @param bucket the bucket that contains the file to show up.
+     * @param key the key of the file (path).
+     * @param header the header to be shown.
+     * @param format the format of each row.
+     * @throws IOException if something of the Input/Output fails.
      */
-    private void showStatisticsHashMaps(HashMap<String,Float> hashMap,String header, String format){
-        System.out.printf("\n\t%s:",header);
-        for(Map.Entry<String,Float> entry : hashMap.entrySet()){
-            System.out.printf("\n\t" + format,entry.getKey(),entry.getValue());
-        }
-        System.out.print("\n");
-    }
-
     private void showStatisticsFiles(StatisticResultSimple statistics,String bucket,String key,String header,String format) throws IOException {
         System.out.printf("\n\t%s:",header);
         statistics.showStatisticsConsole(

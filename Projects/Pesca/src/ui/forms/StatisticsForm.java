@@ -144,22 +144,26 @@ public class StatisticsForm extends PescaForm {
 
         StatisticResultSimple s = (StatisticResultSimple) this.result;
 
-        //updateList(fishSizesModel,this.result.getFishSizes(),"KG");
-        //updateList(fishCatchesModel,this.result.getFishCatches(),"veces");
+        HashMap<String,Float> sizes = new HashMap<>();
+        HashMap<String,Float> catches = new HashMap<>();
+
 
         try {
-            updateList(fishSizesModel,s.getStatisticsFromFile("tmp","sizes.txt",'#',2,0,1),"KG");
-            updateList(fishCatchesModel,s.getStatisticsFromFile("tmp","catches.txt",'#',2,0,1),"veces");
+            s.getStatisticsFromFile(sizes,"tmp","sizes.txt",'#',2,0,1);
+            s.getStatisticsFromFile(catches,"tmp","catches.txt",'#',2,0,1);
         } catch (IOException e){
             NotificationWindow.run(e.getMessage(),"Error");
         }
 
+        // Uses HashMaps to populate the JList.
+        updateList(fishSizesModel,sizes,"KG");
+        updateList(fishCatchesModel,catches,"veces");
 
     }
 
     /**
      *
-     * Updates the list with teh data and can show an specified unit.
+     * Updates the list with the data and can show an specified unit.
      *
      * @param list the list to update.
      * @param data the data to add in the list.

@@ -471,9 +471,7 @@ public class StatisticResultSimple extends StatisticResult {
      * @return HashMap with String (dataFlag) and Float (dataValue).
      * @throws IOException if something of the Input/Output fails.
      */
-    public HashMap<String,Float> getStatisticsFromFile(String bucket, String key, char delimiter, int numberOfData,int flag, int data) throws IOException {
-
-        HashMap<String,Float> output = new HashMap<>();
+    public void getStatisticsFromFile(HashMap<String,Float> input,String bucket, String key, char delimiter, int numberOfData,int flag, int data) throws IOException {
 
         InputStream stream = read(parseKey(bucket,key));
 
@@ -499,15 +497,13 @@ public class StatisticResultSimple extends StatisticResult {
                 String dataFlag = l.getData()[flag].getStringValue();
                 Float dataValue = l.getData()[data].getFloatValue();
 
-                output.put(dataFlag,dataValue);
+                input.put(dataFlag,dataValue);
 
             }
 
         }
 
         stream.close();
-
-        return output;
     }
 
 }
