@@ -10,11 +10,19 @@ public abstract class PescaParser extends CommandParser {
     @Override
     protected int parseBlock(String command) throws Exception {
         switch (command.toLowerCase()){
-            case "debug": case "test":
-                throw new Exception("NOT IMPLEMENTED");
+            case "help":
+                console.help();
+                break;
+            case "reset":
+                console.reset();
+                break;
+            case "author":
+                console.author();
+                break;
             default:
                 return callBack(command.toLowerCase());
         }
+        return 0;
     }
 
     protected abstract int callBack(String command) throws Exception;

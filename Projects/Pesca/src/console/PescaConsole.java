@@ -22,6 +22,7 @@ public class PescaConsole extends DefaultConsole {
 
     public PescaConsole() throws Exception {
         api = new PescaAPISimple();
+        PescaParser.setConsole(this);
     }
 
     /**
@@ -75,6 +76,8 @@ public class PescaConsole extends DefaultConsole {
         ) {
             @Override
             protected void outsideLoop() {
+                System.out.printf("\n\t%s\n"
+                        ,"Utiliza el comando 'help', para mostrar la ayuda de comandos.");
             }
 
             @Override
@@ -93,37 +96,23 @@ public class PescaConsole extends DefaultConsole {
     /**
      * Obtain the identifier of the user and register it.
      */
-    private void registerNewUser(){
-
+    private void registerNewUser() throws Exception {
         ArrayList<String> result = getUser();
-
-        try {
-            api.registerUser(result.get(0));
-        } catch (Exception e){
-            errorLog.add(e.getMessage());
-        }
-
+        api.registerUser(result.get(0));
     }
 
     /**
      * Obtain the identifier of the user and delete it.
      */
-    private void deleteUser(){
-
+    private void deleteUser() throws Exception {
         ArrayList<String> result = getUser();
-
-        try {
-            api.deleteUser(result.get(0));
-        } catch (Exception e){
-            errorLog.add(e.getMessage());
-        }
-
+        api.deleteUser(result.get(0));
     }
 
     /**
      * Sequential menu to register new fish action.
      */
-    private void newAction(){
+    private void newAction() throws Exception {
 
         String[] messages = {
                 "Introduce el identificador del usuario",
@@ -147,15 +136,11 @@ public class PescaConsole extends DefaultConsole {
 
         ArrayList<String> result = menu.getOutput();
 
-        try {
-            api.registerNewAction(
-                    result.get(0)
-                    ,api.getFish(getClass().getResource(parseBoat(result.get(1))).getFile())
-            );
-        } catch (Exception e){
-            errorLog.add(e.getMessage());
-        }
 
+        api.registerNewAction(
+                result.get(0)
+                ,api.getFish(getClass().getResource(parseBoat(result.get(1))).getFile())
+        );
     }
 
     /**
@@ -178,16 +163,9 @@ public class PescaConsole extends DefaultConsole {
     /**
      * Sequential menu to obtain the statistics of the user.
      */
-    private void userStatistics(){
-
+    private void userStatistics() throws Exception {
         ArrayList<String> result = getUser();
-
-        try {
-            showStatistics(api.getStatistics(result.get(0)));
-        } catch (Exception e){
-            errorLog.add(e.getMessage());
-        }
-
+        showStatistics(api.getStatistics(result.get(0)));
     }
 
     /**
@@ -235,9 +213,6 @@ public class PescaConsole extends DefaultConsole {
         showStatisticsFiles(s,"tmp","sizes.txt","Máximo peso por pescado capturado","\n\tPESCADO: %s -- MÁXIMO PESO: %.2f");
         showStatisticsFiles(s,"tmp","catches.txt","Máximas capturas por pescado","\n\tPESCADO: %s -- CAPTURAS: %.0f");
 
-        // showStatisticsHashMaps(statistics.getFishSizes(),"Máximo peso por pescado capturado","PESCADO: %s -- MÁXIMO PESO: %.2f");
-        // showStatisticsHashMaps(statistics.getFishCatches(),"Máximas capturas por pescado","PESCADO: %s -- CAPTURAS: %.0f");
-
     }
 
     /**
@@ -268,6 +243,64 @@ public class PescaConsole extends DefaultConsole {
                 ,format
         );
         System.out.print("\n");
+    }
+
+    /**
+     *
+     * Comando help, muestra los diferentes comandos.
+     *
+     */
+    public void help(){
+
+        String[] comandos = {
+                "RESET -- Reinicia las alertas y el menu de debug a valores por defecto."
+                ,"AUTHOR -- Te muestra un mensaje hecho por el autor del programa."
+                ,"HELP -- Te muestra una ayuda sobre comandos."
+        };
+
+        OptionMenu optionMenu = new OptionMenu(comandos,"\t","COMANDOS","%s");
+
+        optionMenu.show();
+
+    }
+
+    /**
+     *
+     * Comando author, muestra un mensaje del autor del programa.
+     *
+     */
+    public void author(){
+        System.out.printf("\n\t========= %s =========\n","Créditos del autor");
+        System.out.print("\t   ______________________________\n" +
+                "\t / \\                             \\.\n" +
+                "\t|   |                            |.\n" +
+                "\t \\_ |  Gracias por probar        |.\n" +
+                "\t    |  esta aplicación,          |.\n" +
+                "\t    |  espero que te haya        |.\n" +
+                "\t    |  gustado y te haya         |.\n" +
+                "\t    |  servido de inspiración,   |.\n" +
+                "\t    |  lo he hecho con cariño    |.\n" +
+                "\t    |  y he intentado aplicar    |.\n" +
+                "\t    |  nuevos conocimientos      |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  Gracias, Carlos Pomares   |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  github.com/pomaretta      |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |  https://carlospomares.es  |.\n" +
+                "\t    |                            |.\n" +
+                "\t    |   _________________________|___\n" +
+                "\t    |  /                            /.\n" +
+                "\t    \\_/____________________________/.\n\n");
+    }
+
+    /**
+     *
+     * Comando reset, permite vaciar los errores.
+     *
+     */
+    public void reset(){
+        errorLog.clear();
     }
 
     @Override
