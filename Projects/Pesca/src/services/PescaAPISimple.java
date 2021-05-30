@@ -247,6 +247,20 @@ public class PescaAPISimple extends PescaAPI {
      */
     @Override
     public StatisticResult getStatistics(String user) throws IOException {
+
+        if(
+            !searchDataInFlow(
+                read(parseKey("flow","registers.txt"))
+                ,'#'
+                ,4
+                ,0
+                ,user
+            )
+        )
+        {
+            throw new IOException("User not exists in registers.txt");
+        }
+
         return new StatisticResultSimple(
                 read(parseKey("flow","registers.txt"))
                 ,'#'

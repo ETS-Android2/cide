@@ -277,6 +277,20 @@ public class StatisticResultSimple extends StatisticResult {
         return Transform.toComplex(output.getBytes());
     }
 
+    /**
+     *
+     * Iterates the statistics files showing in the System.out the desired data. Specified with
+     * the flag position and data position, can be formatted by the format parameter.
+     *
+     * @param bucket the bucket that contains the file. ('tmp','flow').
+     * @param key the key of the file. ('sizes.txt','catches.txt')
+     * @param delimiter the delimiter that separates the data.
+     * @param numberOfData the number of data that contains one row.
+     * @param flag the position that contains the data flag in a row. Stars with 0.
+     * @param data the position that contains the data value in a row. Starts with 0.
+     * @param format the format to show up the information.
+     * @throws IOException if something of the Input/Output fails.
+     */
     public void showStatisticsConsole(String bucket, String key, char delimiter, int numberOfData, int flag, int data, String format) throws IOException {
 
         InputStream stream = read(parseKey(bucket,key));
@@ -313,6 +327,22 @@ public class StatisticResultSimple extends StatisticResult {
 
     }
 
+    /**
+     *
+     * SWING FEATURE
+     * MAY BE IGNORED.
+     *
+     * Allows to export the data of a file in a hashmap to show up in Swing JLists.
+     *
+     * @param bucket the bucket that contains the file. ('tmp','flow')
+     * @param key the key of the file. ('sizes.txt','catches.txt')
+     * @param delimiter the delimiter that separates the data.
+     * @param numberOfData the number of data that contains one row.
+     * @param flag the position that contains the data flag in a row. Stars with 0.
+     * @param data the position that contains the data value in a row. Starts with 0.
+     * @return HashMap with String (dataFlag) and Float (dataValue).
+     * @throws IOException if something of the Input/Output fails.
+     */
     public HashMap<String,Float> getStatisticsFromFile(String bucket, String key, char delimiter, int numberOfData,int flag, int data) throws IOException {
 
         HashMap<String,Float> output = new HashMap<>();

@@ -68,21 +68,14 @@ public class Line {
      */
     public byte[] exportData(char delimiter){
         String data = "";
-        // ArrayList<Byte> data = new ArrayList<>();
-        // data.add((byte)delimiter);
         data += delimiter;
         for(Data d : this.data){
-            // Collections.addAll(data, d.getRaw());
             for(byte b : d.getRaw()){
                 data += (char) b;
             }
-            // data.add((byte)delimiter);
             data += delimiter;
         }
-        // data.add((byte)'\n');
         data += '\n';
-        // Byte[] flow = new Byte[data.size()];
-        // return Transform.toPrimitive(data.toArray(flow));
         return data.getBytes();
     }
 
@@ -98,7 +91,6 @@ public class Line {
      */
     public static Data getDataInParsedLine(Byte[] input,char delimiter,int position) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         int positionCount = 0;
@@ -108,17 +100,13 @@ public class Line {
             if(c == delimiter){
                 delimiterCount++;
             } else if (c != '\n'){
-                // currentData.add(c);
                 currentData += (char) c;
             }
             // The data is limited by 2 delimiters #<DATA>#.
             if(delimiterCount == 2){
-                // Byte[] raw = new Byte[currentData.size()];
-                // Data d = new Data(currentData.toArray(raw));
                 Data d = new Data(Transform.toComplex(currentData.getBytes()));
 
                 delimiterCount = 1;
-                // currentData.clear();
                 currentData = "";
 
                 if(position == positionCount){

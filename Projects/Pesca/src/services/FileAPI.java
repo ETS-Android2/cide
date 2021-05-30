@@ -120,6 +120,8 @@ public abstract class FileAPI {
 
     /**
      *
+     * IGNORE
+     *
      * The method that with an InputStream, read all the bytes and closes the stream.
      *
      * @param stream the stream to be read.
@@ -137,6 +139,8 @@ public abstract class FileAPI {
      ====================================== */
 
     /**
+     *
+     * IGNORE
      *
      * Split the lines in the file by the number of items specified, doesnt detect lines.
      * When detect the number of items specified reading byte per byte, converts that flow of data
@@ -168,6 +172,8 @@ public abstract class FileAPI {
 
     /**
      *
+     * IGNORE
+     *
      * Split the lines in the file by the number of items specified, doesnt detect lines.
      * When detect the number of items specified reading byte per byte, converts that flow of data
      * into a Line class.
@@ -198,6 +204,8 @@ public abstract class FileAPI {
     }
 
     /**
+     *
+     * IGNORE
      *
      * Detect the lines without need to specify the number of items inside each line.
      * When detects the new line character, pack all the data inside a new Line.
@@ -477,74 +485,6 @@ public abstract class FileAPI {
 
     /**
      *
-     * Get a line position by an integer where apply a condition with the DataOperation enum.
-     *
-     * @param stream to read from.
-     * @param delimiter to separate the data
-     * @param numberOfData items that contains one line.
-     * @param position of the data to compare.
-     * @param initial value of data to compare.
-     * @param operation to make on comparison.
-     * @return the line number in the file that applies the condition. If not find something returns -1.
-     * @throws IOException if something of the Input/Output fails.
-     */
-    protected int getLineWhereCondition(InputStream stream,char delimiter,int numberOfData,int position,Integer initial, DataOperation operation) throws IOException {
-
-        String currentData = "";
-        int delimiterCount = 0;
-        int lineCount = 0;
-        byte b;
-
-        int line = -1;
-
-        while((b = (byte) stream.read()) != -1){
-
-            currentData += (char) b;
-
-            if(b == delimiter){
-                delimiterCount++;
-            }
-
-            if (delimiterCount == (numberOfData + 1)){
-
-                Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
-
-                delimiterCount = 0;
-                currentData = "";
-
-                switch (operation){
-                    case EQUAL:
-                        if(d.getIntValue() == initial)
-                            stream.close();
-                            return lineCount;
-                    case LOWER:
-                        if(d.getIntValue() < initial)
-                            line = lineCount;
-                    case HIGHER:
-                        if(d.getIntValue() > initial)
-                            line = lineCount;
-                    case LOWER_OR_EQUAL:
-                        if(d.getIntValue() <= initial)
-                            line = lineCount;
-                    case HIGHER_OR_EQUAL:
-                        if(d.getIntValue() >= initial)
-                            line = lineCount;
-                    default:
-                        throw new IOException("Operation not supplied.");
-                }
-
-            }
-
-            lineCount++;
-
-        }
-
-        stream.close();
-        return line;
-    }
-
-    /**
-     *
      * Get a line position by float where apply a condition with the DataOperation enum.
      *
      * @param stream to read from.
@@ -688,6 +628,15 @@ public abstract class FileAPI {
 
     }
 
+    /**
+     *
+     * Allow to fill the new value (new path) with the old data (old path), and replace the old path with
+     * the new path, allowing to replace the file.
+     *
+     * @param oldValue the path to get the data.
+     * @param newValue the path to fill the data.
+     * @throws IOException if something of the Input/Output fails or when trying to create or delete the file returns false.
+     */
     protected void replaceFile(String oldValue,String newValue) throws IOException {
 
         File f = new File(oldValue);
@@ -716,30 +665,13 @@ public abstract class FileAPI {
 
     }
 
-    protected void copyFile(String oldValue, String newValue) throws IOException {
-
-        File f = new File(oldValue);
-        File f2 = new File(newValue);
-
-        if (!f.exists()){
-            throw new IOException("File to replace dont exists.");
-        }
-
-        f2.createNewFile();
-
-        InputStream input = read(oldValue);
-        OutputStream output = execute(newValue);
-        byte b;
-
-        while ((b = (byte) input.read()) != -1){
-            output.write(b);
-        }
-
-        input.close();
-        output.close();
-
-    }
-
+    /**
+     *
+     * Allow to remove a file by the key (path).
+     *
+     * @param key the path to the file.
+     * @throws IOException If exists or when trying to delete the file returns false.
+     */
     protected void removeFile(String key) throws IOException {
 
         File f = new File(key);
