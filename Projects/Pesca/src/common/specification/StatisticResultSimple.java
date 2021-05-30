@@ -206,7 +206,7 @@ public class StatisticResultSimple extends StatisticResult {
                                         ,dataFlag
                                 )
                                 ,1
-                        ).getFloatValue() <= dataValue
+                        ).getFloatValue() > dataValue
         ) {
             removeData(
                     key
