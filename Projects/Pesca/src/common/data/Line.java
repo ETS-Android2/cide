@@ -4,7 +4,6 @@ import transformation.Transform;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Line {
 

@@ -1,29 +1,23 @@
 package common.specification;
 
-import common.data.Data;
 import common.data.Line;
 import transformation.Transform;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 public class StatisticResultSimple extends StatisticResult {
 
-    private final String sizeKey;
-    private final String catchKey;
+    private final String sizeKey = parseKey("tmp","sizes.txt");
+    private final String catchKey = parseKey("tmp","catches.txt");
 
     public StatisticResultSimple(InputStream stream, char delimiter, int numberOfData, int flag, int data) throws IOException {
-        sizeKey = parseKey("tmp","sizes.txt");
-        catchKey = parseKey("tmp","catches.txt");
         parseStatisticFile(stream,delimiter,numberOfData,flag,data);
     }
 
     public StatisticResultSimple(InputStream stream, char delimiter, int numberOfData, int flag, int data, int identifier, String id) throws IOException {
-        sizeKey = parseKey("tmp","sizes.txt");
-        catchKey = parseKey("tmp","catches.txt");
         parseStatisticFile(stream,delimiter,numberOfData,flag,data,identifier,id);
     }
 
@@ -35,196 +29,7 @@ public class StatisticResultSimple extends StatisticResult {
         return catchKey;
     }
 
-    /**
-     *
-     * Read all data and build the metrics in the same moment of parsing.
-     *
-     * @param stream to read from.
-     * @param delimiter to separate the data.
-     * @param numberOfData items in the line.
-     * @param flag position in the data.
-     * @param data position in the data.
-     * @throws IOException if something of the Input/Output fails.
-     */
-    protected void parseStatistic(InputStream stream, char delimiter, int numberOfData, int flag, int data) throws IOException {
-
-        ArrayList<Byte> currentData = new ArrayList<>();
-        int delimiterCount = 0;
-        byte b;
-
-        ArrayList<Float> meanData = new ArrayList<>();
-        float average = 0;
-        int lineCount = 0;
-
-        while((b = (byte) stream.read()) != -1){
-
-            currentData.add(b);
-
-            if(b == delimiter){
-                delimiterCount++;
-            }
-
-            if (delimiterCount == (numberOfData + 1)){
-                Byte[] flow = new Byte[currentData.size()];
-
-                Line l = new Line(currentData.toArray(flow),delimiter);
-
-                delimiterCount = 0;
-                currentData.clear();
-
-                String dataFlag = l.getData()[flag].getStringValue();
-                float dataValue = l.getData()[data].getFloatValue();
-
-                // MAX
-                if(this.max < dataValue){
-                    this.max = dataValue;
-                }
-
-                // FIRST MIN
-                if(this.min == 0){
-                    this.min = dataValue;
-                }
-
-                // MIN
-                if(this.min > dataValue){
-                    this.min = dataValue;
-                }
-
-                // FISH SIZES
-                if (!fishSizes.containsKey(dataFlag)){
-                    fishSizes.put(dataFlag,dataValue);
-                } else if(fishSizes.containsKey(dataFlag) && fishSizes.get(dataFlag) < dataValue){
-                    fishSizes.replace(dataFlag,dataValue);
-                }
-
-                // FISH CATCHES
-                if (!fishCatches.containsKey(dataFlag)){
-                    fishCatches.put(dataFlag,1f);
-                } else if(fishCatches.containsKey(dataFlag)){
-                    fishCatches.replace(dataFlag,fishCatches.get(dataFlag) + 1);
-                }
-
-                average += dataValue;
-
-                meanData.add(dataValue);
-
-                lineCount++;
-
-            }
-
-        }
-
-        // AVERAGE
-        this.average = average / lineCount;
-
-        // MEAN
-        Collections.sort(meanData);
-
-        if(meanData.size() > 1){
-            this.mean = meanData.get((meanData.size() / 2) - 1) + meanData.get(meanData.size() / 2) / 2;
-        }
-
-    }
-
-    /**
-     *
-     * Read all data and build the metrics in the same moment of parsing, filtered by identifier.
-     *
-     * @param stream to read from.
-     * @param delimiter to separate the data.
-     * @param numberOfData items in the line.
-     * @param flag position in the data.
-     * @param data position in the data.
-     * @param identifier position in the data.
-     * @param id String to filter.
-     * @throws IOException if something of the Input/Output fails.
-     */
-    protected void parseStatistic(InputStream stream, char delimiter, int numberOfData, int flag, int data, int identifier, String id) throws IOException {
-
-        ArrayList<Byte> currentData = new ArrayList<>();
-        int delimiterCount = 0;
-        byte b;
-
-        ArrayList<Float> meanData = new ArrayList<>();
-        float average = 0;
-        int lineCount = 0;
-
-        while((b = (byte) stream.read()) != -1){
-
-            currentData.add(b);
-
-            if(b == delimiter){
-                delimiterCount++;
-            }
-
-            if (delimiterCount == (numberOfData + 1)){
-                Byte[] flow = new Byte[currentData.size()];
-
-                Line l = new Line(currentData.toArray(flow),delimiter);
-
-                delimiterCount = 0;
-                currentData.clear();
-
-                if (l.getData()[identifier].getStringValue().equals(id)){
-
-                    String dataFlag = l.getData()[flag].getStringValue();
-                    float dataValue = l.getData()[data].getFloatValue();
-
-                    // MAX
-                    if(this.max < dataValue){
-                        this.max = dataValue;
-                    }
-
-                    // FIRST MIN
-                    if(this.min == 0){
-                        this.min = dataValue;
-                    }
-
-                    // MIN
-                    if(this.min > dataValue){
-                        this.min = dataValue;
-                    }
-
-                    // FISH SIZES
-                    if (!fishSizes.containsKey(dataFlag)){
-                        fishSizes.put(dataFlag,dataValue);
-                    } else if(fishSizes.containsKey(dataFlag) && fishSizes.get(dataFlag) < dataValue){
-                        fishSizes.replace(dataFlag,dataValue);
-                    }
-
-                    // FISH CATCHES
-                    if (!fishCatches.containsKey(dataFlag)){
-                        fishCatches.put(dataFlag,1f);
-                    } else if(fishCatches.containsKey(dataFlag)){
-                        fishCatches.replace(dataFlag,fishCatches.get(dataFlag) + 1);
-                    }
-
-                    average += dataValue;
-
-                    meanData.add(dataValue);
-
-                    lineCount++;
-
-                }
-
-            }
-
-        }
-
-        // AVERAGE
-        this.average = average / lineCount;
-
-        // MEAN
-        Collections.sort(meanData);
-
-        if(meanData.size() > 1){
-            this.mean = meanData.get((meanData.size() / 2) - 1) + meanData.get(meanData.size() / 2) / 2;
-        }
-
-    }
-
-    protected void parseStatisticFile(InputStream stream, char delimiter, int numberOfData, int flag, int data) throws IOException {
-
+    protected void createStatisticsFiles() throws IOException {
         if (new File(sizeKey).exists())
             removeFile(parseKey("tmp","sizes.txt"));
 
@@ -233,8 +38,12 @@ public class StatisticResultSimple extends StatisticResult {
 
         createFileEmpty("tmp","sizes.txt");
         createFileEmpty("tmp","catches.txt");
+    }
 
-        //ArrayList<Byte> currentData = new ArrayList<>();
+    protected void parseStatisticFile(InputStream stream, char delimiter, int numberOfData, int flag, int data) throws IOException {
+
+        createStatisticsFiles();
+
         String currentData = "";
         int delimiterCount = 0;
         byte b;
@@ -245,7 +54,6 @@ public class StatisticResultSimple extends StatisticResult {
 
         while((b = (byte) stream.read()) != -1){
 
-            //currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -254,42 +62,15 @@ public class StatisticResultSimple extends StatisticResult {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                //Byte[] flow = new Byte[currentData.size()];
-                //Line l = new Line(currentData.toArray(flow),delimiter);
-
                 Line l = new Line(Transform.toComplexFromChars(currentData.toCharArray()),delimiter);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 String dataFlag = l.getData()[flag].getStringValue();
                 float dataValue = l.getData()[data].getFloatValue();
 
-                // MAX
-                if(this.max < dataValue){
-                    this.max = dataValue;
-                }
-
-                // FIRST MIN
-                if(this.min == 0){
-                    this.min = dataValue;
-                }
-
-                // MIN
-                if(this.min > dataValue){
-                    this.min = dataValue;
-                }
-
-                // FISH SIZES
-
-                Line sizeData = new Line(convertToBytes(dataFlag,dataValue,delimiter),delimiter);
-
-                parseFishSize(sizeData,dataFlag,dataValue,sizeKey,delimiter);
-
-                // FISH CATCHES
-
-                parseFishCatch(dataFlag,catchKey,delimiter);
+                applyStatistics(dataFlag,dataValue,delimiter);
 
                 average += dataValue;
 
@@ -317,13 +98,8 @@ public class StatisticResultSimple extends StatisticResult {
 
     protected void parseStatisticFile(InputStream stream, char delimiter, int numberOfData, int flag, int data, int identifier, String id) throws IOException {
 
-        removeFile(parseKey("tmp","sizes.txt"));
-        removeFile(parseKey("tmp","catches.txt"));
+        createStatisticsFiles();
 
-        createFileEmpty("tmp","sizes.txt");
-        createFileEmpty("tmp","catches.txt");
-
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         byte b;
@@ -334,7 +110,6 @@ public class StatisticResultSimple extends StatisticResult {
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -343,13 +118,10 @@ public class StatisticResultSimple extends StatisticResult {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                // Byte[] flow = new Byte[currentData.size()];
-                //Line l = new Line(currentData.toArray(flow),delimiter);
 
                 Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 if (l.getData()[identifier].getStringValue().equals(id)){
@@ -357,33 +129,7 @@ public class StatisticResultSimple extends StatisticResult {
                     String dataFlag = l.getData()[flag].getStringValue();
                     float dataValue = l.getData()[data].getFloatValue();
 
-                    // MAX
-                    if(this.max < dataValue){
-                        this.max = dataValue;
-                    }
-
-                    // FIRST MIN
-                    if(this.min == 0){
-                        this.min = dataValue;
-                    }
-
-                    // MIN
-                    if(this.min > dataValue){
-                        this.min = dataValue;
-                    }
-
-                    // FISH SIZES
-
-                    Line sizeData = new Line(convertToBytes(dataFlag,dataValue,delimiter),delimiter);
-                    String sizeKey = parseKey("tmp","sizes.txt");
-
-                    parseFishSize(sizeData,dataFlag,dataValue,sizeKey,delimiter);
-
-                    // FISH CATCHES
-
-                    String catchKey = parseKey("tmp","catches.txt");
-
-                    parseFishCatch(dataFlag,catchKey,delimiter);
+                    applyStatistics(dataFlag,dataValue,delimiter);
 
                     average += dataValue;
 
@@ -406,6 +152,35 @@ public class StatisticResultSimple extends StatisticResult {
         if(meanData.size() > 1){
             this.mean = meanData.get((meanData.size() / 2) - 1) + meanData.get(meanData.size() / 2) / 2;
         }
+
+    }
+
+    protected void applyStatistics(String dataFlag, Float dataValue,char delimiter) throws IOException {
+
+        // MAX
+        if(this.max < dataValue){
+            this.max = dataValue;
+        }
+
+        // FIRST MIN
+        if(this.min == 0){
+            this.min = dataValue;
+        }
+
+        // MIN
+        if(this.min > dataValue){
+            this.min = dataValue;
+        }
+
+        // FISH SIZES
+
+        Line sizeData = new Line(convertToBytes(dataFlag,dataValue,delimiter),delimiter);
+
+        parseFishSize(sizeData,dataFlag,dataValue,sizeKey,delimiter);
+
+        // FISH CATCHES
+
+        parseFishCatch(dataFlag,catchKey,delimiter);
 
     }
 
@@ -544,14 +319,12 @@ public class StatisticResultSimple extends StatisticResult {
 
         InputStream stream = read(parseKey(bucket,key));
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         byte b;
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -560,13 +333,9 @@ public class StatisticResultSimple extends StatisticResult {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                // Byte[] flow = new Byte[currentData.size()];
-                // Line l = new Line(currentData.toArray(flow),delimiter);
-
                 Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 String dataFlag = l.getData()[flag].getStringValue();

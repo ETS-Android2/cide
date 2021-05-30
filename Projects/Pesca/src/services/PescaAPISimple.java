@@ -5,21 +5,12 @@ import common.specification.*;
 import transformation.Transform;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class PescaAPISimple extends PescaAPI {
 
     public PescaAPISimple() throws IOException {
-
-        createFlowContainer();
-
-        boolean flow;
-        do {
-            flow = establishDataFlows();
-        } while (!flow);
+        super();
     }
 
     /* ======================================

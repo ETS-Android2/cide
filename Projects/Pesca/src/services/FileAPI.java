@@ -6,7 +6,6 @@ import transformation.Transform;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public abstract class FileAPI {
 
@@ -22,7 +21,7 @@ public abstract class FileAPI {
      * @return FileOutputStream of the key.
      * @throws IOException if something of the Input/Output fails.
      */
-    protected FileOutputStream execute(String key) throws IOException {
+    protected OutputStream execute(String key) throws IOException {
         return new FileOutputStream(key);
     }
 
@@ -34,7 +33,7 @@ public abstract class FileAPI {
      * @return FileOutputStream of the key.
      * @throws IOException if something of the Input/Output fails.
      */
-    protected FileOutputStream execute(String key, boolean append) throws IOException {
+    protected OutputStream execute(String key, boolean append) throws IOException {
         return new FileOutputStream(key,append);
     }
 
@@ -46,7 +45,7 @@ public abstract class FileAPI {
      * @return FileInputStream of the path.
      * @throws IOException if something of the Input/Output fails.
      */
-    protected FileInputStream read(String key) throws IOException {
+    protected InputStream read(String key) throws IOException {
         return new FileInputStream(key);
     }
 
@@ -243,14 +242,12 @@ public abstract class FileAPI {
      */
     protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,String toSearch) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         byte b;
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -258,13 +255,10 @@ public abstract class FileAPI {
             }
 
             if (delimiterCount == (numberOfData + 1)){
-                // Byte[] flow = new Byte[currentData.size()];
 
-                // Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 if(d.getStringValue().equals(toSearch)){
@@ -294,14 +288,12 @@ public abstract class FileAPI {
      */
     protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,Float toSearch) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         byte b;
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -309,13 +301,9 @@ public abstract class FileAPI {
             }
 
             if (delimiterCount == (numberOfData + 1)){
-                //Byte[] flow = new Byte[currentData.size()];
-
-                // Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 if(d.getFloatValue() == toSearch){
@@ -349,7 +337,6 @@ public abstract class FileAPI {
      */
     protected int getLinePositionInFlow(InputStream stream,char delimiter,int numberOfData,int position,String toSearch) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         int lineCount = 0;
@@ -357,7 +344,6 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -365,13 +351,10 @@ public abstract class FileAPI {
             }
 
             if (delimiterCount == (numberOfData + 1)){
-                // Byte[] flow = new Byte[currentData.size()];
 
-                //Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 if(d.getStringValue().equals(toSearch)){
@@ -407,7 +390,6 @@ public abstract class FileAPI {
      */
     protected Line getLineDataInFlow(InputStream stream,char delimiter,int numberOfData,int position) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         int lineCount = 0;
@@ -415,7 +397,6 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -423,13 +404,9 @@ public abstract class FileAPI {
             }
 
             if (delimiterCount == (numberOfData + 1)){
-                // Byte[] flow = new Byte[currentData.size()];
-
-                // Line l = new Line(currentData.toArray(flow),delimiter);
                 Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 
                 delimiterCount = 0;
-                //currentData.clear();
                 currentData = "";
 
                 if(lineCount == position){
@@ -460,7 +437,6 @@ public abstract class FileAPI {
      */
     protected Data getDataInLinePosition(InputStream stream,char delimiter,int numberOfData,int position,int dataPosition) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         int lineCount = 0;
@@ -468,7 +444,6 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -476,17 +451,14 @@ public abstract class FileAPI {
             }
 
             if (delimiterCount == (numberOfData + 1)){
-                //Byte[] flow = new Byte[currentData.size()];
 
                 delimiterCount = 0;
 
                 if(lineCount == position){
                     stream.close();
-                    // return Line.getDataInParsedLine(currentData.toArray(flow),delimiter,dataPosition);
                     return Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,dataPosition);
                 }
 
-                // currentData.clear();
 
                 lineCount++;
 
@@ -518,7 +490,6 @@ public abstract class FileAPI {
      */
     protected int getLineWhereCondition(InputStream stream,char delimiter,int numberOfData,int position,Integer initial, DataOperation operation) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         int lineCount = 0;
@@ -528,7 +499,6 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -537,18 +507,15 @@ public abstract class FileAPI {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                // Byte[] flow = new Byte[currentData.size()];
-
-                // Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 switch (operation){
                     case EQUAL:
                         if(d.getIntValue() == initial)
+                            stream.close();
                             return lineCount;
                     case LOWER:
                         if(d.getIntValue() < initial)
@@ -572,6 +539,7 @@ public abstract class FileAPI {
 
         }
 
+        stream.close();
         return line;
     }
 
@@ -590,7 +558,6 @@ public abstract class FileAPI {
      */
     protected int getLineWhereCondition(InputStream stream,char delimiter,int numberOfData,int position,Float initial, DataOperation operation) throws IOException {
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         int lineCount = 0;
@@ -609,13 +576,9 @@ public abstract class FileAPI {
 
             if (delimiterCount == (numberOfData + 1)){
 
-                // Byte[] flow = new Byte[currentData.size()];
-
-                // Data d = Line.getDataInParsedLine(currentData.toArray(flow),delimiter,position);
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 switch (operation){
@@ -666,7 +629,7 @@ public abstract class FileAPI {
      * @throws IOException if something of the Input/Output fails.
      */
     protected void appendData(String key,char delimiter, Line line) throws IOException {
-        FileOutputStream outputStream = this.execute(key,true);
+        OutputStream outputStream = this.execute(key,true);
         outputStream.write(line.exportData(delimiter));
         outputStream.close();
     }
@@ -686,18 +649,16 @@ public abstract class FileAPI {
         createFileEmpty("tmp","replace.txt");
         String replacedFile = parseKey("tmp","replace.txt");
 
-        // ArrayList<Byte> currentData = new ArrayList<>();
         String currentData = "";
         int delimiterCount = 0;
         int lineCount = 0;
         byte b;
 
-        FileInputStream inputStream = this.read(key);
-        FileOutputStream outputStream = this.execute(replacedFile);
+        InputStream inputStream = this.read(key);
+        OutputStream outputStream = this.execute(replacedFile);
 
         while((b = (byte) inputStream.read()) != -1){
 
-            // currentData.add(b);
             currentData += (char) b;
 
             if(b == delimiter){
@@ -705,13 +666,9 @@ public abstract class FileAPI {
             }
 
             if (delimiterCount == (numberOfData + 1)){
-                // Byte[] flow = new Byte[currentData.size()];
-
-                // Line l = new Line(currentData.toArray(flow),delimiter);
                 Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 
                 delimiterCount = 0;
-                // currentData.clear();
                 currentData = "";
 
                 if(lineCount != position){
@@ -765,7 +722,7 @@ public abstract class FileAPI {
         File f2 = new File(newValue);
 
         if (!f.exists()){
-            throw new IOException("File to replace dont exist.");
+            throw new IOException("File to replace dont exists.");
         }
 
         f2.createNewFile();

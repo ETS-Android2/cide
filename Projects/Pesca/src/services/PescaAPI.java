@@ -115,7 +115,7 @@ public class PescaAPI extends FileAPI {
         identifier = '#' + identifier + '#' + '\n';
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
-        FileOutputStream outputStream = execute(parseKey("flow","users.txt"));
+        OutputStream outputStream = execute(parseKey("flow","users.txt"));
         ArrayList<Line> lines = parseLines(raw,'#',1);
 
         for (Line l : lines){
@@ -143,7 +143,7 @@ public class PescaAPI extends FileAPI {
         }
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
-        FileOutputStream outputStream = execute(parseKey("flow","users.txt"));
+        OutputStream outputStream = execute(parseKey("flow","users.txt"));
         ArrayList<Line> lines = parseLines(raw,'#',1);
 
         for(Line l : lines){
@@ -206,7 +206,7 @@ public class PescaAPI extends FileAPI {
         user = '#' + user + '#' + fish.getName() + '#' + fish.getSize() + '#' + date + '#' + '\n';
 
         byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
-        FileOutputStream outputStream = execute(parseKey("flow","registers.txt"));
+        OutputStream outputStream = execute(parseKey("flow","registers.txt"));
         ArrayList<Line> lines = parseLines(raw,'#',4);
 
         for (Line l : lines){
@@ -338,7 +338,7 @@ public class PescaAPI extends FileAPI {
         ArrayList<Line> lines = parseLinesArray(raw,'#');
         ArrayList<Boat> boats = Boat.parseBoats(lines);
 
-        FileOutputStream stream = execute(parseKey("flow","boats.txt"));
+        OutputStream stream = execute(parseKey("flow","boats.txt"));
         identifier = '#' + identifier + '#' + '\n';
 
         for(Boat b : boats){
@@ -427,7 +427,7 @@ public class PescaAPI extends FileAPI {
         ArrayList<Line> lines = parseLinesArray(raw, '#');
         ArrayList<Boat> boats = Boat.parseBoats(lines);
 
-        FileOutputStream stream = execute(parseKey("flow", "boats.txt"));
+        OutputStream stream = execute(parseKey("flow", "boats.txt"));
 
         for (Boat b : boats) {
             if (b.getName().getStringValue().equals(boat.getName().getStringValue())) {
