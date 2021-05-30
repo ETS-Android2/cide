@@ -247,7 +247,7 @@ public class PescaConsole extends DefaultConsole {
 
     /**
      *
-     * Comando help, muestra los diferentes comandos.
+     * Help command, shows the different commands that can be performed.
      *
      */
     public void help(){
@@ -266,7 +266,7 @@ public class PescaConsole extends DefaultConsole {
 
     /**
      *
-     * Comando author, muestra un mensaje del autor del programa.
+     * Author command, shows a little message of the author.
      *
      */
     public void author(){
@@ -296,7 +296,7 @@ public class PescaConsole extends DefaultConsole {
 
     /**
      *
-     * Comando reset, permite vaciar los errores.
+     * Reset command, allows to reset the ErrorLog object.
      *
      */
     public void reset(){
