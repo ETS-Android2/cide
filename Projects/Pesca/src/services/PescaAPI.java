@@ -4,9 +4,10 @@ import common.data.Line;
 import common.specification.*;
 import transformation.Transform;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class PescaAPI extends FileAPI {
 
@@ -85,14 +86,33 @@ public class PescaAPI extends FileAPI {
      * @throws IOException if something of the Input/Output fails.
      */
     public boolean getUserByIdentifier(String user) throws IOException {
-        byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
-        ArrayList<Line> lines = parseLines(raw,'#',1);
-        for (Line l : lines){
-            if(l.getData()[0].getStringValue().equals(user)){
-                return true;
-            }
-        }
-        return false;
+        return this.searchDataInFlow(
+                read(parseKey("flow","users.txt"))
+                ,'#'
+                ,1
+                ,0
+                ,user
+        );
+    }
+
+
+    /**
+     *
+     * Implementation of User methods to retrieve the line number
+     * where the user is identified.
+     *
+     * @param user the user to identify.
+     * @return the line in the file.
+     * @throws IOException if something of the Input/Output fails.
+     */
+    private int getUserLine(String user) throws IOException {
+        return getLinePositionInFlow(
+                read(parseKey("flow","users.txt"))
+                ,'#'
+                ,1
+                ,0
+                ,user
+        );
     }
 
     /**
@@ -114,17 +134,16 @@ public class PescaAPI extends FileAPI {
         // Prepare data for file
         identifier = '#' + identifier + '#' + '\n';
 
-        byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
-        OutputStream outputStream = execute(parseKey("flow","users.txt"));
-        ArrayList<Line> lines = parseLines(raw,'#',1);
+        Line l = new Line(Transform.toComplex(identifier.getBytes()),'#');
 
-        for (Line l : lines){
-            outputStream.write(l.exportData('#'));
-        }
-
-        outputStream.write(Transform.toPrimitive(identifier.toCharArray()));
-        outputStream.close();
+        this.appendData(
+                parseKey("flow","users.txt")
+                ,'#'
+                ,l
+        );
     }
+
+
 
     /**
      *
@@ -142,43 +161,12 @@ public class PescaAPI extends FileAPI {
             throw new Exception("User not exists.");
         }
 
-        byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
-        OutputStream outputStream = execute(parseKey("flow","users.txt"));
-        ArrayList<Line> lines = parseLines(raw,'#',1);
-
-        for(Line l : lines){
-            if(!l.getData()[0].getStringValue().equals(identifier)){
-                outputStream.write(l.exportData('#'));
-            }
-        }
-
-        outputStream.close();
-    }
-
-    /**
-     *
-     * Allow to obtain an user by the class specificaction for usage in another methods.
-     *
-     * @param identifier to search.
-     * @return an User class containing the identifier.
-     * @throws Exception if the user does not exists.
-     */
-    public User getUser(String identifier) throws Exception {
-
-        if(!getUserByIdentifier(identifier)){
-            throw new Exception("User does not exist.");
-        }
-
-        byte[] raw = getDataFromFlow(read(parseKey("flow","users.txt")));
-        ArrayList<Line> lines = parseLines(raw,'#',1);
-
-        for (Line l : lines){
-            if(l.getData()[0].getStringValue().equals(identifier)){
-                return new User(l.getData()[0]);
-            }
-        }
-
-        return null;
+        removeData(
+                parseKey("flow","users.txt")
+                ,'#'
+                ,1
+                ,getUserLine(identifier)
+        );
     }
 
     /* ======================================
@@ -205,16 +193,13 @@ public class PescaAPI extends FileAPI {
         LocalDate date = LocalDate.now();
         user = '#' + user + '#' + fish.getName() + '#' + fish.getSize() + '#' + date + '#' + '\n';
 
-        byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
-        OutputStream outputStream = execute(parseKey("flow","registers.txt"));
-        ArrayList<Line> lines = parseLines(raw,'#',4);
+        Line l = new Line(Transform.toComplex(user.getBytes()),'#');
 
-        for (Line l : lines){
-            outputStream.write(l.exportData('#'));
-        }
-
-        outputStream.write(Transform.toPrimitive(user.toCharArray()));
-        outputStream.close();
+        this.appendData(
+                parseKey("flow","registers.txt")
+                ,'#'
+                ,l
+        );
     }
 
     /* ======================================
@@ -232,20 +217,30 @@ public class PescaAPI extends FileAPI {
      */
     public Fish getFish(String key) throws IOException {
 
-        byte[] raw = getDataFromFlow(read(key));
-        ArrayList<Line> lines = parseLines(raw,'#',4);
+        float random = (float) (Math.random() * 1.2f);
 
-        float random = (float) (Math.random() * 1.5f);
-        Fish higherFish = null;
+        int line = getLineWhereCondition(
+                read(key)
+                ,'#'
+                ,4
+                ,1
+                ,random
+                ,DataOperation.HIGHER_OR_EQUAL
+        );
 
-        for(Line l : lines){
-            Fish f = new Fish(l.getData()[0],l.getData()[1],l.getData()[2],l.getData()[3]);
-            if (random >= f.getPercentage()){
-                higherFish = f;
-            }
-        }
+        Line l = getLineDataInFlow(
+                read(key)
+                ,'#'
+                ,4
+                ,line
+        );
 
-        return higherFish;
+        return new Fish(
+                l.getData()[0],
+                l.getData()[1],
+                l.getData()[2],
+                l.getData()[3]
+        );
     }
 
     /* ======================================
@@ -260,16 +255,13 @@ public class PescaAPI extends FileAPI {
      * @throws IOException if something of the Input/Output fails.
      */
     public StatisticResult getStatistics() throws IOException {
-
-        byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
-        ArrayList<Line> lines = parseLines(raw,'#',4);
-        ArrayList<Statistics> statistics = new ArrayList<>();
-
-        for(Line l : lines){
-            statistics.add(new Statistics(l.getData()[1],l.getData()[2].getFloatValue()));
-        }
-
-        return new StatisticResult(statistics);
+        return new StatisticResult(
+                read(parseKey("flow","registers.txt"))
+                ,'#'
+                ,4
+                ,1
+                ,2
+        );
     }
 
     /**
@@ -282,162 +274,28 @@ public class PescaAPI extends FileAPI {
      */
     public StatisticResult getStatistics(String user) throws IOException {
 
-        byte[] raw = getDataFromFlow(read(parseKey("flow","registers.txt")));
-        ArrayList<Line> lines = parseLines(raw,'#',4);
-        ArrayList<Statistics> statistics = new ArrayList<>();
-
-        for(Line l : lines){
-            if(l.getData()[0].getStringValue().equals(user)){
-                statistics.add(new Statistics(l.getData()[1],l.getData()[2].getFloatValue()));
-            }
+        if(
+            !searchDataInFlow(
+                read(parseKey("flow","registers.txt"))
+                ,'#'
+                ,4
+                ,0
+                ,user
+            )
+        )
+        {
+            throw new IOException("User not exists in registers.txt");
         }
 
-        return new StatisticResult(statistics);
-    }
-
-    /* ======================================
-        BOAT METHODS
-     ====================================== */
-
-    /**
-     *
-     * Get all boats inside the boats.txt. Then return if exists.
-     *
-     * @param boat the boat to determine his existence.
-     * @return if the boat exists in boats.txt.
-     * @throws IOException if something of the Input/Output fails.
-     */
-    public boolean getBoatByIdentifier(String boat) throws IOException {
-        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
-        ArrayList<Line> lines = parseLinesArray(raw,'#');
-        ArrayList<Boat> boats = Boat.parseBoats(lines);
-
-        for(Boat b : boats){
-            if (b.getName().getStringValue().equals(boat)){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     *
-     * Allow to register new boat with the desired identifier.
-     *
-     * @param identifier the identfier to register.
-     * @throws Exception if the boat is already registered.
-     */
-    public void registerBoat(String identifier) throws Exception {
-
-        if(getBoatByIdentifier(identifier)){
-            throw new Exception("Boat already exists.");
-        }
-
-        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
-        ArrayList<Line> lines = parseLinesArray(raw,'#');
-        ArrayList<Boat> boats = Boat.parseBoats(lines);
-
-        OutputStream stream = execute(parseKey("flow","boats.txt"));
-        identifier = '#' + identifier + '#' + '\n';
-
-        for(Boat b : boats){
-            stream.write(b.exportData('#'));
-        }
-
-        stream.write(Transform.toPrimitive(identifier.toCharArray()));
-        stream.close();
-    }
-
-    /**
-     *
-     * Returns a boat with the users and his identifier.
-     *
-     * @param identifier of the boat.
-     * @return the boat instance.
-     * @throws Exception if the boat is not registered.
-     */
-    public Boat getBoat(String identifier) throws Exception {
-
-        if(!getBoatByIdentifier(identifier)){
-            throw new Exception("Boat in not registered.");
-        }
-
-        byte[] raw = getDataFromFlow(read(parseKey("flow","boats.txt")));
-        ArrayList<Line> lines = parseLinesArray(raw,'#');
-        ArrayList<Boat> boats = Boat.parseBoats(lines);
-
-        for(Boat b : boats){
-            if(b.getName().getStringValue().equals(identifier)){
-                return b;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     *
-     * Allow to register a user inside a boat, the steps to do that is
-     * with the boat object, add an user in it and then write again that boat.
-     *
-     * @param boat the boat to register the user.
-     * @param user the user to register in the boat.
-     * @throws Exception if the user already exists in the boat.
-     */
-    public void registerUserInBoat(Boat boat,User user) throws Exception {
-
-        if(boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
-            throw new Exception("User already registered in boat.");
-        }
-
-        boat.add(user.getIdentifier().getStringValue());
-
-        replaceBoat(boat);
-    }
-
-    /**
-     * 
-     * Allow to delete an user inside boat.
-     * 
-     * @param boat the boat to delete the user.
-     * @param user the user to delete.
-     * @throws Exception if the user is not registered in the boat.
-     */
-    public void deleteUserInBoat(Boat boat, User user) throws Exception {
-
-        if(!boat.getUserByIdentifier(user.getIdentifier().getStringValue())){
-            throw new Exception("User is not registered in boat.");
-        }
-
-        boat.remove(user.getIdentifier().getStringValue());
-
-        replaceBoat(boat);
-    }
-
-    /**
-     *
-     * Allow to replace a boat in the boats.txt.
-     *
-     * @param boat to replace.
-     * @throws IOException if something of the Input/Output fails.
-     */
-    public void replaceBoat(Boat boat) throws IOException {
-        byte[] raw = getDataFromFlow(read(parseKey("flow", "boats.txt")));
-        ArrayList<Line> lines = parseLinesArray(raw, '#');
-        ArrayList<Boat> boats = Boat.parseBoats(lines);
-
-        OutputStream stream = execute(parseKey("flow", "boats.txt"));
-
-        for (Boat b : boats) {
-            if (b.getName().getStringValue().equals(boat.getName().getStringValue())) {
-                stream.write(boat.exportData('#'));
-            } else {
-                stream.write(b.exportData('#'));
-            }
-        }
-
-        stream.close();
+        return new StatisticResult(
+                read(parseKey("flow","registers.txt"))
+                ,'#'
+                ,4
+                ,1
+                ,2
+                ,0
+                ,user
+        );
     }
 
 }

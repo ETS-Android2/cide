@@ -1,7 +1,6 @@
 package application;
 
 import services.PescaAPI;
-import services.PescaAPISimple;
 import ui.Form;
 import ui.FormManager;
 import ui.forms.MainForm;
@@ -28,7 +27,7 @@ public class PescaUI {
     /**
      * API to access with the application.
      */
-    private final PescaAPISimple api;
+    private final PescaAPI api;
 
     /**
      *
@@ -40,7 +39,7 @@ public class PescaUI {
     private PescaUI() throws Exception {
         formManager = new FormManager(this);
         forms = new HashMap<>();
-        api = new PescaAPISimple();
+        api = new PescaAPI();
         registerForms();
     }
 

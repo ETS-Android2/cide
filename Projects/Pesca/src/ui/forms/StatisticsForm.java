@@ -1,7 +1,6 @@
 package ui.forms;
 
 import common.specification.StatisticResult;
-import common.specification.StatisticResultSimple;
 import ui.FormManager;
 import ui.NotificationWindow;
 import ui.PescaForm;
@@ -142,7 +141,7 @@ public class StatisticsForm extends PescaForm {
         this.mediaPesoField.setText(String.format("%.2f",this.result.getAverage()));
         this.medianaPesoField.setText(String.format("%.2f",this.result.getMean()));
 
-        StatisticResultSimple s = (StatisticResultSimple) this.result;
+        StatisticResult s = (StatisticResult) this.result;
 
         HashMap<String,Float> sizes = new HashMap<>();
         HashMap<String,Float> catches = new HashMap<>();

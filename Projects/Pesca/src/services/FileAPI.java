@@ -5,7 +5,6 @@ import common.data.Line;
 import transformation.Transform;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public abstract class FileAPI {
 
@@ -118,120 +117,6 @@ public abstract class FileAPI {
         }
     }
 
-    /**
-     *
-     * IGNORE
-     *
-     * The method that with an InputStream, read all the bytes and closes the stream.
-     *
-     * @param stream the stream to be read.
-     * @return an array of bytes.
-     * @throws IOException if something fails with the file.
-     */
-    protected byte[] getDataFromFlow(InputStream stream) throws IOException {
-        byte[] b = stream.readAllBytes();
-        stream.close();
-        return b;
-    }
-
-    /* ======================================
-        PARSE METHODS
-     ====================================== */
-
-    /**
-     *
-     * IGNORE
-     *
-     * Split the lines in the file by the number of items specified, doesnt detect lines.
-     * When detect the number of items specified reading byte per byte, converts that flow of data
-     * into a Line class.
-     *
-     * @param data the data to parse.
-     * @param delimiter the delimiter to separate the information.
-     * @param numberOfData the number of items that contains one line.
-     * @return an array of Lines.
-     */
-    protected ArrayList<Line> parseLines(byte[] data,char delimiter,int numberOfData){
-        ArrayList<Line> output = new ArrayList<>();
-        ArrayList<Byte> currentData = new ArrayList<>();
-        int delimiterCount = 0;
-        for(byte b : data){
-            currentData.add(b);
-            if (b == delimiter){
-                delimiterCount++;
-            }
-            if (delimiterCount == (numberOfData + 1)){
-                Byte[] flow = new Byte[currentData.size()];
-                output.add(new Line(currentData.toArray(flow),delimiter));
-                delimiterCount = 0;
-                currentData.clear();
-            }
-        }
-        return output;
-    }
-
-    /**
-     *
-     * IGNORE
-     *
-     * Split the lines in the file by the number of items specified, doesnt detect lines.
-     * When detect the number of items specified reading byte per byte, converts that flow of data
-     * into a Line class.
-     *
-     * @param stream the data stream to manipulate.
-     * @param delimiter the delimiter to separate the information.
-     * @param numberOfData the number of items that contains one line.
-     * @return an array of Lines.
-     */
-    protected ArrayList<Line> parseLines(InputStream stream,char delimiter,int numberOfData) throws IOException {
-        ArrayList<Line> output = new ArrayList<>();
-        ArrayList<Byte> currentData = new ArrayList<>();
-        int delimiterCount = 0;
-        byte b;
-        while((b = (byte) stream.read()) != -1){
-            currentData.add(b);
-            if (b == delimiter){
-                delimiterCount++;
-            }
-            if (delimiterCount == (numberOfData + 1)){
-                Byte[] flow = new Byte[currentData.size()];
-                output.add(new Line(currentData.toArray(flow),delimiter));
-                delimiterCount = 0;
-                currentData.clear();
-            }
-        }
-        return output;
-    }
-
-    /**
-     *
-     * IGNORE
-     *
-     * Detect the lines without need to specify the number of items inside each line.
-     * When detects the new line character, pack all the data inside a new Line.
-     *
-     * @param data the data to parse.
-     * @param delimiter the delimiter to split.
-     * @return an array of lines.
-     */
-    protected ArrayList<Line> parseLinesArray(byte[] data,char delimiter){
-        ArrayList<Line> output = new ArrayList<>();
-        ArrayList<Byte> currentData = new ArrayList<>();
-
-        for(byte b : data){
-
-            currentData.add(b);
-
-            if (b == '\n'){
-                Byte[] flow = new Byte[currentData.size()];
-                output.add(new Line(currentData.toArray(flow),delimiter));
-                currentData.clear();
-            }
-
-        }
-        return output;
-    }
-
     /* ======================================
         SEARCH METHODS
      ====================================== */
@@ -270,51 +155,6 @@ public abstract class FileAPI {
                 currentData = "";
 
                 if(d.getStringValue().equals(toSearch)){
-                    stream.close();
-                    return true;
-                }
-
-            }
-
-        }
-
-        stream.close();
-        return false;
-    }
-
-    /**
-     *
-     * Search float by desired position of data in all lines that contains a file.
-     *
-     * @param stream to read from.
-     * @param delimiter to separate the data
-     * @param numberOfData items that contains one line.
-     * @param position of the item to search.
-     * @param toSearch the float to search.
-     * @return if the float exists in the file.
-     * @throws IOException if something of the Input/Output fails.
-     */
-    protected boolean searchDataInFlow(InputStream stream,char delimiter,int numberOfData,int position,Float toSearch) throws IOException {
-
-        String currentData = "";
-        int delimiterCount = 0;
-        byte b;
-
-        while((b = (byte) stream.read()) != -1){
-
-            currentData += (char) b;
-
-            if(b == delimiter){
-                delimiterCount++;
-            }
-
-            if (delimiterCount == (numberOfData + 1)){
-                Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
-
-                delimiterCount = 0;
-                currentData = "";
-
-                if(d.getFloatValue() == toSearch){
                     stream.close();
                     return true;
                 }

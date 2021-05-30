@@ -1,9 +1,7 @@
 package console;
 
 import common.specification.StatisticResult;
-import common.specification.StatisticResultSimple;
 import services.PescaAPI;
-import services.PescaAPISimple;
 import termux.Components.Command.CommandParser;
 import termux.Components.Menu.DefaultInteractiveMenu;
 import termux.Components.Menu.Encapsulate;
@@ -13,15 +11,13 @@ import termux.DefaultConsole;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PescaConsole extends DefaultConsole {
 
-    private final PescaAPISimple api;
+    private final PescaAPI api;
 
     public PescaConsole() throws Exception {
-        api = new PescaAPISimple();
+        api = new PescaAPI();
         PescaParser.setConsole(this);
     }
 
@@ -199,7 +195,7 @@ public class PescaConsole extends DefaultConsole {
      */
     private void showStatistics(StatisticResult statistics) throws IOException {
 
-        StatisticResultSimple s = (StatisticResultSimple) statistics;
+        StatisticResult s = (StatisticResult) statistics;
 
         Encapsulate.encapsulateString("ESTADÍSTICAS GENERALES","\t");
 
@@ -227,7 +223,7 @@ public class PescaConsole extends DefaultConsole {
      * @param format the format of each row.
      * @throws IOException if something of the Input/Output fails.
      */
-    private void showStatisticsFiles(StatisticResultSimple statistics,String bucket,String key,String header,String format) throws IOException {
+    private void showStatisticsFiles(StatisticResult statistics, String bucket, String key, String header, String format) throws IOException {
         System.out.printf("\n\t%s:",header);
         statistics.showStatisticsConsole(
                 bucket
