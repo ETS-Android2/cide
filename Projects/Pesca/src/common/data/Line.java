@@ -33,23 +33,28 @@ public class Line {
      * @return an arraylist of data.
      */
     protected Data[] parseLine(Byte[] input,char delimiter){
+
         ArrayList<Data> data = new ArrayList<>();
-        ArrayList<Byte> currentData = new ArrayList<>();
+        String currentData = "";
         int delimiterCount = 0;
+
         for(byte c : input){
+
             if(c == delimiter){
                 delimiterCount++;
             } else if (c != '\n'){
-                currentData.add(c);
+                currentData += (char) c;
             }
+
             // The data is limited by 2 delimiters #<DATA>#.
             if(delimiterCount == 2){
-                Byte[] raw = new Byte[currentData.size()];
-                data.add(new Data(currentData.toArray(raw)));
+                data.add(new Data(Transform.toComplex(currentData.getBytes())));
                 delimiterCount = 1;
-                currentData.clear();
+                currentData = "";
             }
+
         }
+
         Data[] flow = new Data[data.size()];
         return data.toArray(flow);
     }
@@ -104,6 +109,7 @@ public class Line {
             }
             // The data is limited by 2 delimiters #<DATA>#.
             if(delimiterCount == 2){
+
                 Data d = new Data(Transform.toComplex(currentData.getBytes()));
 
                 delimiterCount = 1;
