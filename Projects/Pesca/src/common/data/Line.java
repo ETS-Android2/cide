@@ -34,21 +34,29 @@ public class Line {
      */
     protected Data[] parseLine(Byte[] input,char delimiter){
 
+        // ArrayList to store the Data class to the data array inside each Line.
         ArrayList<Data> data = new ArrayList<>();
+
+        // The current data containing the bytes of the lines.
         String currentData = "";
         int delimiterCount = 0;
 
         for(byte c : input){
 
+
             if(c == delimiter){
+                // If is the delimiter, then increment the count by continue without adding to the current data.
                 delimiterCount++;
             } else if (c != '\n'){
+                // If is different to '\n' add to the current data, to avoid adding the escape character.
                 currentData += (char) c;
             }
 
             // The data is limited by 2 delimiters #<DATA>#.
             if(delimiterCount == 2){
                 data.add(new Data(Transform.toComplex(currentData.getBytes())));
+                // The final delimiter of the data is the start of the next, this is why we start with count 0,
+                // but when we have to reset it, starts with 1.
                 delimiterCount = 1;
                 currentData = "";
             }
@@ -103,10 +111,13 @@ public class Line {
         for(byte c : input){
 
             if(c == delimiter){
+                // If is the delimiter, then increment the count by continue without adding to the current data.
                 delimiterCount++;
             } else if (c != '\n'){
+                // If is different to '\n' add to the current data, to avoid adding the escape character.
                 currentData += (char) c;
             }
+
             // The data is limited by 2 delimiters #<DATA>#.
             if(delimiterCount == 2){
 

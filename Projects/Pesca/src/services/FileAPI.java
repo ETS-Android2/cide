@@ -141,12 +141,20 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
+            // Appends bytes to the currentData (represents a Line), it overrides when next line is started to parse.
             currentData += (char) b;
 
+            // If the current byte is the delimiter, then increments the count.
             if(b == delimiter){
                 delimiterCount++;
             }
 
+            // The line is made by the number of data specified plus one.
+            /*
+                The reason is, the line has 4 fields, each one is separated by 2 delimiters,
+                but the last of one is the start of the next, for that reason the delimiter are equal to the
+                number of items inside, count the first delimiter and the sum of that is the (numberOfData + 1)
+            */
             if (delimiterCount == (numberOfData + 1)){
 
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
@@ -192,12 +200,20 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
+            // Appends bytes to the currentData (represents a Line), it overrides when next line is started to parse.
             currentData += (char) b;
 
+            // If the current byte is the delimiter, then increments the count.
             if(b == delimiter){
                 delimiterCount++;
             }
 
+            // The line is made by the number of data specified plus one.
+            /*
+                The reason is, the line has 4 fields, each one is separated by 2 delimiters,
+                but the last of one is the start of the next, for that reason the delimiter are equal to the
+                number of items inside, count the first delimiter and the sum of that is the (numberOfData + 1)
+            */
             if (delimiterCount == (numberOfData + 1)){
 
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
@@ -245,12 +261,20 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
+            // Appends bytes to the currentData (represents a Line), it overrides when next line is started to parse.
             currentData += (char) b;
 
+            // If the current byte is the delimiter, then increments the count.
             if(b == delimiter){
                 delimiterCount++;
             }
 
+            // The line is made by the number of data specified plus one.
+            /*
+                The reason is, the line has 4 fields, each one is separated by 2 delimiters,
+                but the last of one is the start of the next, for that reason the delimiter are equal to the
+                number of items inside, count the first delimiter and the sum of that is the (numberOfData + 1)
+            */
             if (delimiterCount == (numberOfData + 1)){
                 Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 
@@ -292,12 +316,20 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
+            // Appends bytes to the currentData (represents a Line), it overrides when next line is started to parse.
             currentData += (char) b;
 
+            // If the current byte is the delimiter, then increments the count.
             if(b == delimiter){
                 delimiterCount++;
             }
 
+            // The line is made by the number of data specified plus one.
+            /*
+                The reason is, the line has 4 fields, each one is separated by 2 delimiters,
+                but the last of one is the start of the next, for that reason the delimiter are equal to the
+                number of items inside, count the first delimiter and the sum of that is the (numberOfData + 1)
+            */
             if (delimiterCount == (numberOfData + 1)){
 
                 delimiterCount = 0;
@@ -347,13 +379,20 @@ public abstract class FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
-            // currentData.add(b);
+            // Appends bytes to the currentData (represents a Line), it overrides when next line is started to parse.
             currentData += (char) b;
 
+            // If the current byte is the delimiter, then increments the count.
             if(b == delimiter){
                 delimiterCount++;
             }
 
+            // The line is made by the number of data specified plus one.
+            /*
+                The reason is, the line has 4 fields, each one is separated by 2 delimiters,
+                but the last of one is the start of the next, for that reason the delimiter are equal to the
+                number of items inside, count the first delimiter and the sum of that is the (numberOfData + 1)
+            */
             if (delimiterCount == (numberOfData + 1)){
 
                 Data d = Line.getDataInParsedLine(Transform.toComplex(currentData.getBytes()),delimiter,position);
@@ -439,12 +478,20 @@ public abstract class FileAPI {
 
         while((b = (byte) inputStream.read()) != -1){
 
+            // Appends bytes to the currentData (represents a Line), it overrides when next line is started to parse.
             currentData += (char) b;
 
+            // If the current byte is the delimiter, then increments the count.
             if(b == delimiter){
                 delimiterCount++;
             }
 
+            // The line is made by the number of data specified plus one.
+            /*
+                The reason is, the line has 4 fields, each one is separated by 2 delimiters,
+                but the last of one is the start of the next, for that reason the delimiter are equal to the
+                number of items inside, count the first delimiter and the sum of that is the (numberOfData + 1)
+            */
             if (delimiterCount == (numberOfData + 1)){
                 Line l = new Line(Transform.toComplex(currentData.getBytes()),delimiter);
 

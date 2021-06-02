@@ -11,8 +11,7 @@ import java.util.*;
 
 public class StatisticResult extends FileAPI {
 
-    private final String sizeKey = parseKey("tmp","sizes.txt");
-    private final String catchKey = parseKey("tmp","catches.txt");
+
 
     /**
      * The maximum size of all the fish.
@@ -66,14 +65,6 @@ public class StatisticResult extends FileAPI {
         parseStatisticFile(stream,delimiter,numberOfData,flag,data,identifier,id);
     }
 
-    public String getSizeKey() {
-        return sizeKey;
-    }
-
-    public String getCatchKey() {
-        return catchKey;
-    }
-
     public float getMax() {
         return max;
     }
@@ -98,11 +89,15 @@ public class StatisticResult extends FileAPI {
      * @throws IOException If the files cannot be created or deleted.
      */
     protected void createStatisticsFiles() throws IOException {
+
+        String sizeKey = parseKey("tmp","sizes.txt");
+        String catchKey = parseKey("tmp","catches.txt");
+
         if (new File(sizeKey).exists())
-            removeFile(parseKey("tmp","sizes.txt"));
+            removeFile(sizeKey);
 
         if (new File(catchKey).exists())
-            removeFile(parseKey("tmp","catches.txt"));
+            removeFile(catchKey);
 
         createFileEmpty("tmp","sizes.txt");
         createFileEmpty("tmp","catches.txt");
@@ -272,6 +267,9 @@ public class StatisticResult extends FileAPI {
      * @throws IOException if something of the Input/Output fails.
      */
     protected void applyStatistics(String dataFlag, Float dataValue,char delimiter) throws IOException {
+
+        String sizeKey = parseKey("tmp","sizes.txt");
+        String catchKey = parseKey("tmp","catches.txt");
 
         // MAX
         if(this.max < dataValue){
@@ -463,20 +461,32 @@ public class StatisticResult extends FileAPI {
 
         while((b = (byte) stream.read()) != -1){
 
+            // Appends bytes to the currentData (represents a Line), it overrides when next line is started to parse.
             currentData += (char) b;
 
+            // If the current byte is the delimiter, then increments the count.
             if(b == delimiter){
                 delimiterCount++;
             }
 
+            // The line is made by the number of data specified plus one.
+            /*
+                The reason is, the line has 4 fields, each one is separated by 2 delimiters,
+                but the last of one is the start of the next, for that reason the delimiter are equal to the
+                number of items inside, count the first delimiter and the sum of that is the (numberOfData + 1)
+            */
             if (delimiterCount == (numberOfData + 1)){
 
+                // When the currentData has the line bytes, separate by fields with the Data class.
                 Line l = new Line(Transform.toComplexFromChars(currentData.toCharArray()),delimiter);
 
+                // Reset the delimiter count to detect new line and the currentData, the has the current line bytes.
                 delimiterCount = 0;
                 currentData = "";
 
+                // The flag that represents the value. (identifier of the data)
                 String dataFlag = l.getData()[flag].getStringValue();
+                // The value itself.
                 Float dataValue = l.getData()[data].getFloatValue();
 
                 System.out.printf(format,dataFlag,dataValue);
@@ -502,7 +512,6 @@ public class StatisticResult extends FileAPI {
      * @param numberOfData the number of data that contains one row.
      * @param flag the position that contains the data flag in a row. Stars with 0.
      * @param data the position that contains the data value in a row. Starts with 0.
-     * @return HashMap with String (dataFlag) and Float (dataValue).
      * @throws IOException if something of the Input/Output fails.
      */
     public void getStatisticsFromFile(HashMap<String,Float> input,String bucket, String key, char delimiter, int numberOfData,int flag, int data) throws IOException {
