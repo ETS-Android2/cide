@@ -2,6 +2,10 @@
 
 .DS_Store
 
+# VSCode
+
+.vscode
+
 # Python
 
 .venv
@@ -11,3 +15,7 @@
 
 .idea
 target
+*.jar
+.classpath
+.project
+.settings
