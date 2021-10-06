@@ -209,9 +209,11 @@ public class Joins_carlos_pomares extends JFrame {
         // If parameter execution, the program will do a different path.
         try {
             // Check if parameters are more than one.
-            if (args.length > 0) app.parameterFile(args);
-            // If all runs good, will exit the application.
-            System.exit(0);
+            if (args.length > 0) {
+                app.parameterFile(args);
+                // If all runs good, will exit the application.
+                System.exit(0);
+            }
         } catch (Exception e) {
             // In case of an exception in the parameter scope, will throw to the upper level.
             throw e;
