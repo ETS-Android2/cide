@@ -141,10 +141,81 @@ public class Joins_carlos_pomares extends JFrame {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * 
+     * Another way to execute this application, in a parameter mode.
+     * The user gives three paths, where the first and second are files
+     * that exists, the third one is the directory, and the application will
+     * expect to be a directory.
+     * 
+     * @param args the application args.
+     * @throws Exception if some file not exists.
+     */
+    private void parameterFile(String[] args) throws Exception {
+
+        // Create the files with the input args.
+        File f1 = new File(args[0]);
+        File f2 = new File(args[1]);
+        File f3 = new File(args[2]);
+
+        // Check if exists and the third file is a directory.
+        if (f1.isDirectory() || !f1.exists()) throw new Exception("El fichero 1 no es válido.");
+        if (f2.isDirectory() || !f2.exists()) throw new Exception("El fichero 2 no es válido.");
+        if (!f3.isDirectory() || !f3.exists()) throw new Exception("El fichero 3 no es un directorio válido.");
+
+        // Create the filepath, removing extensions and joining with a _.
+        String filePath = String.format("%s_%s.txt", removeExtension(f1.getName()), removeExtension(f2.getName()));
+        
+        // Create the destination file, joining the selected directory absolute path, a file separator and the file path name.
+        File destinationFile = new File(String.format("%s%s%s", f3.getAbsolutePath(), File.separator, filePath));
+
+        // Override flag.
+        boolean override = false;
+        if (destinationFile.exists()) {
+            // If the file exists, ask the user if want to override it.
+            int action = JOptionPane.showConfirmDialog(this, String.format("El archivo %s existe, desea sobresescribirlo?", filePath), "Sobreescribir", JOptionPane.YES_NO_OPTION);
+            // action == 0, means that the user picked the yes answer.
+            if (action == 0) override = true;
+        }
+
+        // If exists and override is false, show a message exiting.
+        if (destinationFile.exists() && override == false) {
+            this.errorMessage("Operación cancelada.", "Saliendo...");
+            System.exit(0);
+        }
+
+        // Merge the files.
+        try {
+            mergeFiles(f1, f2, destinationFile);
+        } catch (IOException io) {
+            this.errorMessage("Error al intentar juntar los archivos!\n" + io.getMessage(), "Saliendo...");
+            throw io;
+        } catch (Exception e) {
+            this.errorMessage("Error inesperado!\n" + e.getMessage(), "Saliendo...");
+            throw e;
+        }
+
+    }
+
     public static void main(String[] args) throws Exception {
         
         // Create a new JFrame
         Joins_carlos_pomares app = new Joins_carlos_pomares();
+
+        // Check for parameters, if are more than 0, and are equal to 3. 
+        // Else will throw an exception.
+        if (args.length > 0 && !(args.length == 3)) throw new Exception("Parámetros no válidos.");
+
+        // If parameter execution, the program will do a different path.
+        try {
+            // Check if parameters are more than one.
+            if (args.length > 0) app.parameterFile(args);
+            // If all runs good, will exit the application.
+            System.exit(0);
+        } catch (Exception e) {
+            // In case of an exception in the parameter scope, will throw to the upper level.
+            throw e;
+        }
 
         // Get data from User, using Scanner.
         Scanner userIn = new Scanner(System.in);
