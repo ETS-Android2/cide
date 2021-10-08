@@ -27,61 +27,93 @@ import java.util.HashMap;
 
 public class EX04_carlos_pomares {
     
-    private static HashMap<String,Integer> counter = new HashMap<String,Integer>();
-
-    public Thread readLineWithLetter(final Character letter,final String text) {
-        return new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                for (Character c : text.toCharArray()) {
-                    if (c != letter) continue;
-                    if (!counter.containsKey(Character.toString(letter))) {
-                        counter.put(Character.toString(letter),1);    
-                        continue;
-                    }
-                    counter.replace(Character.toString(letter), counter.get(Character.toString(letter)) + 1);
-                }
-            }
-        };
-    }
-
+    /**
+     * 
+     * Read one letter to lowercase on the file, counts
+     * the number of times that the letter appears on the origin
+     * file.
+     * 
+     * @param letter the letter to count.
+     * @param origin the origin data.
+     * @param destination the destination file to write the count.
+     * @return the exit code of the process.
+     * @throws Exception if the process fails.
+     */
     public int readLetterFromFile(Character letter, File origin, File destination) throws Exception {
 
-        ProcessBuilder pb = new ProcessBuilder(new String[]{"/bin/cat", origin.getAbsolutePath()});
+        // The command to execute, see the file with CAT, will change on Windows.
+        // This works on Linux and macOS.
+        String[] commands = new String[]{
+            "/bin/cat"
+            ,origin.getAbsolutePath()
+        };
+
+        // Create the process builder and start the process.
+        ProcessBuilder pb = new ProcessBuilder(commands);
         Process p = pb.start();
 
+        // Obtain the inputStream from the process.
         InputStreamReader r = new InputStreamReader(p.getInputStream());
 
+        // The each character to read.
         int c = 0;
+        // The counter of the letter.
         int counter = 0;
+
+        // Iterate each character after end of file, and check if lowercase is equal
+        // to the letter.
         while ((c = r.read()) != -1) {
             if (Character.toLowerCase((char) c) == letter) counter++;    
         }
 
+        // Close the inputStream of the process.
         r.close();
 
+        // Create a new FileWriter to write the counter on a file.
         FileWriter writer = new FileWriter(destination);
+        // Write the value of the counter as String (for avoid writting as bytes value).
         writer.write(String.valueOf(counter));
+        // Close the writer.
         writer.close();
 
+        // Return the exit code of the process.
         return p.waitFor();
     }
 
-    private int readNumberOfFile(File f) throws IOException {
+    /**
+     * 
+     * Reads the file, and returns it as integer value.
+     * This can throw an exception if the number is not a number
+     * or is an invalid character.
+     * 
+     * @param f the file to read from.
+     * @return the first byte of the file.
+     * @throws IOException if cannot open the file or cannot parse the number.
+     */
+    private String readNumberOfFile(File f) throws IOException {
         FileReader reader = new FileReader(f);
-        int n = (char) reader.read();
+        int n = 0;
+        String out = new String();
+        while ((n = reader.read()) != -1) {
+            out += ((char) n);
+        }
         reader.close();
-        return n;
+        return out;
     }
 
+    /**
+     * 
+     * Iterates between files, and reads the file for a number.
+     * 
+     * @param files the files to iterate.
+     * @return the sum of each file number.
+     * @throws IOException if cannot opens one file.
+     */
     public int sumAllFiles(ArrayList<File> files) throws IOException {
         int counter = 0;
         for (File file : files) {
             counter += Integer.valueOf(
-                Character.toString(
-                    (char) this.readNumberOfFile(file)
-                )
+                this.readNumberOfFile(file)
             );
         }
         return counter;
@@ -89,30 +121,44 @@ public class EX04_carlos_pomares {
 
     public static void main(String[] args) throws Exception {
         
-        ArrayList<Integer> threads = new ArrayList<Integer>();
-        ArrayList<File> files = new ArrayList<File>();
+        // Create the App.
         EX04_carlos_pomares app = new EX04_carlos_pomares();
 
-        String data = "Hello World!";
+        // Array for store processes exit codes.
+        ArrayList<Integer> exitCodes = new ArrayList<Integer>();
+        // Array for store the destination files.
+        ArrayList<File> files = new ArrayList<File>();
 
+        // Origin file to read from.
+        File origin = new File("./origin.txt");
+
+        // All letters to check.
         Character[] letters = new Character[]{
             'a', 'e', 'i', 'o', 'u'
         };
 
+        // Iterate each letter and create the process.
         for (Character letter : letters) {
+            // Create the letter file. i.e "a.txt"
             File file = new File(String.format("./%s.txt", Character.toString(letter)));
+            // Add to the files array.
             files.add(file);
-            threads.add(
+
+            // Create each process and store the exit code in the array.
+            exitCodes.add(
                 app.readLetterFromFile(
-                    letter
-                    ,new File("./origin.txt")
-                    ,file
+                    letter // The letter to search, char
+                    ,origin // The file to read from, as File
+                    ,file // The file to write in, as File.
                 )
             );
         }
 
+        // Sum all files, iterate each file and get the number.
         int sum = app.sumAllFiles(files);
-        System.out.println(sum);
+        
+        // Show on screen the final count.
+        System.out.println(String.format("Result of count: %d", sum));
 
     }
 
