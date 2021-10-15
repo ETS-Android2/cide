@@ -41,40 +41,18 @@ public class EX04_carlos_pomares {
      */
     public int readLetterFromFile(Character letter, File origin, File destination) throws Exception {
 
-        // The command to execute, see the file with CAT, will change on Windows.
-        // This works on Linux and macOS.
+        // Will execute a child .class file.
         String[] commands = new String[]{
-            "/bin/cat"
-            ,origin.getAbsolutePath()
+            "java",
+            "EX04_child_process",
+            origin.getAbsolutePath(),
+            String.valueOf(letter),
+            destination.getAbsolutePath()
         };
 
         // Create the process builder and start the process.
         ProcessBuilder pb = new ProcessBuilder(commands);
         Process p = pb.start();
-
-        // Obtain the inputStream from the process.
-        InputStreamReader r = new InputStreamReader(p.getInputStream());
-
-        // The each character to read.
-        int c = 0;
-        // The counter of the letter.
-        int counter = 0;
-
-        // Iterate each character after end of file, and check if lowercase is equal
-        // to the letter.
-        while ((c = r.read()) != -1) {
-            if (Character.toLowerCase((char) c) == letter) counter++;    
-        }
-
-        // Close the inputStream of the process.
-        r.close();
-
-        // Create a new FileWriter to write the counter on a file.
-        FileWriter writer = new FileWriter(destination);
-        // Write the value of the counter as String (for avoid writting as bytes value).
-        writer.write(String.valueOf(counter));
-        // Close the writer.
-        writer.close();
 
         // Return the exit code of the process.
         return p.waitFor();
