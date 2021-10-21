@@ -175,8 +175,16 @@ public class Mayusculas_carlos_pomares {
         // Close child stdout stream.
         this.childStdout.close();
 
+        // Time to close child
+        Thread.sleep(500);
+
+        // If process is alive after sending exit signal destroy child.
+        if (this.childProcess.isAlive()) {
+            this.forceExit();
+        }
+
         // Return child process code.
-        return this.childProcess.waitFor();
+        return this.childProcess.exitValue();
     }
 
     /**
