@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -210,6 +211,8 @@ public class Mayusculas_carlos_pomares {
         // Default command.
         String[] command = new String[]{
             "java",
+            "-cp",
+            Mayusculas_carlos_pomares.class.getProtectionDomain().getCodeSource().getLocation().getPath(),
             "Mayusculas_child_carlos_pomares",
         };
 
