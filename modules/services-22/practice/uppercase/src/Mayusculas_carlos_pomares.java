@@ -3,7 +3,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -93,7 +92,7 @@ public class Mayusculas_carlos_pomares {
         boolean exit = false;
 
         // Información de uso básica.
-        System.out.println("Para finalizar el programa de manera correcta, escriba la órden \"EOP\".");
+        System.out.println("Para finalizar el programa de manera correcta, escriba la orden \"EOP\".");
 
         do {
 
