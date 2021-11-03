@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Clientes>
+    <Cliente>
+        <nombre>Carlos</nombre>
+        <edad>56</edad>
+    </Cliente>
+    <Cliente>
+        <nombre>Paco</nombre>
+        <edad>23</edad>
+    </Cliente>
+    <Cliente>
+        <nombre>Pepe</nombre>
+        <edad>34</edad>
+    </Cliente>
+    <Cliente>
+        <nombre>Juan</nombre>
+        <edad>76</edad>
+    </Cliente>
+    <Cliente>
+        <nombre>Joshua</nombre>
+        <edad>12</edad>
+    </Cliente>
+</Clientes>
