@@ -1,16 +1,33 @@
-
+/** 
+ * @author Carlos Pomares (https://www.github.com/pomaretta)
+ */
 
 public class Alumno {
     
+    // El Identificador del alumno
     private Integer id;
+    // El nombre del alumno
     private String name;
+    // El año de nacimiento del alumno
     private String year;
-
+    
+    // El curso del alumno
     private String grade;
+    // El colegio del alumno
     private String school;
 
     public Alumno() {}
 
+    /**
+     * 
+     * Representa a un alumno
+     * 
+     * @param id El identificador del alumno
+     * @param name El nombre del alumno
+     * @param year El año de nacimiento del alumno
+     * @param grade El curso del alumno
+     * @param school El colegio del alumno
+     */
     private Alumno(Integer id, String name, String year, String grade, String school) {
         this.id = id;
         this.name = name;
@@ -70,6 +87,17 @@ public class Alumno {
                 '}';
     }
 
+    /**
+     * 
+     * Permite crear un objeto alumno dados sus datos
+     * 
+     * @param id El identificador del alumno
+     * @param name El nombre del alumno
+     * @param year El año de nacimiento del alumno
+     * @param grade El curso del alumno
+     * @param school El colegio del alumno
+     * @return Un objeto alumno
+     */
     public static Alumno createAlumno(int id, String name, String year, String grade, String school) {
         return new Alumno(
             id,

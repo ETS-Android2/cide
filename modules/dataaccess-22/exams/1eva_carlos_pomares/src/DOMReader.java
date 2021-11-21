@@ -35,49 +35,65 @@ public class DOMReader extends XMLReader {
     @Override
     public Alumno[] read(File file) throws Exception {
 
+        // Obtenemos el documento
         Document doc = this.readFile(file);
 
+        // Obtenemos el nodo raíz.
         Node root = doc.getDocumentElement();
 
+        // Si no tiene hijos (Alumnos), devolvemos un objeto nulo.
         if (!root.hasChildNodes()) return null;
 
+        // Una lista de alumnos.
         ArrayList<Alumno> alumnos = new ArrayList<Alumno>();
 
+        // Recorremos los hijos del nodo raíz.
         for (int i = 0; i < root.getChildNodes().getLength(); i++) {
             
             Alumno alumno = new Alumno();
+            // Obtenemos el nodo hijo.
             Node n = root.getChildNodes().item(i);
 
+            // Si el nodo no es un elemento, continuamos.
             if (n.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
 
-            // Get the id attribute
+            // Obtenemos el identificador del alumno.
             Attr id = (Attr) n.getAttributes().getNamedItem("codi_alumne");
 
+            // Si tiene identificador, lo añadimos al alumno.
             if (id != null) {
                 alumno.setId(Integer.parseInt(id.getValue()));
             }
 
+            // Recorremos los hijos del nodo. (La información del alumno)
             for (int j = 0; j < n.getChildNodes().getLength(); j++) {
                 
+                // Obtenemos el nodo hijo.
                 Node nl = n.getChildNodes().item(j);
 
+                // Si el nodo no es un elemento, continuamos.
                 if (nl.getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
 
+                // Obtenemos el nombre del nodo para poder asignarlo al alumno.
                 switch (nl.getNodeName().toString()) {
                     case "nom_alumne":
+                        // Si es el nombre, lo añadimos al alumno.
                         alumno.setName(nl.getTextContent());
                         break;
                     case "curs":
+                        // Si es el curso, lo añadimos al alumno.
                         alumno.setGrade(nl.getTextContent());
                         break;
                     case "any_naixement":
+                        // Si es el año de nacimiento, lo añadimos al alumno.
                         alumno.setYear(nl.getTextContent());
                         break;
                     case "colegi":
+                        // Si es el colegio, lo añadimos al alumno.
                         alumno.setSchool(nl.getTextContent());
                         break;
                 }
@@ -87,7 +103,12 @@ public class DOMReader extends XMLReader {
             alumnos.add(alumno);
         }
 
-        return alumnos.toArray(new Alumno[alumnos.size()]);
+        // Devolvemos un array simple para cumplir la interfaz.
+        if (alumnos.size() > 0) {
+            return alumnos.toArray(new Alumno[alumnos.size()]);
+        } else {
+            return null;
+        }
     }
     
 }

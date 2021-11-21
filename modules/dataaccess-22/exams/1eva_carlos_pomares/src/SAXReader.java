@@ -34,9 +34,13 @@ public class SAXReader extends XMLReader {
 
     @Override
     public Alumno[] read(File file) throws Exception {
+        // Creamos el parser
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+        // Creamos el handler
         SAXHandler handler = new SAXHandler();
+        // Leemos el fichero
         parser.parse(file, handler);
+        // Devolvemos la lista de alumnos leídos por el Handler.
         return handler.getClientes();
     }
     

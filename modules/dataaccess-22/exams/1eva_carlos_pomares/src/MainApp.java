@@ -22,17 +22,27 @@ import org.w3c.dom.NodeList;
 
 public class MainApp extends JFrame {
     
+    // Para poder identificar que motor usar.
     enum Writers {
         DOM, SAX
     }
     
+    // El writer que permitirá escribir en el documento.
     private XMLWriter writer;
+    // El reader que permitirá obtener datos del documento.
     private XMLReader reader;
 
-    // App functionality
+    // El archivo con el cual operar.
     private File file;
+    // Los últimos datos leídos de Alumnos.
     private Alumno[] lastCurrentAlumnos;
 
+    /**
+     * 
+     * Permite establecer que motor se utilizará para escribir y leer.
+     * 
+     * @param writer El motor que se utilizará para escribir.
+     */
     private void setWriter(Writers writer) {
         switch (writer) {
             case DOM:
@@ -46,10 +56,24 @@ public class MainApp extends JFrame {
         }
     }
 
+    /**
+     * 
+     * Pide al usuario un input, y devolverá el dato introducido.
+     * 
+     * @param message el mensaje a mostrar al usuario.
+     * @return el dato introducido por el usuario.
+     */
     private String requestUserInput(String message) {
         return JOptionPane.showInputDialog(this, message); 
     }
 
+    /**
+     * 
+     * Establece el archivo con el que operar. Si el archivo existe, devolverá una excepción después de haber asignado el archivo.
+     * 
+     * @param file el archivo con el que operar.
+     * @throws Exception si el archivo existe.
+     */
     private void setFile(File file) throws Exception {
         this.file = file;
         if (file.exists()) {
@@ -57,6 +81,12 @@ public class MainApp extends JFrame {
         }
     }
 
+    /**
+     * 
+     * Permite pedir al usuario toda la información necesaria para poder obtener un Objeto Alumno.
+     * 
+     * @return Un Objeto Alumno con toda la información necesaria.
+     */
     private Alumno requestAlumno() {
 
         boolean flag = false;
@@ -103,14 +133,164 @@ public class MainApp extends JFrame {
             values[4]
         );
     }
-    
+
+    /**
+     * 
+     * Permite obtener todos los nonbres de los alumnos que están en el fichero XML.
+     * 
+     * @throws Exception si no se puede leer el fichero.
+     */
+    private void queryAllNames() throws Exception { 
+        
+        // La expresión XPath que se utilizará para obtener los nombres de los alumnos.
+        String expression = "//alumnes/nom_alumne";
+
+        // Obtener el documento.
+        Document doc = this.reader.getDocument(this.file);
+        // Obtener los nodos que cumplen la expresión XPath.
+        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
+
+        String[] names = new String[items.getLength()];
+        for (int i = 0; i < items.getLength(); i++) {
+            // Asignamos el contenido del nodo a la posición del array.
+            names[i] = items.item(i).getTextContent();
+        }
+
+        // Mostramos los nombres con un salto de línea.
+        JOptionPane.showMessageDialog(this, String.join("\n", names));
+    }
+
+    /**
+     * 
+     * Dado un elemento que representa un alumno, obtiene sus datos y los devuelve como un objeto Alumno.
+     * 
+     * @param el elemento que representa un alumno.
+     * @return Un objeto Alumno con los datos del alumno.
+     */
+    private Alumno readAlumnoFromElement(Element el) {
+        return Alumno.createAlumno(
+            Integer.parseInt(el.getAttribute("codi_alumne")),
+            el.getElementsByTagName("nom_alumne").item(0).getTextContent(),
+            el.getElementsByTagName("any_naixement").item(0).getTextContent(),
+            el.getElementsByTagName("curs").item(0).getTextContent(),
+            el.getElementsByTagName("colegi").item(0).getTextContent()
+        );
+    }
+
+    /**
+     * 
+     * Muestra todos los alumnos del fichero XML que sean del colegio CIDE.
+     * 
+     * @throws Exception si no se puede leer el fichero.
+     */
+    private void queryCideStudents() throws Exception {
+
+        // La expresión XPath que se utilizará para obtener los nombres de los alumnos.
+        String expression = "//alumnes[colegi='CIDE']";
+
+        Document doc = this.reader.getDocument(this.file);
+        // Obtener los nodos que cumplen la expresión XPath.
+        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
+
+        Alumno[] cideStudents = new Alumno[items.getLength()];
+        for (int i = 0; i < items.getLength(); i++) {
+            // Asignamos el contenido del nodo a la posición del array.
+            cideStudents[i] = this.readAlumnoFromElement((Element) items.item(i));   
+        }
+
+        // Mostramos los nombres con un salto de línea.
+        JOptionPane.showMessageDialog(this, String.join("\n", List.of(cideStudents).stream().map(a -> a.toString()).collect(Collectors.toList())));
+    }
+
+    /**
+     * 
+     * Muestra el alumno con el ID 3.
+     * 
+     * @throws Exception si no se puede leer el fichero.
+     */
+    private void queryStudentById3() throws Exception {
+
+        // La expresión XPath que se utilizará para obtener los nombres de los alumnos.
+        String expression = "//alumnes[@codi_alumne='3']";
+
+        Document doc = this.reader.getDocument(this.file);
+        // Obtener los nodos que cumplen la expresión XPath.
+        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
+
+        Alumno[] cideStudents = new Alumno[items.getLength()];
+        for (int i = 0; i < items.getLength(); i++) {
+            // Asignamos el contenido del nodo a la posición del array.
+            cideStudents[i] = this.readAlumnoFromElement((Element) items.item(i));   
+        }
+
+        // Muestra el Alumno.
+        JOptionPane.showMessageDialog(this, String.join("\n", List.of(cideStudents).stream().map(a -> a.toString()).collect(Collectors.toList())));
+    }
+
+    /**
+     * 
+     * Muestra los alumnos que hayan nacido antes de 1990.
+     * 
+     * @throws Exception
+     */
+    private void queryStudentsBefore1990() throws Exception {
+
+        // La expresión XPath que se utilizará para obtener los nombres de los alumnos.
+        String expression = "//alumnes[any_naixement<1990]";
+
+        Document doc = this.reader.getDocument(this.file);
+        // Obtener los nodos que cumplen la expresión XPath.
+        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
+
+        Alumno[] cideStudents = new Alumno[items.getLength()];
+        for (int i = 0; i < items.getLength(); i++) {
+            cideStudents[i] = this.readAlumnoFromElement((Element) items.item(i));   
+        }
+
+        // Muestra los alumnos.
+        JOptionPane.showMessageDialog(this, String.join("\n", List.of(cideStudents).stream().map(a -> a.toString()).collect(Collectors.toList())));
+    }
+
+    /**
+     * 
+     * Obteniendo un listado completo de los elementos usando XPath, mostramos el archivo XML.
+     * 
+     * @param doc El documento XML.
+     * @throws Exception Si no se puede mostrar el archivo.
+     */
+    private void showFileMenu(Document doc) throws Exception {
+
+        String expression = "//*";
+
+        StringWriter stringWriter = new StringWriter();
+        StreamResult result = new StreamResult(stringWriter);
+
+        // Obtenemos los elementos que cumplen la expresión.
+        Node items = (Node) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODE);
+        
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.transform(new DOMSource(items), result);
+        
+        StringBuffer sb = stringWriter.getBuffer();
+
+        // Mostramos los nodos.
+        JOptionPane.showMessageDialog(this, sb.toString());
+    }
+
+    /**
+     * 
+     * Un menu para poder editar la información de un Alumno especificado.
+     * 
+     * @throws Exception si no se puede leer el fichero.
+     */
     private void updateMenu() throws Exception {
 
         int step = 0;
 
         String[] options = {
             "El identificador del alumno",
-            "El dato a modificar",
+            "El dato a modificar (nom_alumne, curs, any_naixement, colegi)",
             "El nuevo valor a asignar"
         };
 
@@ -131,11 +311,14 @@ public class MainApp extends JFrame {
                 switch (step)
                 {
                     case 0:
+                        // Si no hay registros anteriores permitimos que se introduzca un nuevo ID.
                         if (lastCurrentAlumnos == null) continue;
                         int requestId = Integer.parseInt(input);
+                        // Comprobamos que el ID introducido exista.
                         if (!List.of(this.lastCurrentAlumnos).stream().filter(a -> a.getId() == requestId).findFirst().isPresent()) throw new Exception("Id not found");
                         break;
                     case 1:
+                        // Comprobamos que el modificador introducido sea válido.
                         if (!List.of(validModifiers).contains(values[1])) JOptionPane.showMessageDialog(this, "Invalid modifier");
                         break;
                 }
@@ -147,8 +330,10 @@ public class MainApp extends JFrame {
             step++;
         } while (step != options.length);
 
+        // Obtenemos el documento XML.
         Document doc = this.reader.getDocument(this.file);
 
+        // Obtenemos el elemento que contiene el alumno.
         Node node = (Node) XPathFactory.newInstance().newXPath().evaluate(
             String.format("//alumnes[@codi_alumne='%s']/%s", values[0], values[1]),
             doc,
@@ -156,111 +341,21 @@ public class MainApp extends JFrame {
         );
 
         Element element = (Element) node;
+        // Modificamos el valor del elemento.
         element.setTextContent(values[2]);
 
-        // Write to file
+        // Guardamos el documento XML.
         this.writer.writeDocument(doc, file);
 
+        // Asignamos los nuevos alumnos al buffer
         this.lastCurrentAlumnos = this.reader.read(file);
     }
 
-    private void showFile(Document doc) throws Exception {
-
-        String expression = "//*";
-
-        StringWriter stringWriter = new StringWriter();
-        StreamResult result = new StreamResult(stringWriter);
-
-        Node items = (Node) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODE);
-        
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.transform(new DOMSource(items), result);
-        
-        StringBuffer sb = stringWriter.getBuffer();
-
-        JOptionPane.showMessageDialog(this, sb.toString());
-
-    }
-
-    private void queryAllNames() throws Exception { 
-            
-        String expression = "//alumnes/nom_alumne";
-
-        Document doc = this.reader.getDocument(this.file);
-        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
-        String[] names = new String[items.getLength()];
-
-        for (int i = 0; i < items.getLength(); i++) {
-            names[i] = items.item(i).getTextContent();
-        }
-
-        // Show the names with a new line separation
-        JOptionPane.showMessageDialog(this, String.join("\n", names));
-
-    }
-
-    private Alumno readAlumnoFromElement(Element el) {
-        return Alumno.createAlumno(
-            Integer.parseInt(el.getAttribute("codi_alumne")),
-            el.getElementsByTagName("nom_alumne").item(0).getTextContent(),
-            el.getElementsByTagName("any_naixement").item(0).getTextContent(),
-            el.getElementsByTagName("curs").item(0).getTextContent(),
-            el.getElementsByTagName("colegi").item(0).getTextContent()
-        );
-    }
-
-    private void queryCideStudents() throws Exception {
-
-        String expression = "//alumnes[colegi='CIDE']";
-
-        Document doc = this.reader.getDocument(this.file);
-        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
-
-        Alumno[] cideStudents = new Alumno[items.getLength()];
-
-        for (int i = 0; i < items.getLength(); i++) {
-            cideStudents[i] = this.readAlumnoFromElement((Element) items.item(i));   
-        }
-
-        JOptionPane.showMessageDialog(this, String.join("\n", List.of(cideStudents).stream().map(a -> a.toString()).collect(Collectors.toList())));
-
-    }
-
-    private void queryStudentById3() throws Exception {
-
-        String expression = "//alumnes[@codi_alumne='3']";
-
-        Document doc = this.reader.getDocument(this.file);
-        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
-
-        Alumno[] cideStudents = new Alumno[items.getLength()];
-
-        for (int i = 0; i < items.getLength(); i++) {
-            cideStudents[i] = this.readAlumnoFromElement((Element) items.item(i));   
-        }
-
-        JOptionPane.showMessageDialog(this, String.join("\n", List.of(cideStudents).stream().map(a -> a.toString()).collect(Collectors.toList())));
-
-    }
-
-    private void queryStudentsBefore1990() throws Exception {
-
-        String expression = "//alumnes[any_naixement<=1990]";
-
-        Document doc = this.reader.getDocument(this.file);
-        NodeList items = (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, doc.getDocumentElement(), XPathConstants.NODESET);
-
-        Alumno[] cideStudents = new Alumno[items.getLength()];
-
-        for (int i = 0; i < items.getLength(); i++) {
-            cideStudents[i] = this.readAlumnoFromElement((Element) items.item(i));   
-        }
-
-        JOptionPane.showMessageDialog(this, String.join("\n", List.of(cideStudents).stream().map(a -> a.toString()).collect(Collectors.toList())));
-
-    }
-
+    /**
+     * 
+     * Menú para consultar datos de los alumnos.
+     * 
+     */
     private void queryMenu() {
 
         boolean flag = false;
@@ -275,6 +370,7 @@ public class MainApp extends JFrame {
 
         do {
 
+            // Mostramos el menú.
             String response = JOptionPane.showInputDialog(
                 this,
                 List.of(options).stream()
@@ -321,6 +417,12 @@ public class MainApp extends JFrame {
 
     }
 
+    /**
+     * 
+     * Menú para poder eliminar un registro de alumnos.
+     * 
+     * @throws Exception
+     */
     private void removeMenu() throws Exception {
 
         int step = 0;
@@ -331,6 +433,12 @@ public class MainApp extends JFrame {
 
         String[] values = new String[1];
 
+        // Si no hay datos anteriores no permitimos eliminar nada.
+        if (lastCurrentAlumnos == null) {
+            JOptionPane.showMessageDialog(this, "No hay datos anteriores");
+            return;
+        }
+
         do {
             String input = this.requestUserInput(options[step]);
             values[step] = input;
@@ -339,8 +447,8 @@ public class MainApp extends JFrame {
                 switch (step)
                 {
                     case 0:
-                        if (lastCurrentAlumnos == null) continue;
                         int requestId = Integer.parseInt(input);
+                        // Comprobamos que el ID introducido exista.
                         if (!List.of(this.lastCurrentAlumnos).stream().filter(a -> a.getId() == requestId).findFirst().isPresent()) throw new Exception("Id not found");
                         break;
                 }
@@ -352,28 +460,37 @@ public class MainApp extends JFrame {
             step++;
         } while (step != options.length);
 
+        // Obtenemos el documento XML.
         Document doc = this.reader.getDocument(this.file);
 
+        // Obtenemos el elemento que contiene el alumno.
         Node node = (Node) XPathFactory.newInstance().newXPath().evaluate(
             String.format("//alumnes[@codi_alumne='%s']", values[0]),
             doc,
             XPathConstants.NODE
         );
 
+        // Eliminamos el elemento.
         doc.getDocumentElement().removeChild(node);
     
-        // Write to file
+        // Guardamos el documento XML.
         this.writer.writeDocument(doc, file);
 
+        // Asignamos los nuevos alumnos al buffer
         this.lastCurrentAlumnos = this.reader.read(file);
     }
 
+    /**
+     * 
+     * Menú principal del programa.
+     * 
+     */
     public void mainMenu() {
 
         boolean flag = false;
 
         String[] options = {
-            "Crear fichero XML",
+            "Crear/Recuperar fichero XML",
             "Introducir datos en el fichero XML",
             "Mostrar el contenido del fichero XML",
             "Modificar datos",
@@ -384,6 +501,7 @@ public class MainApp extends JFrame {
 
         do {
 
+            // Mostramos el menú.
             String response = JOptionPane.showInputDialog(
                 this,
                 List.of(options).stream()
@@ -409,20 +527,24 @@ public class MainApp extends JFrame {
                             this.setFile(new File(fileName));   
                         } catch (Exception e) {
                             JOptionPane.showMessageDialog(this, "El fichero existe, obteniendo datos del fichero...");
+                            // Obtenemos los datos del fichero.
                             this.lastCurrentAlumnos = this.reader.read(this.file);
                             break;
                         }
+                        // Creamos el fichero XML.
                         this.writer.write(new Alumno[0], file);
                         break;
                     case 2:
                         Alumno alumno = this.requestAlumno();
                     
+                        // Si no hay datos anteriores, creamos el fichero XML con el nuevo alumno.
                         if (this.lastCurrentAlumnos == null) {
                             this.writer.write(new Alumno[]{alumno}, file);
                             this.lastCurrentAlumnos = new Alumno[]{alumno};
                             break;
                         }
 
+                        // Obtenemos los alumnos actuales mas el nuevo alumno, y los añadimos al fichero XML.
                         Alumno[] newAlumnos = new Alumno[this.lastCurrentAlumnos.length + 1];
                         System.arraycopy(this.lastCurrentAlumnos, 0, newAlumnos, 0, this.lastCurrentAlumnos.length);
                         newAlumnos[this.lastCurrentAlumnos.length] = alumno;
@@ -432,7 +554,7 @@ public class MainApp extends JFrame {
                         this.lastCurrentAlumnos = newAlumnos;
                         break;
                     case 3:
-                        this.showFile(this.reader.getDocument(file));
+                        this.showFileMenu(this.reader.getDocument(file));
                         break;
                     case 4:
                         this.updateMenu();
@@ -456,14 +578,20 @@ public class MainApp extends JFrame {
 
         } while (!flag);
 
-        // Close the application
+        // Cerramos el JFrame.
         this.dispose();
 
     }
 
     public static void main(String[] args) {
+
+        // Instanciamos la clase.
         MainApp app = new MainApp();
+
+        // Establecemos el motor de lectura y escritura.
         app.setWriter(Writers.DOM);
+
+        // Mostramos el menú principal.
         app.mainMenu();
     }
 

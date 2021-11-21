@@ -83,6 +83,12 @@ public class SAXHandler extends DefaultHandler {
 
     }
 
+    /**
+     * 
+     * Retorna una lista de alumnos dados los datos del XML
+     * 
+     * @return Una lista de alumnos
+     */
     public Alumno[] getClientes() {
         return (clientes.size() == 0) ? null : clientes.toArray(new Alumno[clientes.size()]);
     }
