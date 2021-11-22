@@ -41,7 +41,7 @@ public class SAXReader extends XMLReader {
         // Leemos el fichero
         parser.parse(file, handler);
         // Devolvemos la lista de alumnos leídos por el Handler.
-        return handler.getClientes();
+        return handler.getAlumnos();
     }
     
 }

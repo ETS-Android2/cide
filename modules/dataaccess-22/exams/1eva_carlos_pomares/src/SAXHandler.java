@@ -89,7 +89,7 @@ public class SAXHandler extends DefaultHandler {
      * 
      * @return Una lista de alumnos
      */
-    public Alumno[] getClientes() {
+    public Alumno[] getAlumnos() {
         return (clientes.size() == 0) ? null : clientes.toArray(new Alumno[clientes.size()]);
     }
 

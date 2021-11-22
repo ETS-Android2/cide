@@ -288,6 +288,8 @@ public class MainApp extends JFrame {
 
         int step = 0;
 
+        if (lastCurrentAlumnos == null) throw new Exception("No hay alumnos");
+
         String[] options = {
             "El identificador del alumno",
             "El dato a modificar (nom_alumne, curs, any_naixement, colegi)",
@@ -312,7 +314,6 @@ public class MainApp extends JFrame {
                 {
                     case 0:
                         // Si no hay registros anteriores permitimos que se introduzca un nuevo ID.
-                        if (lastCurrentAlumnos == null) continue;
                         int requestId = Integer.parseInt(input);
                         // Comprobamos que el ID introducido exista.
                         if (!List.of(this.lastCurrentAlumnos).stream().filter(a -> a.getId() == requestId).findFirst().isPresent()) throw new Exception("Id not found");
