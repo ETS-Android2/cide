@@ -26,11 +26,20 @@ public class Everest_carlos_pomares {
         // Crear una instancia de la cima
         Cima cima = new Cima();
 
-        // Creamos los pasajeros
+        // Creamos los escaladores
         Escalador[] pasajeros = new Escalador[86];
         for (int i = 0; i < 86; i++) {
             pasajeros[i] = new Escalador(cima);
             pasajeros[i].start();
+        }
+
+        // Esperamos a que terminen todos los escaladores
+        for (int i = 0; i < pasajeros.length; i++) {
+            try {
+                pasajeros[i].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         System.out.println(
@@ -53,23 +62,7 @@ public class Everest_carlos_pomares {
         for (int i = 0; i < helicopteros.length; i++) {
             helicopteros[i].start();
         }
-    
-        // Esperamos a que terminen todos los helicópteros
-        for (int i = 0; i < helicopteros.length; i++) {
-            try {
-                helicopteros[i].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        // Esperamos a que terminen todos los escaladores
-        for (int i = 0; i < pasajeros.length; i++) {
-            try {
-                pasajeros[i].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
 }
