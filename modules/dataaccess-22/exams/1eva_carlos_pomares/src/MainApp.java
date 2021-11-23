@@ -545,6 +545,7 @@ public class MainApp extends JFrame {
                 switch (order) {
                     case 1:
                         String fileName = requestUserInput("Nombre del fichero XML");
+                        this.lastCurrentAlumnos = null;
                         try {
                             this.setFile(new File(fileName));   
                         } catch (Exception e) {
