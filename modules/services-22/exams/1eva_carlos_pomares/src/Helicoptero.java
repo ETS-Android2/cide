@@ -79,15 +79,9 @@ public class Helicoptero extends Thread {
                 // En caso de no poder obtener los escaladores esperados, se avisa a base.
                 System.out.println(
                     String.format(
-                        "Helicóptero [%d]: No ha podido seguir recogiendo escaladores...",
-                        this.getHelicopteryId()
-                    )
-                );
-                // Se le dice a base cuantos ha intentado recoger y cuantos han sido recogidos.
-                System.out.println(
-                    String.format(
-                        "Helicóptero [%d]: Ha intentado recoger a %d escaladores, pero solo ha podido recoger a %d.",
+                        "Helicóptero [%d]: No ha podido seguir recogiendo escaladores...\n\tMotivo: %s\n\tResultado: Ha intentado recoger a %d escaladores.",
                         this.getHelicopteryId(),
+                        e.getMessage(),
                         this.getCapacidad(),
                         this.getEscaladores()
                     )
