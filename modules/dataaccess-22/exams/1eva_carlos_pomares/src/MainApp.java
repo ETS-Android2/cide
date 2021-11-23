@@ -20,6 +20,17 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * 
+ * Examen 1 evaluación -- Carlos Pomares
+ * Contexto SAX y XPath
+ * 
+ * Programa para gestionar alumnos en archivos XML.
+ * 
+ * @author Carlos Pomares (https://www.github.com/pomaretta)
+ * 
+ */
+
 public class MainApp extends JFrame {
     
     // Para poder identificar que motor usar.
@@ -258,7 +269,11 @@ public class MainApp extends JFrame {
      * @param doc El documento XML.
      * @throws Exception Si no se puede mostrar el archivo.
      */
-    private void showFileMenu(Document doc) throws Exception {
+    private void showFileMenu() throws Exception {
+
+        if (this.file == null) throw new Exception("No hay ningún archivo seleccionado.");
+
+        Document doc = this.reader.getDocument(this.file);
 
         String expression = "//*";
 
@@ -287,7 +302,8 @@ public class MainApp extends JFrame {
     private void updateMenu() throws Exception {
 
         int step = 0;
-
+        
+        if (this.file == null) throw new Exception("No hay ningún archivo seleccionado.");
         if (lastCurrentAlumnos == null) throw new Exception("No hay alumnos");
 
         String[] options = {
@@ -357,7 +373,9 @@ public class MainApp extends JFrame {
      * Menú para consultar datos de los alumnos.
      * 
      */
-    private void queryMenu() {
+    private void queryMenu() throws Exception {
+
+        if (this.file == null) throw new Exception("No hay ningún archivo seleccionado.");
 
         boolean flag = false;
 
@@ -433,6 +451,9 @@ public class MainApp extends JFrame {
         };
 
         String[] values = new String[1];
+
+        // Si no hay archivo seleccionado, no podemos eliminar nada.
+        if (this.file == null) throw new Exception("No hay ningún archivo seleccionado.");
 
         // Si no hay datos anteriores no permitimos eliminar nada.
         if (lastCurrentAlumnos == null) {
@@ -536,6 +557,9 @@ public class MainApp extends JFrame {
                         this.writer.write(new Alumno[0], file);
                         break;
                     case 2:
+                        // Comprobamos que se haya creado o recuperado el fichero.
+                        if (this.file == null) throw new Exception("No hay ningún archivo seleccionado.");
+
                         Alumno alumno = this.requestAlumno();
                     
                         // Si no hay datos anteriores, creamos el fichero XML con el nuevo alumno.
@@ -555,7 +579,7 @@ public class MainApp extends JFrame {
                         this.lastCurrentAlumnos = newAlumnos;
                         break;
                     case 3:
-                        this.showFileMenu(this.reader.getDocument(file));
+                        this.showFileMenu();
                         break;
                     case 4:
                         this.updateMenu();
