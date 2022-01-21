@@ -17,3 +17,13 @@
     - **build**: ```make build```
     - **server**: ```make run EXERCICE=exercice03 ROL=Server```
     - **client**: ```make run EXERCICE=exercice03 ROL=Client```
+- **Exercice04**
+    - [README](https://github.com/pomaretta/cide/blob/main/modules/services-22/sockets/exercice01/src/com/github/pomaretta/cide/sockets/exercice04/README.md)
+    - **build**: ```make build```
+    - **first**: ```make run EXERCICE=exercice04 ROL=Client2```
+    - **second**: ```make run EXERCICE=exercice03 ROL=Client1```
+- **Exercice05**
+    - [README](https://github.com/pomaretta/cide/blob/main/modules/services-22/sockets/exercice01/src/com/github/pomaretta/cide/sockets/exercice05/README.md)
+    - **build**: ```make build```
+    - **server**: ```make run EXERCICE=exercice05 ROL=Server```
+    - **client**: ```make run EXERCICE=exercice05 ROL=Client```
