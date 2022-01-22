@@ -1,13 +1,14 @@
 package com.github.pomaretta.cide.sockets.exercice01;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+/**
+ * @author Carlos Pomares <https://www.github.com/pomaretta>
+ */
 public class Client {
 
     public static void main(String[] args) throws Exception {
@@ -23,7 +24,8 @@ public class Client {
         // Conectamos el socket al servidor
         socket.connect(serverAddress);
 
-        System.out.println("Connected to server");
+        // Mensaje para indicar que nos hemos conectado.
+        System.out.println("Conectados al servidor.");
 
         // Leemos el archivo de texto para enviar al servidor.
         File file = new File("resources/data.txt");
@@ -32,13 +34,15 @@ public class Client {
         String line;
         String output = "";
         while((line = reader.readLine()) != null) {
+            // Agregamos cada línea para que mandemos todo el archivo al completo.
             output += line + "\n";
         }
         reader.close();
 
-        System.out.println("Sending data: " + output);
+        // Mensaje en el client para indicar que estamos enviando.
+        System.out.println("Enviando: " + output);
 
-        // Enviamos el archivo al servidor
+        // Enviamos el contenido del archivo al servidor
         socket.getOutputStream().write(output.getBytes());
         
         // Cerramos el socket

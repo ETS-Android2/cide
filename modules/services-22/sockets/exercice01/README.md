@@ -1,5 +1,9 @@
 # Sockets
 
+Ejercicios en relación a la Unidad 3 de Servicios y Procesos.
+
+```@author Carlos Pomares```
+
 ## Exercices
 
 - **Exercice01**

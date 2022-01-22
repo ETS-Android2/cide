@@ -3,6 +3,9 @@ package com.github.pomaretta.cide.sockets.exercice06;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * @author Carlos Pomares <https://www.github.com/pomaretta>
+ */
 public class Client {
     
     public static void main(String[] args) throws Exception {
@@ -17,6 +20,7 @@ public class Client {
             54000 + position
         );
 
+        // En caso de ser el primero de la cadena, primero enviamos mensaje después recibimos.
         if (position == 1) {
         
             // Connect to the next server.
@@ -31,71 +35,70 @@ public class Client {
                     );
                     connected = true;
                 } catch (Exception e) {
-                    // Wait for the next server.
+                    // Esperamos a que se pueda establcer conexión con el siguiente servidor.
                 }
             }
 
-            // Send the message to the next server.
+            // Mandamos el mensaje de token.
             socket.getOutputStream().write(
-                String.format("Client{Position=%d, Lenght=%d};token", position, lenght).getBytes()
+                String.format("Cliente{Posición=%d, Anillo=%d};token", position, lenght).getBytes()
             );
 
-            // Close the socket.
             socket.close();
 
-            // Wait to end loop
+            // Esperamos una conexión.
             Socket before = serverSocket.accept();
 
-            // Read the message from the previous server.
+            // Obtenemos el mensaje del anterior cliente.
             byte[] buffer = new byte[1024];
             before.getInputStream().read(buffer);
 
+            // Mostramos el mensaje.
             System.out.println(
                 new String(buffer)
             );
 
-            // Close the socket.
             before.close();
 
-
-        } else {
-
-            // Wait for the connection.
-            Socket socket = serverSocket.accept();
-
-            // Receive the message from the previous server.
-            byte[] buffer = new byte[1024];
-            socket.getInputStream().read(buffer);
-
-            System.out.println(
-                new String(buffer)
-            );
-
-            // Connect to the next server.
-            Socket next = null;
-            boolean connected = false;
-            Integer target = position == lenght ? 1 : position + 1;
-            
-
-            while (!connected) {
-                try {
-                    next = new Socket(
-                        "localhost",
-                        54000 + target
-                    );
-                    connected = true;
-                } catch (Exception e) {
-                    // Wait for the next server.
-                }
-            }
-
-            // Send the message to the next server.
-            next.getOutputStream().write(
-                String.format("Client{Position=%d, Lenght=%d};token", position, lenght).getBytes()
-            );
-
+            // Acabamos el programa.
+            return;
         }
+    
+        // Esperamos a que el cliente se conecte.
+        Socket socket = serverSocket.accept();
+
+        // Recibimos el mensaje del anterior cliente.
+        byte[] buffer = new byte[1024];
+        socket.getInputStream().read(buffer);
+
+        // Mostramos el mensaje.
+        System.out.println(
+            new String(buffer)
+        );
+
+        // Nos conectamos al servidor siguiente.
+        Socket next = null;
+        boolean connected = false;
+        Integer target = position == lenght ? 1 : position + 1;
         
+
+        while (!connected) {
+            try {
+                next = new Socket(
+                    "localhost",
+                    54000 + target
+                );
+                connected = true;
+            } catch (Exception e) {
+                // Esperamos a que se pueda establcer conexión con el siguiente servidor.
+            }
+        }
+
+        // Send the message to the next server.
+        next.getOutputStream().write(
+            String.format("Cliente{Posición=%d, Anillo=%d};token", position, lenght).getBytes()
+        );
+   
     }
 
 }

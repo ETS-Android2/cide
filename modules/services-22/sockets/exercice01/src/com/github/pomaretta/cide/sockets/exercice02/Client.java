@@ -5,6 +5,9 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * @author Carlos Pomares <https://www.github.com/pomaretta>
+ */
 public class Client {
     
     public static void main(String[] args) throws Exception {
@@ -20,10 +23,13 @@ public class Client {
         // Conectamos el socket al servidor
         socket.connect(serverAddress);
 
-        System.out.println("Connected to server");
+        // Mostramos en el cliente que se ha conectado
+        System.out.println("Conexión establecida con el servidor");
 
+        // Creamos el scanner para poder obtener datos del cliente.
         Scanner scanner = new Scanner(System.in);
 
+        // Obtenemos el mensaje a enviar.
         String input = scanner.nextLine();
 
         // Enviamos el mensaje al servidor

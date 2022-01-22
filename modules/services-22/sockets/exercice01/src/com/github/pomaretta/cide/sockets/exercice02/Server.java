@@ -5,26 +5,38 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * @author Carlos Pomares <https://www.github.com/pomaretta>
+ */
 public class Server {
  
     public static void main(String[] args) throws Exception {
         
+        // Creamos el server socket en el puerto 54605
         ServerSocket serverSocket = new ServerSocket(54605);
-        System.out.println("Waiting for client...");
+
+        // Mostramos que estamos esperando a una conexión.
+        System.out.println("Esperando a un cliente...");
+
+        // Aceptamos la conexión en cuanto se conecte un cliente.
         Socket socket = serverSocket.accept();
 
+        // Obtenemos el input stream para poder leer los mensajes.
         InputStream is = socket.getInputStream();
+
+        // Obtenemos el output stream para poder enviar mensajes.
         OutputStream os = socket.getOutputStream();
         
+        // Leemos el mensaje de entrada del cliente.
         char c;
         String input = "";
-        while ((c = (char) is.read()) != '\n') {
+        while ((c = (char) is.read()) !=  -1) {
             input += c;
             if (c == '?')
                 break;
         }
 
-        
+        // Creamos el mensaje de salida.
         String output = "";
         switch (input.toLowerCase()) {
             case "com et dius?":
@@ -38,10 +50,14 @@ public class Server {
                 break;
         }
 
-        System.out.println("Sending: " + output);
 
+        // Mostramos en el cliente el mensaje que se va a enviar.
+        System.out.println("Enviando: " + output);
+
+        // Enviamos el mensaje al cliente.
         os.write(output.getBytes());
 
+        // Cerramos los sockets.
         socket.close();
         serverSocket.close();
 
