@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="com.github.pomaretta.cide.hibernate.dto.Prestamos">
+        <table name="Prestamos" schema="cide" catalog=""/>
+        <id-class class="com.github.pomaretta.cide.hibernate.dto.PrestamosPK"/>
+        <attributes>
+            <id name="idLibro">
+                <column name="id_libro"/>
+            </id>
+            <id name="idSocio">
+                <column name="id_socio"/>
+            </id>
+            <basic name="inicio">
+                <column name="inicio"/>
+            </basic>
+            <basic name="fin">
+                <column name="fin"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

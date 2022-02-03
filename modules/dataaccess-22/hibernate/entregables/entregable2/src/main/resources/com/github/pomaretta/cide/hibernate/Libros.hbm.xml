@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="com.github.pomaretta.cide.hibernate.dto.Libros">
+        <table name="Libros" schema="cide" catalog=""/>
+        <attributes>
+            <id name="idLibro">
+                <column name="id_libro"/>
+            </id>
+            <basic name="titulo">
+                <column name="titulo"/>
+            </basic>
+            <basic name="ejemplares">
+                <column name="ejemplares"/>
+            </basic>
+            <basic name="editorial">
+                <column name="editorial"/>
+            </basic>
+            <basic name="paginas">
+                <column name="paginas"/>
+            </basic>
+            <basic name="edicion">
+                <column name="edicion"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>
