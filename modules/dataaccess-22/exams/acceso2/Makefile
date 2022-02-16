@@ -9,7 +9,7 @@ mysql:
 		--name mysql \
 		-e MYSQL_ROOT_PASSWORD=Cide2050 \
 		-e MYSQL_DATABASE=cide \
-		-v ${PWD}/src/main/resources/com/github/pomaretta/cide/data/schema.sql:/docker-entrypoint-initdb.d/schema.sql \
+		-v ${PWD}/src/main/resources/com/github/pomaretta/cide/schema.sql:/docker-entrypoint-initdb.d/schema.sql \
 		mysql:5.7
 
 mysql-stop:
