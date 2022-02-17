@@ -63,7 +63,7 @@ public class Server {
                     // Parse request
                     Request request = Request.parseRequest(requestString);
 
-                    int status = 600;
+                    int status = 200;
                     String result = null;
                     try {
                         Object obj = this.server.operate(
@@ -80,7 +80,7 @@ public class Server {
                     Response response = new Response(status, result);
                     this.sendResponse(response);
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    ex.printStackTrace();
                 }
             }
 
@@ -95,17 +95,22 @@ public class Server {
 
     private synchronized Object operate(Method method, String key, String value) {
         switch (method) {
-            case PO:
+            case PUT:
+                if (cache.containsKey(key)) throw new IllegalArgumentException("Key already exists");
                 cache.put(key, value);
                 return cache.containsKey(key);
-            case CAR:
+            case GET:
+                if (!cache.containsKey(key)) throw new RuntimeException("Key not found");
                 return cache.get(key);
-            case LOS:
+            case POST:
+                if (!cache.containsKey(key)) throw new RuntimeException("Key not found");
                 cache.replace(key,value);
+                if (!cache.get(key).equals(value)) throw new RuntimeException("Value not replaced");
                 return true;
-            case MARES:
-                cache.clear();
-                throw new IllegalArgumentException("The key is to know your code, make your own things.");
+            case DELETE:
+                if (!cache.containsKey(key)) throw new RuntimeException("Key not found");
+                cache.remove(key);
+                return !cache.containsKey(key);
             default:
                 throw new IllegalArgumentException("Method not supported");
         }

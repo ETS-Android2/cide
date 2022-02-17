@@ -30,15 +30,15 @@ public class Request {
     }
 
     public String toString() {
-        return method.toString() + " " + key + " " + value;
+        return method.toString() + "\t" + key + "\t" + value;
     }
 
     public static Request parseRequest(String request) {
-        String[] requestParts = request.split(" ");
+        String[] requestParts = request.split("\t");
         Method method = Method.valueOf(requestParts[0]);
         String key = requestParts[1];
         String value = null;
-        if (!method.equals(Method.CAR) && !method.equals(Method.MARES)) {
+        if (!method.equals(Method.GET) && !method.equals(Method.DELETE)) {
             value = requestParts[2];
         }
         return new Request(method, key, value);

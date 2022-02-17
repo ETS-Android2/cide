@@ -19,8 +19,8 @@ public class CacheProtocol implements Cache {
     private InputStream inputStream;
 
     public CacheProtocol() {
-        this.SERVER_PORT = 67023;
-        this.SERVER_HOST = "myhost";
+        this.SERVER_PORT = 56001;
+        this.SERVER_HOST = "localhost";
     }
 
     public CacheProtocol(String host, int port) {
@@ -30,7 +30,7 @@ public class CacheProtocol implements Cache {
 
     @Override
     public void put(String key, String value) throws Exception {
-        Request request = new Request(Method.PO, key, value);
+        Request request = new Request(Method.PUT, key, value);
         Response response = sendRequest(request);
         if (response.getStatus() == 400) {
             throw new Exception(response.getValue());
@@ -39,7 +39,7 @@ public class CacheProtocol implements Cache {
 
     @Override
     public void replace(String key, String value) throws Exception {
-        Request request = new Request(Method.LOS, key, value);
+        Request request = new Request(Method.POST, key, value);
         Response response = sendRequest(request);
         if (response.getStatus() == 400) {
             throw new Exception(response.getValue());
@@ -49,7 +49,7 @@ public class CacheProtocol implements Cache {
     @Override
     public String get(String key) throws Exception {
         Request request = new Request(
-            Method.CAR,
+            Method.GET,
             key,
             null
         );
@@ -63,7 +63,7 @@ public class CacheProtocol implements Cache {
     @Override
     public void remove(String key) throws Exception {
         Request request = new Request(
-            Method.MARES,
+            Method.DELETE,
             key,
             null
         );
@@ -83,6 +83,7 @@ public class CacheProtocol implements Cache {
     }
 
     public void openSession() throws IOException {
+        if (this.isConnected()) throw new IOException("Session already open");
         this.socket = new Socket(this.SERVER_HOST, this.SERVER_PORT);
         this.outputStream = this.socket.getOutputStream();
         this.inputStream = this.socket.getInputStream();
@@ -91,6 +92,9 @@ public class CacheProtocol implements Cache {
     private Response sendRequest(
         Request request
     ) throws IOException {
+        if (socket.isClosed()) throw new IOException("Socket is closed");
+        if (socket.isOutputShutdown()) throw new IOException("Socket is output shutdown");
+        if (socket.isInputShutdown()) throw new IOException("Socket is input shutdown");
         
         // Send request
         this.outputStream.write(request.toString().getBytes());
