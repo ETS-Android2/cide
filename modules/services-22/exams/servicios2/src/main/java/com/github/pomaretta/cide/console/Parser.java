@@ -8,8 +8,8 @@ public abstract class Parser extends DefaultCommandParser {
         protected int parseBlock(String command) throws Exception {
             // Esto sirve para meter comandos custom aparte de números
             switch (command) {
-                case "help":
-                    System.out.println("Help!");
+                case "clear":
+                    System.out.print("\033[H\033[2J");
                     break;
                 default:
                     // Si no es ninguno de los anteriores lo paso con número

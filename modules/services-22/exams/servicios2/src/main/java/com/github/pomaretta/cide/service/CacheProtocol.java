@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 
 import com.github.pomaretta.cide.domain.Method;
 import com.github.pomaretta.cide.domain.Request;
@@ -61,6 +62,24 @@ public class CacheProtocol implements Cache {
     }
 
     @Override
+    public HashMap<String, String> getAll() throws Exception {
+        Request request = new Request(
+            Method.GET,
+            "GET_ALL"
+        );
+        Response response = this.sendRequest(request);
+
+        HashMap<String, String> map = new HashMap<>();
+        String[] lines = response.getValue().split("\n");
+        for (String line : lines) {
+            String[] keyValue = line.split("=");
+            map.put(keyValue[0], keyValue[1]);
+        }
+    
+        return map;
+    }
+
+    @Override
     public void remove(String key) throws Exception {
         Request request = new Request(
             Method.DELETE,
@@ -79,6 +98,16 @@ public class CacheProtocol implements Cache {
 
     public void close() throws IOException, IllegalStateException {
         if (!this.isConnected()) throw new IllegalStateException("Not connected");
+        // Send close request
+        Request request = new Request(
+            Method.SHUTDOWN,
+            null,
+            null
+        );
+        Response response = this.sendRequest(request);
+        if (response.getStatus() == 400) {
+            throw new IllegalStateException(response.getValue());
+        }
         this.socket.close();
     }
 
