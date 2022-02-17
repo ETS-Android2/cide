@@ -1,8 +1,8 @@
 package com.github.pomaretta.cide.domain;
 
 public enum Method {
-    GET,
-    POST,
-    PUT,
-    DELETE
+    CAR,
+    LOS,
+    PO,
+    MARES
 }
