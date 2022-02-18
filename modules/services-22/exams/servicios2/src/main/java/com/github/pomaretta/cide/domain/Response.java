@@ -19,12 +19,12 @@ public class Response {
     }
 
     public String toString() {
-        return status + " " + value;
+        return status + "\t" + value;
     }
 
     public static Response parseResponse(String response) {
         
-        String[] responseParts = response.split(" ");
+        String[] responseParts = response.split("\t");
 
         int status = Integer.parseInt(responseParts[0]);
         String value = null;
