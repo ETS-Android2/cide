@@ -18,22 +18,26 @@ public class Response {
         return value;
     }
 
-    public String toString() {
+    public String encode() {
         return status + "\t" + value;
     }
 
-    public static Response parseResponse(String response) {
-        
+    public static Response decode(String response) {
         String[] responseParts = response.split("\t");
-
         int status = Integer.parseInt(responseParts[0]);
         String value = null;
-
         if (responseParts.length > 1) {
             value = responseParts[1];
         }
-
         return new Response(status, value);
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "status=" + status +
+                ", value='" + value + '\'' +
+                '}';
     }
 
 }

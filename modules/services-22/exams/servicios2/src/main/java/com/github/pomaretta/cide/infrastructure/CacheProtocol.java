@@ -1,4 +1,4 @@
-package com.github.pomaretta.cide.service;
+package com.github.pomaretta.cide.infrastructure;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +9,10 @@ import java.util.HashMap;
 import com.github.pomaretta.cide.domain.Method;
 import com.github.pomaretta.cide.domain.Request;
 import com.github.pomaretta.cide.domain.Response;
+import com.github.pomaretta.cide.service.Cache;
+import com.github.pomaretta.cide.service.Protocol;
 
-public class CacheProtocol implements Cache {
+public class CacheProtocol implements Cache, Protocol {
 
     private final int SERVER_PORT;
     private final String SERVER_HOST;
@@ -32,7 +34,7 @@ public class CacheProtocol implements Cache {
     @Override
     public void put(String key, String value) throws Exception {
         Request request = new Request(Method.PUT, key, value);
-        Response response = sendRequest(request);
+        Response response = send(request);
         if (response.getStatus() == 400) {
             throw new Exception(response.getValue());
         }
@@ -41,7 +43,7 @@ public class CacheProtocol implements Cache {
     @Override
     public void replace(String key, String value) throws Exception {
         Request request = new Request(Method.POST, key, value);
-        Response response = sendRequest(request);
+        Response response = send(request);
         if (response.getStatus() == 400) {
             throw new Exception(response.getValue());
         }
@@ -54,7 +56,7 @@ public class CacheProtocol implements Cache {
             key,
             null
         );
-        Response response = this.sendRequest(request);
+        Response response = this.send(request);
         if (response.getStatus() == 400) {
             throw new Exception(response.getValue());
         }
@@ -64,10 +66,10 @@ public class CacheProtocol implements Cache {
     @Override
     public HashMap<String, String> getAll() throws Exception {
         Request request = new Request(
-            Method.GET,
-            "GET_ALL"
+            Method.GET_ALL,
+            null
         );
-        Response response = this.sendRequest(request);
+        Response response = this.send(request);
 
         HashMap<String, String> map = new HashMap<>();
         String[] lines = response.getValue().split("\n");
@@ -86,17 +88,17 @@ public class CacheProtocol implements Cache {
             key,
             null
         );
-        Response response = this.sendRequest(request);
+        Response response = this.send(request);
         if (response.getStatus() == 400) {
             throw new Exception(response.getValue());
         }
     }
 
     public boolean isConnected() {
-        return this.socket != null && this.socket.isConnected();
+        return this.socket != null && !this.socket.isClosed();
     }
 
-    public void close() throws IOException, IllegalStateException {
+    public void close() {
         if (!this.isConnected()) throw new IllegalStateException("Not connected");
         // Send close request
         Request request = new Request(
@@ -104,11 +106,12 @@ public class CacheProtocol implements Cache {
             null,
             null
         );
-        Response response = this.sendRequest(request);
-        if (response.getStatus() == 400) {
-            throw new IllegalStateException(response.getValue());
+        try {
+            this.send(request);
+            this.socket.close();
+        } catch (Exception e) {
+            // Ignore
         }
-        this.socket.close();
     }
 
     public void openSession() throws IOException {
@@ -118,7 +121,8 @@ public class CacheProtocol implements Cache {
         this.inputStream = this.socket.getInputStream();
     }
 
-    private Response sendRequest(
+    @Override
+    public Response send(
         Request request
     ) throws IOException {
         if (socket.isClosed()) throw new IOException("Socket is closed");
@@ -126,14 +130,14 @@ public class CacheProtocol implements Cache {
         if (socket.isInputShutdown()) throw new IOException("Socket is input shutdown");
         
         // Send request
-        this.outputStream.write(request.toString().getBytes());
+        this.outputStream.write(request.encode().getBytes());
         this.outputStream.flush();
 
         // Wait until receive the response.
         byte[] response = new byte[1024];
         int read = this.inputStream.read(response);
 
-        return Response.parseResponse(new String(response, 0, read));
+        return Response.decode(new String(response, 0, read));
 
     }
 

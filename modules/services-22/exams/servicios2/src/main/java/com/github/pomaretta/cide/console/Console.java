@@ -3,7 +3,8 @@ package com.github.pomaretta.cide.console;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.github.pomaretta.cide.service.CacheProtocol;
+import com.github.pomaretta.cide.infrastructure.CacheProtocol;
+import com.github.pomaretta.cide.service.Protocol;
 import com.github.pomaretta.termux.Console.DefaultConsole;
 import com.github.pomaretta.termux.Menu.DefaultInteractiveMenu;
 import com.github.pomaretta.termux.Menu.InlineMenu;
@@ -81,7 +82,7 @@ public class Console extends DefaultConsole {
                     case 7:
                         // Salir
                         if (protocol == null) break;
-                        protocol.close();
+                        protocol.close();    
                         return -1;
                 }
                 
@@ -196,7 +197,7 @@ public class Console extends DefaultConsole {
         };
 
         String[] validation = {
-            "^[a-zA-Z0-9]*$"
+            "^[a-zA-Z0-9_-]*$"
         };
 
         SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
@@ -208,8 +209,6 @@ public class Console extends DefaultConsole {
 
         String result = null;
         try {
-            // Aqui obtengo el valor, solo hago eso, en ningun momento uso sockets ni me preocupo de ello.
-            // De eso se encarga el protocolo.
             result = this.protocol.get(key);
         } catch (Exception e) {
             System.out.println("\nError: " + e.getMessage());
@@ -233,7 +232,7 @@ public class Console extends DefaultConsole {
 
         String[] validation = {
             "^[a-zA-Z0-9_-]*$",
-            "^[a-zA-Z0-9 ]*$"
+            "^[a-zA-Z0-9 .,_-]*$"
         };
 
         SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
@@ -270,7 +269,7 @@ public class Console extends DefaultConsole {
         };
 
         String[] validation = {
-            "^[a-zA-Z0-9]*$"
+            "^[a-zA-Z0-9_-]*$"
         };
 
         SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
@@ -302,8 +301,8 @@ public class Console extends DefaultConsole {
         };
 
         String[] validation = {
-            "^[a-zA-Z0-9]*$",
-            "^[a-zA-Z0-9 ]*$"
+            "^[a-zA-Z0-9_-]*$",
+            "^[a-zA-Z0-9 .,_-]*$"
         };
 
         SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);

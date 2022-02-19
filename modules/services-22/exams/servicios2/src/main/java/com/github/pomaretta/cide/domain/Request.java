@@ -29,11 +29,11 @@ public class Request {
         return value;
     }
 
-    public String toString() {
+    public String encode() {
         return method.toString() + "\t" + key + "\t" + value;
     }
 
-    public static Request parseRequest(String request) {
+    public static Request decode(String request) {
         String[] requestParts = request.split("\t");
         Method method = Method.valueOf(requestParts[0]);
         String key = requestParts[1];
@@ -42,6 +42,15 @@ public class Request {
             value = requestParts[2];
         }
         return new Request(method, key, value);
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "method=" + method +
+                ", key='" + key + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 
 }
