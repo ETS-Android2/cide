@@ -1,7 +1,6 @@
 package com.github.pomaretta.cide.console;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import com.github.pomaretta.cide.infrastructure.CacheService;
@@ -35,7 +34,7 @@ public class ServerConsole extends DefaultConsole implements Runnable {
 		final OptionsMenu menu = new OptionMenu(
 				options,
 				"",
-				"Server - " + new Date().toString(),
+				"Server - " + this.service.getPort(),
 				"%s",
 				1,
 				true);
@@ -146,7 +145,7 @@ public class ServerConsole extends DefaultConsole implements Runnable {
 
 	private String viewClients() {
 
-		final String[] selectedClientId = {""};
+		final String[] selectedClientId = { "" };
 		final HashMap<String, Boolean> snapshot = this.service.getAccess();
 
 		String header = String.format(
@@ -227,7 +226,8 @@ public class ServerConsole extends DefaultConsole implements Runnable {
 		// Obtain client logs
 		ArrayList<String> logs = this.service.getAccessLog().get(clientId);
 
-		if (logs.size() == 0) throw new RuntimeException("No hay logs para el cliente " + clientId);
+		if (logs.size() == 0)
+			throw new RuntimeException("No hay logs para el cliente " + clientId);
 
 		String header = String.format(
 				"\n\t%-150s", "REQUEST");
@@ -246,8 +246,7 @@ public class ServerConsole extends DefaultConsole implements Runnable {
 				String k = (String) o;
 				String format = String.format(
 						"%-150s",
-						k
-				);
+						k);
 
 				if (selected) {
 					Encapsulate.encapsulateString(format, "\t");

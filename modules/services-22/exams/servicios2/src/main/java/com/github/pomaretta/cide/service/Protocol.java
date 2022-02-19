@@ -14,14 +14,14 @@ import com.github.pomaretta.cide.domain.Response;
  * @author Carlos Pomares <https://www.github.com/pomaretta>
  */
 public interface Protocol {
-    /**
-     * Permite enviar una petición al servidor utilizando el esquema de
-     * Request, una vez lo comunica con el servidor, este devuelve unos datos
-     * en el esquema de Response. Devolviendo la respuesta al cliente.
-     * 
-     * @param request La petición que se va a enviar al servidor.
-     * @return La respuesta del servidor.
-     * @throws IOException Si hay algún problema con la comunicación.
-     */
-    Response send(Request request) throws IOException;
+	/**
+	 * Permite enviar una petición al servidor utilizando el esquema de
+	 * Request, una vez lo comunica con el servidor, este devuelve unos datos
+	 * en el esquema de Response. Devolviendo la respuesta al cliente.
+	 * 
+	 * @param request La petición que se va a enviar al servidor.
+	 * @return La respuesta del servidor.
+	 * @throws IOException Si hay algún problema con la comunicación.
+	 */
+	Response send(Request request) throws IOException;
 }
