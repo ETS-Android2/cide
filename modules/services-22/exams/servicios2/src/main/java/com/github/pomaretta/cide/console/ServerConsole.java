@@ -218,7 +218,6 @@ public class ServerConsole extends DefaultConsole implements Runnable {
 
 	private void viewLogs() {
 
-		// TODO: Get the ID from Client with InteractiveSelectionMenu
 		String clientId = this.viewClients();
 
 		if (clientId.isEmpty()) {

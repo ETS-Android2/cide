@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.github.pomaretta.cide.infrastructure.CacheProtocol;
-import com.github.pomaretta.cide.service.Protocol;
 import com.github.pomaretta.termux.Console.DefaultConsole;
 import com.github.pomaretta.termux.Menu.DefaultInteractiveMenu;
 import com.github.pomaretta.termux.Menu.InlineMenu;
@@ -22,7 +21,11 @@ public class Console extends DefaultConsole {
 
     private CacheProtocol protocol;
 
-    private void init() {
+    /**
+     * Menu de entrada al cliente, encargado de crear nuevas conexiones
+     * y ofrecer las funcionalidades de la cache.
+     */
+    private void entryMenu() {
 
         String[] options = new String[]{
             "Conectarse a un servidor",
@@ -143,7 +146,15 @@ public class Console extends DefaultConsole {
         interactiveMenu.show();
     }
  
-    // Configuration of Server
+    /**
+     * Menú para poder registrar el servidor en el cliente.
+     * 
+     * Permite obtener el hostname y puerto del servidor por parte del cliente.
+     * Si se le pasan los argumentos realiza la conexión con los parámetros.
+     * 
+     * @param hostname El hostname del servidor.
+     * @param port El puerto del servidor.
+     */
     private void registerServer(String hostname, int port) {
 
         String[] messages = {
@@ -189,11 +200,15 @@ public class Console extends DefaultConsole {
 
     }
 
-    // Obtener un valor
+    /**
+     * Menú para poder pedir al usuario una clave y mandar al servidor la petición.
+     * Una vez la obtiene, se muestra por pantalla el valor.
+     * @throws Exception Si no se puede obtener el valor o comunicar con el servidor.
+     */
     private void getValueMenu() throws Exception {
 
         String[] messages = {
-            "Key",
+            "Clave",
         };
 
         String[] validation = {
@@ -204,25 +219,27 @@ public class Console extends DefaultConsole {
         menu.show();
 
         ArrayList<String> values = menu.getOutput();
-
         String key = values.get(0);
 
         String result = null;
         try {
             result = this.protocol.get(key);
         } catch (Exception e) {
-            System.out.println("\nError: " + e.getMessage());
+            System.out.println("\nError en la petición\n\t" + e.getMessage());
             return;
         }
 
         System.out.printf(
-            "\n\tKey: %s\n\tValue: %s\n",
+            "\nValores recibidos por parte del servidor:\n\tClave: %s\n\tValor: %s\n",
             key,
             result
         );
     }
 
-    // Crear un valor
+    /**
+     * Menú para poder pedir al usuario una clave, un valor y mandar al servidor la petición de creación.
+     * @throws Exception Si no se puede obtener el valor o comunicar con el servidor.
+     */
     private void createValueMenu() throws Exception {
 
         String[] messages = {
@@ -243,25 +260,27 @@ public class Console extends DefaultConsole {
         String key = values.get(0);
         String value = values.get(1);
 
-        if (value.equals("")) {
-            System.out.println("\nError: Value can't be empty");
+        if (value.isEmpty() || key.isEmpty()) {
+            System.out.println("\nError en el cliente:\nEl valor no puede estar vacío");
             return;
         }
 
         try {
             this.protocol.put(key,value);
         } catch (Exception e) {
-            System.out.println("\nError: " + e.getMessage());
+            System.out.println("\nError en la petición\n\t" + e.getMessage());
             return;
         }
 
-        System.out.printf(
-            "Successfully created key: %s\n",
-            key
+        System.out.print(
+            "\nClave creada satisfactoriamente.\n"
         );
     }
 
-    // Eliminar un valor
+    /**
+     * Menú para poder pedir al usuario una clave y mandar al servidor la petición de borrado.
+     * @throws Exception Si no se puede obtener el valor o comunicar con el servidor.
+     */
     private void deleteValueMenu() {
 
         String[] messages = {
@@ -279,20 +298,27 @@ public class Console extends DefaultConsole {
 
         String key = values.get(0);
         
-        try {
-            this.protocol.remove(key);
-        } catch (Exception e) {
-            System.out.println("\nError: " + e.getMessage());
+        if (key.isEmpty()) {
+            System.out.println("\nError en el cliente:\nEl valor no puede estar vacío");
             return;
         }
 
-        System.out.printf(
-            "Successfully removed key: %s\n",
-            key
+        try {
+            this.protocol.remove(key);
+        } catch (Exception e) {
+            System.out.println("\nError en la petición\n\t" + e.getMessage());
+            return;
+        }
+
+        System.out.print(
+            "Clave borrada satisfactoriamente\n"
         );
     }
 
-    // Reemplazar un valor
+    /**
+     * Menú para poder pedir al usuario una clave, un valor y mandar al servidor la petición de modificación.
+     * @throws Exception Si no se puede obtener el valor o comunicar con el servidor.
+     */
     private void replaceValueMenu() {
 
         String[] messages = {
@@ -313,21 +339,29 @@ public class Console extends DefaultConsole {
         String key = values.get(0);
         String value = values.get(1);
 
+        if (value.isEmpty() || key.isEmpty()) {
+            System.out.println("\nError en el cliente:\nEl valor no puede estar vacío");
+            return;
+        }
+
         try {
             this.protocol.replace(key, value);
         } catch (Exception e) {
-            System.out.println("\nError: " + e.getMessage());
+            System.out.println("\nError en la petición\n\t" + e.getMessage());
             return;
         }
 
         System.out.printf(
-            "Successfully replace key %s with value %s\n",
+            "\nClave %s cambiada por %s satisfactoriamente\n",
             key,
             value
         );
     }
 
-    // Ver todos los valores
+    /**
+     * Menú para pedir al servidor el mapa de valores y mostrarlo por pantalla.
+     * @throws Exception Si no se puede obtener el mapa o comunicar con el servidor.
+     */
     private void viewAllValues() throws Exception {
 
         final HashMap<String, String> values = this.protocol.getAll();
@@ -413,7 +447,7 @@ public class Console extends DefaultConsole {
 
     @Override
     protected void main() {
-        this.init();
+        this.entryMenu();
     }
 
 }

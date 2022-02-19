@@ -21,11 +21,20 @@ public class CacheProtocol implements Cache, Protocol {
     private OutputStream outputStream;
     private InputStream inputStream;
 
+    /**
+     * Inicializa el protocolo con los valores por defecto.
+     */
     public CacheProtocol() {
         this.SERVER_PORT = 56001;
         this.SERVER_HOST = "localhost";
     }
 
+    /**
+     * Inicializa el protocolo con los valores pasa como parámetros.
+     * 
+     * @param host El host del servidor.
+     * @param port El puerto del servidor.
+     */
     public CacheProtocol(String host, int port) {
         this.SERVER_HOST = host;
         this.SERVER_PORT = port;
@@ -129,16 +138,16 @@ public class CacheProtocol implements Cache, Protocol {
         if (socket.isOutputShutdown()) throw new IOException("Socket is output shutdown");
         if (socket.isInputShutdown()) throw new IOException("Socket is input shutdown");
         
-        // Send request
+        // Enviamos la petición a través del OutputStream
         this.outputStream.write(request.encode().getBytes());
         this.outputStream.flush();
 
-        // Wait until receive the response.
+        // Esperamos a la respuesta
         byte[] response = new byte[1024];
         int read = this.inputStream.read(response);
 
+        // A través del InputStream, leemos la respuesta y devolvemos un objeto Response.
         return Response.decode(new String(response, 0, read));
-
     }
 
 }

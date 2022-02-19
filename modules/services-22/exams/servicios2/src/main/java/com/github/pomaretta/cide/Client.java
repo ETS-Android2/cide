@@ -13,7 +13,15 @@ public class Client {
         this.console = new Console();
     }
 
+    /**
+     * 
+     * Wrapper para el inicio de la consola, por si alguna funcionalidad
+     * necesita ser inicializada antes que la consola.
+     * 
+     * @param args Los diferentes argumentos que puedan ser pasados por el ususario.
+     */
     public void start(String[] args) {
+        // Iniciar la consola
         this.console.start();
     }
 

@@ -6,6 +6,22 @@ import com.github.pomaretta.cide.infrastructure.CacheService;
  */
 public class Server {
 
+    // Puerto por defecto del servicio 56001
+    private int port = 56001;
+    private final CacheService cacheService;
+
+    public Server() throws Exception {
+        cacheService = new CacheService(port);
+    }
+
+    public Server(int port) throws Exception {
+        cacheService = new CacheService(port);
+    }
+
+    public void start() throws Exception {
+        cacheService.start();
+    }
+
     public static void main(String[] args) throws Exception {
 
         int port = 56001;
@@ -13,8 +29,8 @@ public class Server {
             port = Integer.parseInt(args[0]);
         }
 
-        CacheService service = new CacheService(port);
-        service.start();
+        Server server = new Server(port);
+        server.start();
     }
 
 }
