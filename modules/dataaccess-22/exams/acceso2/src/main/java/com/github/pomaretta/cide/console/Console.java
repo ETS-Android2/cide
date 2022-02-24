@@ -7,18 +7,12 @@ import java.util.Arrays;
 import com.github.pomaretta.cide.dto.PersonTeacher;
 import com.github.pomaretta.cide.entity.Department;
 import com.github.pomaretta.cide.entity.Person;
-import com.github.pomaretta.cide.entity.Teacher;
 import com.github.pomaretta.cide.service.CideService;
 import com.github.pomaretta.termux.Console.DefaultConsole;
 import com.github.pomaretta.termux.Error.ErrorLog;
 import com.github.pomaretta.termux.Menu.DefaultInteractiveMenu;
-import com.github.pomaretta.termux.Menu.InlineMenu;
 import com.github.pomaretta.termux.Menu.OptionMenu;
 import com.github.pomaretta.termux.Menu.OptionsMenu;
-import com.github.pomaretta.termux.Menu.SelectionInteractiveMenu;
-import com.github.pomaretta.termux.Menu.SelectionMenu;
-import com.github.pomaretta.termux.Menu.SequentialMenu;
-import com.github.pomaretta.termux.Util.Encapsulate;
 
 import org.hibernate.Session;
 
