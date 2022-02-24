@@ -1,5 +1,6 @@
 package com.github.pomaretta.cide.service;
 
+import com.github.pomaretta.cide.entity.Department;
 import com.github.pomaretta.cide.entity.Person;
 
 import org.hibernate.Session;
@@ -26,6 +27,8 @@ public class PersonUnit extends ServiceUnit<Person> {
                 .list()
                 .toArray(new Person[0]);
         session.close();
+        // Sort the array
+        java.util.Arrays.sort(persons);
         return persons;
     }
 
@@ -45,6 +48,8 @@ public class PersonUnit extends ServiceUnit<Person> {
                 .list()
                 .toArray(new Person[0]);
         session.close();
+        // Sort the array
+        java.util.Arrays.sort(persons);
         return persons;
     }
 
@@ -55,9 +60,24 @@ public class PersonUnit extends ServiceUnit<Person> {
                 .list()
                 .toArray(new Person[0]);
         session.close();
+        // Sort the array
+        java.util.Arrays.sort(persons);
         return persons;
     }
 
+    public Person[] getPersonsByDepartment(Department department) {
+        Session session = sessionFactory.openSession();
+        // Persons that are teachers and get department id
+        Person[] persons = (Person[]) session.createQuery("from Person where id in (select personId from Teacher where departmentId = :departmentId)")
+                .setParameter("departmentId", department.getId())
+                .list()
+                .toArray(new Person[0]);
+        session.close();
+        // Sort the array
+        java.util.Arrays.sort(persons);
+        return persons;
+    }
+    
     @Override
     public void save(Person t) {
         Session session = sessionFactory.openSession();
@@ -90,6 +110,8 @@ public class PersonUnit extends ServiceUnit<Person> {
         Session session = sessionFactory.openSession();
         Person[] persons = (Person[]) session.createQuery("from Person").list().toArray(new Person[0]);
         session.close();
+        // Sort the array
+        java.util.Arrays.sort(persons);
         return persons;
     }
 

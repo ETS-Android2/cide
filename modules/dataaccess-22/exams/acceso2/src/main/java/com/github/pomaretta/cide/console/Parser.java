@@ -7,8 +7,8 @@ public abstract class Parser extends DefaultCommandParser {
 	@Override
 	protected int parseBlock(String command) throws Exception {
 		switch (command) {
-			case "help":
-				System.out.println("Help!");
+			case "clear":
+				System.out.print("\033[H\033[2J");
 				break;
 			default:
 				return this.callBack(command);

@@ -2,7 +2,9 @@ package com.github.pomaretta.cide.entity;
 
 import java.sql.Date;
 
-public class Person {
+import javax.persistence.Transient;
+
+public class Person implements Comparable<Person>{
     private int id;
     private String nif;
     private String name;
@@ -11,7 +13,7 @@ public class Person {
     private Date birthdate;
     private String gender;
     private String telephone;
-
+    
     public int getId() {
         return id;
     }
@@ -123,6 +125,23 @@ public class Person {
                 ", gender=" + gender +
                 ", telephone=" + telephone + 
                 "}";
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return String.format(
+            "%s %s %s",
+            this.name,
+            this.firstLastname,
+            this.secondLastname
+        ).compareTo(
+            String.format(
+                "%s %s %s",
+                o.name,
+                o.firstLastname,
+                o.secondLastname
+            )
+        );
     }
 
 }

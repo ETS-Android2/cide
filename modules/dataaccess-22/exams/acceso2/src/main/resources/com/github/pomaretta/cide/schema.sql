@@ -29,6 +29,6 @@ CREATE TABLE IF NOT EXISTS teacher (
     person_id           INT NOT NULL,
     department_id       INT NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (person_id) REFERENCES person(id),
-    FOREIGN KEY (department_id) REFERENCES department(id)
+    FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE CASCADE,
+    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
 );

@@ -1,12 +1,16 @@
 package com.github.pomaretta.cide.console;
 
+import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import com.github.pomaretta.cide.dto.PersonTeacher;
 import com.github.pomaretta.cide.entity.Department;
 import com.github.pomaretta.cide.entity.Person;
 import com.github.pomaretta.cide.entity.Teacher;
 import com.github.pomaretta.cide.service.CideService;
 import com.github.pomaretta.termux.Console.DefaultConsole;
+import com.github.pomaretta.termux.Error.ErrorLog;
 import com.github.pomaretta.termux.Menu.DefaultInteractiveMenu;
 import com.github.pomaretta.termux.Menu.InlineMenu;
 import com.github.pomaretta.termux.Menu.OptionMenu;
@@ -22,6 +26,29 @@ public class Console extends DefaultConsole {
 
     private CideService service;
     private boolean connected;
+
+    private PersonMenu personMenu;
+    private DepartmentMenu departmentMenu;
+
+    public ErrorLog getErrorLog() {
+        return errorLog;
+    }
+
+    public BufferedReader getReader() {
+        return this.reader;
+    }
+
+    public CideService getService() {
+        return service;
+    }
+
+    public PersonMenu getPersonMenu() {
+        return personMenu;
+    }
+
+    public DepartmentMenu getDepartmentMenu() {
+        return departmentMenu;
+    }
 
     private void init() {
 
@@ -57,6 +84,18 @@ public class Console extends DefaultConsole {
                         break;
                     case 3:
                         if (!connected) break;
+                        createMenu();
+                        break;
+                    case 4:
+                        if (!connected) break;
+                        modifyMenu();
+                        break;
+                    case 5:
+                        if (!connected) break;
+                        removeMenu();
+                        break;
+                    case 6:
+                        if (!connected) break;
                         return -1;
                 }
                 
@@ -87,6 +126,9 @@ public class Console extends DefaultConsole {
                         new String[]{
                             "Buscador",
                             "Visualizador",
+                            "Creador",
+                            "Modificador",
+                            "Eliminador",
                             "Salir"
                         },
                         "",
@@ -127,7 +169,6 @@ public class Console extends DefaultConsole {
         this.connected = true;
     }
 
-    // Search Menu
     private void searchMenu() {
 
         String[] options = new String[]{
@@ -150,9 +191,10 @@ public class Console extends DefaultConsole {
             protected int callBack(String arg0) throws Exception {
                 switch (Integer.parseInt(arg0)) {
                     case 1:
-                        searchPerson();
+                        personMenu.search();
                         break;
                     case 2:
+                        departmentMenu.search();
                         break;
                     case 3:
                         return -1;
@@ -178,20 +220,19 @@ public class Console extends DefaultConsole {
         interactiveMenu.show();
     }
 
-    private void searchPerson() {
+    private void createMenu() {
 
         String[] options = new String[]{
-            "Buscar por id",
-            "Buscar por nombre",
-            "Buscar por primer apellido",
-            "Buscar por segundo apellido",
+            "Persona",
+            "Departamento",
+            "Profesor",
             "Volver al menú"
         };
 
         final OptionsMenu menu = new OptionMenu(
             options,
             "",
-            "PERSONA - CIDE",
+            "CREADOR - CIDE",
             "%s",
             1,
             true
@@ -202,18 +243,15 @@ public class Console extends DefaultConsole {
             protected int callBack(String arg0) throws Exception {
                 switch (Integer.parseInt(arg0)) {
                     case 1:
-                        searchPersonById();
+                        personMenu.create();
                         break;
                     case 2:
-                        searchPersonByName();
+                        departmentMenu.create();
                         break;
                     case 3:
-                        searchPersonByFirstLastName();
+                        personMenu.createTeacher();
                         break;
                     case 4:
-                        searchPersonBySecondLastName();
-                        break;
-                    case 5:
                         return -1;
                 }
                 return 0;
@@ -237,231 +275,6 @@ public class Console extends DefaultConsole {
         interactiveMenu.show();
     }
 
-    private void searchDepartment() {
-
-        String[] options = new String[]{
-            "Buscar por id",
-            "Buscar por nombre",
-            "Volver al menú"
-        };
-
-        final OptionsMenu menu = new OptionMenu(
-            options,
-            "",
-            "DEPARTAMENTO - CIDE",
-            "%s",
-            1,
-            true
-        );
-
-        Parser parser = new Parser() {
-            @Override
-            protected int callBack(String arg0) throws Exception {
-                switch (Integer.parseInt(arg0)) {
-                    case 1:
-                        searchDepartmentById();
-                        break;
-                    case 2:
-                        searchDepartmentByName();
-                        break;
-                    case 3:
-                        return -1;
-                }
-                return 0;
-            }
-        };
-
-        DefaultInteractiveMenu interactiveMenu = new DefaultInteractiveMenu(
-            this.errorLog,
-            menu,
-            parser,
-            this.reader,
-            "> "
-        ) {
-            protected void outsideLoop() {
-            };
-            protected void loopBlock() {
-                this.optionMenu.show();
-            };
-        };
-
-        interactiveMenu.show();
-    }
-
-    // Person searchers
-    private void searchPersonById() {
-
-        String[] messages = {
-            "Identificador"
-        };
-
-        String[] validation = {
-            "^[0-9]*$",
-        };
-
-        SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
-        menu.show();
-
-        ArrayList<String> values = menu.getOutput();
-
-        Integer id = Integer.parseInt(values.get(0));
-
-        Person p = this.service.getPersonUnit().get(id);
-        Teacher[] t = this.service.getTeacherUnit().getByPersonIds(
-            new Integer[]{id}
-        );
-        System.out.println(p.toString());
-        if (t.length > 0) {
-            System.out.println(t[0].toString());
-        }
-    }
-
-    private void searchPersonByName() {
-
-        String[] messages = {
-            "Nombre"
-        };
-
-        String[] validation = {
-            "^[a-zA-Z0-9 ]*$",
-        };
-
-        SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
-        menu.show();
-
-        ArrayList<String> values = menu.getOutput();
-
-        String name = values.get(0);
-
-        Person[] p = this.service.getPersonUnit().getByName(name);
-        
-        // Set all person id to the teacher getter
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        for (Person person : p) {
-            ids.add(person.getId());
-        }
-        Teacher[] t = this.service.getTeacherUnit().getByPersonIds(
-            ids.toArray(new Integer[ids.size()])
-        );
-
-        for (Person person : p) {
-            System.out.println(person.toString());
-        }
-    }
-
-    private void searchPersonByFirstLastName() {
-
-        String[] messages = {
-            "Primer apellido"
-        };
-
-        String[] validation = {
-            "^[a-zA-Z0-9 ]*$",
-        };
-
-        SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
-        menu.show();
-
-        ArrayList<String> values = menu.getOutput();
-
-        String name = values.get(0);
-
-        Person[] p = this.service.getPersonUnit().getByFirstLastName(name);
-        
-        // Set all person id to the teacher getter
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        for (Person person : p) {
-            ids.add(person.getId());
-        }
-        Teacher[] t = this.service.getTeacherUnit().getByPersonIds(
-            ids.toArray(new Integer[ids.size()])
-        );
-
-        for (Person person : p) {
-            System.out.println(person.toString());
-        }
-    }
-
-    private void searchPersonBySecondLastName() {
-
-        String[] messages = {
-            "Primer apellido"
-        };
-
-        String[] validation = {
-            "^[a-zA-Z0-9 ]*$",
-        };
-
-        SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
-        menu.show();
-
-        ArrayList<String> values = menu.getOutput();
-
-        String name = values.get(0);
-
-        Person[] p = this.service.getPersonUnit().getBySecondLastName(name);
-        
-        // Set all person id to the teacher getter
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        for (Person person : p) {
-            ids.add(person.getId());
-        }
-        Teacher[] t = this.service.getTeacherUnit().getByPersonIds(
-            ids.toArray(new Integer[ids.size()])
-        );
-
-        for (Person person : p) {
-            System.out.println(person.toString());
-        }
-    }
-
-    // Department searchers
-    private void searchDepartmentById() {
-
-        String[] messages = {
-            "Identificador"
-        };
-
-        String[] validation = {
-            "^[0-9]*$",
-        };
-
-        SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
-        menu.show();
-
-        ArrayList<String> values = menu.getOutput();
-
-        Integer id = Integer.parseInt(values.get(0));
-
-        Department d = this.service.getDepartmentUnit().get(id);
-        System.out.println(d.toString());
-
-    }
-
-    private void searchDepartmentByName() {
-        String[] messages = {
-            "Nombre"
-        };
-
-        String[] validation = {
-            "^[a-zA-Z0-9 ]*$",
-        };
-
-        SequentialMenu menu = new SequentialMenu(messages, this.reader, "", this.errorLog, validation);
-        menu.show();
-
-        ArrayList<String> values = menu.getOutput();
-
-        String name = values.get(0);
-
-        Department[] departments = this.service.getDepartmentUnit().getByName(name);
-        
-        for (Department d : departments) {
-            System.out.println(d.toString());
-        }
-    }
-
-    // Preview Menu
     private void previewMenu() {
 
         String[] options = new String[]{
@@ -484,26 +297,20 @@ public class Console extends DefaultConsole {
             protected int callBack(String arg0) throws Exception {
                 switch (Integer.parseInt(arg0)) {
                     case 1:
-                        // Convert normal list to ArrayList
-                        ArrayList<Person> persons = new ArrayList<Person>();
-                        for (Person p : service.getPersonUnit().getAll()) {
-                            persons.add(p);
-                        }
-                        personView(
-                            persons,    
+                        Person[] persons = service.getPersonUnit().getAll();
+                        ArrayList<PersonTeacher> personsList = personMenu.getPersonsAsTeachers(persons);
+                        personMenu.view(
+                            personsList,
                             false
                         );
                         break;
                     case 2:
-                        // Convert normal list to ArrayList
-                        ArrayList<Department> departments = new ArrayList<Department>();
-                        for (Department p : service.getDepartmentUnit().getAll()) {
-                            departments.add(p);
-                        }
-                        departmentView(
-                            departments,
-                            false
+                        Department[] departments = service.getDepartmentUnit().getAll();
+                        Department dep = departmentMenu.view(
+                            new ArrayList<Department>(Arrays.asList(departments)),
+                            true
                         );
+                        personMenu.viewInDepartment(dep);
                         break;
                     case 3:
                         return -1;
@@ -529,216 +336,117 @@ public class Console extends DefaultConsole {
         interactiveMenu.show();
     }
 
-    private Person personView(ArrayList<Person> products, final boolean selection) throws Exception {
+    private void modifyMenu() {
 
-        final Person[] selected = new Person[1];
+        String[] options = new String[]{
+            "Modificar personas",
+            "Modificar departamentos",
+            "Volver al menú"
+        };
 
-        String header = String.format(
-                "\n\t%-5s %-20s %-20s %-50s %-10s"
-                ,"ID"
-                ,"NIF"
-                ,"NOMBRE"
-                ,"APELLIDOS"
-                ,"GENERO"
+        final OptionsMenu menu = new OptionMenu(
+            options,
+            "",
+            "Modificar - CIDE",
+            "%s",
+            1,
+            true
         );
 
-        String[] options = {
-                "SIGUIENTE"
-                ,"ANTERIOR"
-                ,"SIGUIENTE PÁGINA"
-                ,"ANTERIOR PÁGINA"
-                ,"SELECCIONAR"
-                ,"SALIR"
-        };
-
-        InlineMenu inlineMenu = new InlineMenu(options,"\t",1);
-
-        // CASTING LIST
-        ArrayList<Object> items = new ArrayList<Object>(products);
-
-        final SelectionMenu selectionMenu = new SelectionMenu(
-                "\t"
-                ,items
-                ,header
-        ) {
+        Parser parser = new Parser() {
             @Override
-            protected void showItem(Object o, boolean selected) {
-                Person p = (Person) o;
-                String format = String.format(
-                        "%-5s %-20s %-20s %-50s %-10s"
-                        ,p.getId()
-                        ,p.getNif()
-                        ,p.getName()
-                        ,p.getFirstLastname() + " " + p.getSecondLastname()
-                        ,p.getGender()
-                );
-
-                if(selected){
-                    Encapsulate.encapsulateString(format,"\t");
-                } else {
-                    System.out.printf("\n\t%s",format);
-                }
-
-            }
-        };
-
-        Parser orderParser = new Parser() {
-            @Override
-            protected int callBack(String command) throws Exception {
-                switch (Integer.parseInt(command)){
+            protected int callBack(String arg0) throws Exception {
+                switch (Integer.parseInt(arg0)) {
                     case 1:
-                        selectionMenu.nextItem();
+                        personMenu.modify();
                         break;
                     case 2:
-                        selectionMenu.previousItem();
+                        departmentMenu.modify();
                         break;
                     case 3:
-                        selectionMenu.nextPage();
-                        break;
-                    case 4:
-                        selectionMenu.previousPage();
-                        break;
-                    case 5:
-                        if(!selection){
-                            throw new Exception("NOT ENABLED");
-                        } else {
-                            selected[0] = (Person) selectionMenu.select();
-                            return -1;
-                        }
-                    case 6:
                         return -1;
                 }
-
-                // Clear console
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-
                 return 0;
             }
         };
 
-        DefaultInteractiveMenu menu = new SelectionInteractiveMenu(
-                this.errorLog
-                ,inlineMenu
-                ,orderParser
-                ,reader
-                ,"\n\t> "
-                ,selectionMenu
+        DefaultInteractiveMenu interactiveMenu = new DefaultInteractiveMenu(
+            this.errorLog,
+            menu,
+            parser,
+            this.reader,
+            "> "
         ) {
-            @Override
             protected void outsideLoop() {
-
-            }
+            };
+            protected void loopBlock() {
+                this.optionMenu.show();
+            };
         };
 
-        menu.show();
-
-        return selected[0];
+        interactiveMenu.show();
     }
 
-    private Department departmentView(ArrayList<Department> departments, final boolean selection) throws Exception {
+    private void removeMenu() {
 
-        final Department[] selected = new Department[1];
+        String[] options = new String[]{
+            "Eliminar persona",
+            "Eliminar profesor",
+            "Eliminar departamento",
+            "Volver al menú"
+        };
 
-        String header = String.format(
-                "\n\t%-5s %-20s"
-                ,"ID"
-                ,"NOMBRE"
+        final OptionsMenu menu = new OptionMenu(
+            options,
+            "",
+            "Modificar - CIDE",
+            "%s",
+            1,
+            true
         );
 
-        String[] options = {
-                "SIGUIENTE"
-                ,"ANTERIOR"
-                ,"SIGUIENTE PÁGINA"
-                ,"ANTERIOR PÁGINA"
-                ,"SELECCIONAR"
-                ,"SALIR"
-        };
-
-        InlineMenu inlineMenu = new InlineMenu(options,"\t",1);
-
-        // CASTING LIST
-        ArrayList<Object> items = new ArrayList<Object>(departments);
-
-        final SelectionMenu selectionMenu = new SelectionMenu(
-                "\t"
-                ,items
-                ,header
-        ) {
+        Parser parser = new Parser() {
             @Override
-            protected void showItem(Object o, boolean selected) {
-                Department p = (Department) o;
-                String format = String.format(
-                        "%-5s %-20s"
-                        ,p.getId()
-                        ,p.getName()
-                );
-
-                if(selected){
-                    Encapsulate.encapsulateString(format,"\t");
-                } else {
-                    System.out.printf("\n\t%s",format);
-                }
-
-            }
-        };
-
-        Parser orderParser = new Parser() {
-            @Override
-            protected int callBack(String command) throws Exception {
-                switch (Integer.parseInt(command)){
+            protected int callBack(String arg0) throws Exception {
+                switch (Integer.parseInt(arg0)) {
                     case 1:
-                        selectionMenu.nextItem();
+                        personMenu.remove();
                         break;
                     case 2:
-                        selectionMenu.previousItem();
                         break;
                     case 3:
-                        selectionMenu.nextPage();
+                        departmentMenu.remove();
                         break;
                     case 4:
-                        selectionMenu.previousPage();
-                        break;
-                    case 5:
-                        if(!selection){
-                            throw new Exception("NOT ENABLED");
-                        } else {
-                            selected[0] = (Department) selectionMenu.select();
-                            return -1;
-                        }
-                    case 6:
                         return -1;
                 }
-
-                // Clear console
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-
                 return 0;
             }
         };
 
-        DefaultInteractiveMenu menu = new SelectionInteractiveMenu(
-                this.errorLog
-                ,inlineMenu
-                ,orderParser
-                ,reader
-                ,"\n\t> "
-                ,selectionMenu
+        DefaultInteractiveMenu interactiveMenu = new DefaultInteractiveMenu(
+            this.errorLog,
+            menu,
+            parser,
+            this.reader,
+            "> "
         ) {
-            @Override
             protected void outsideLoop() {
-
-            }
+            };
+            protected void loopBlock() {
+                this.optionMenu.show();
+            };
         };
 
-        menu.show();
-
-        return selected[0];
+        interactiveMenu.show();
     }
 
     @Override
     protected void main() {
+
+        this.personMenu = new PersonMenu(this);
+        this.departmentMenu = new DepartmentMenu(this);
+
         init();
     }
 
