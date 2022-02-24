@@ -304,6 +304,35 @@ public class PersonMenu implements Menu<PersonTeacher> {
         System.out.println("\nPersona eliminada con éxito.");
     }
 
+    public void removeTeacher() {
+        // Get all persons
+        Person[] persons = this.console.getService()
+            .getPersonUnit()
+            .getAllPersonTeacher();
+
+        ArrayList<PersonTeacher> personTeachers = this.getPersonsAsTeachers(persons);
+        
+        PersonTeacher person = this.view(personTeachers, true);
+        Person p = person.getPerson();
+
+        try {
+            Teacher[] teacher = this.console.getService()
+                .getTeacherUnit()
+                .getByPersonIds(
+                    new Integer[]{
+                        p.getId()
+                    }
+                );
+            this.console.getService().getTeacherUnit().delete(teacher[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("\nNo se ha podido eliminar la persona.");
+            return;
+        }
+
+        System.out.println("\nPersona eliminada con éxito.");
+    }
+
     @Override
     public void modify() {
 

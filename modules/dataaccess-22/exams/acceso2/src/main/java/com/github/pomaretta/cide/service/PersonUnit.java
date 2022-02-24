@@ -115,4 +115,13 @@ public class PersonUnit extends ServiceUnit<Person> {
         return persons;
     }
 
+    public Person[] getAllPersonTeacher() {
+        Session session = sessionFactory.openSession();
+        Person[] persons = (Person[]) session.createQuery("from Person where id in (select personId from Teacher)").list().toArray(new Person[0]);
+        session.close();
+        // Sort the array
+        java.util.Arrays.sort(persons);
+        return persons;
+    }
+
 }

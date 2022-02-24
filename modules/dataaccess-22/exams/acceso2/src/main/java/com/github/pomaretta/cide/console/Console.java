@@ -407,6 +407,7 @@ public class Console extends DefaultConsole {
                         personMenu.remove();
                         break;
                     case 2:
+                        personMenu.removeTeacher();
                         break;
                     case 3:
                         departmentMenu.remove();
