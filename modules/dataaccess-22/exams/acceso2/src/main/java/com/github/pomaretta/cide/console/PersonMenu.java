@@ -2,6 +2,9 @@ package com.github.pomaretta.cide.console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.github.pomaretta.cide.dto.PersonTeacher;
 import com.github.pomaretta.cide.entity.Department;
@@ -29,16 +32,16 @@ public class PersonMenu implements Menu<PersonTeacher> {
         final PersonTeacher[] selected = new PersonTeacher[1];
 
         String header = String.format(
-                "\n\t%-5s %-20s %-20s %-50s %-10s %-10s", "ID", "NIF", "NOMBRE", "APELLIDOS", "GENERO", "TUTOR");
+                "\n\t%-5s %-20s %-20s %-25s %-10s %-10s %-15s %-10s %-30s", "ID", "NIF", "NOMBRE", "APELLIDOS", "GENERO", "TELEFONO", "NACIMIENTO", "TUTOR", "DIRECCION");
 
         String[] options = {
-                "SIGUIENTE", "ANTERIOR", "SIGUIENTE PÁGINA", "ANTERIOR PÁGINA", "SELECCIONAR", "SALIR"
+                "SIGUIENTE", "ANTERIOR", "SIGUIENTE PÁGINA", "ANTERIOR PÁGINA", "SELECCIONAR", "ORDENAR POR ID", "ORDENAR POR NIF", "ORDENAR POR FECHA DE NACIMIENTO","SALIR"
         };
 
         InlineMenu inlineMenu = new InlineMenu(options, "\t", 1);
 
         // CASTING LIST
-        ArrayList<Object> items = new ArrayList<Object>(list);
+        final ArrayList<Object> items = new ArrayList<Object>(list);
 
         final SelectionMenu selectionMenu = new SelectionMenu(
                 "\t", items, header) {
@@ -49,8 +52,8 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 Person p = personTeacher.getPerson();
 
                 String format = String.format(
-                        "%-5s %-20s %-20s %-50s %-10s %-10s", p.getId(), p.getNif(), p.getName(),
-                        p.getFirstLastname() + " " + p.getSecondLastname(), p.getGender(), personTeacher.isTeacher());
+                        "%-5s %-20s %-20s %-25s %-10s %-10s %-15s %-10s %-25s", p.getId(), p.getNif(), p.getName(),
+                        p.getFirstLastname() + " " + p.getSecondLastname(), p.getGender(), p.getTelephone(), p.getBirthdate(), personTeacher.isTeacher(), p.getAddress());
 
                 if (selected) {
                     Encapsulate.encapsulateString(format, "\t");
@@ -85,6 +88,36 @@ public class PersonMenu implements Menu<PersonTeacher> {
                             return -1;
                         }
                     case 6:
+                        Collections.sort(items, new Comparator<Object>() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                PersonTeacher p1 = (PersonTeacher) o1;
+                                PersonTeacher p2 = (PersonTeacher) o2;
+                                return ((Integer) p1.getPerson().getId()).compareTo((Integer) p2.getPerson().getId());
+                            }
+                        });
+                        break;
+                    case 7:
+                        Collections.sort(items, new Comparator<Object>() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                PersonTeacher p1 = (PersonTeacher) o1;
+                                PersonTeacher p2 = (PersonTeacher) o2;
+                                return p1.getPerson().getNif().compareTo(p2.getPerson().getNif());
+                            }
+                        });
+                        break;
+                    case 8:
+                        Collections.sort(items, new Comparator<Object>() {
+                            @Override
+                            public int compare(Object o1, Object o2) {
+                                PersonTeacher p1 = (PersonTeacher) o1;
+                                PersonTeacher p2 = (PersonTeacher) o2;
+                                return p1.getPerson().getBirthdate().compareTo(p2.getPerson().getBirthdate());
+                            }
+                        });
+                        break;
+                    case 9:
                         return -1;
                 }
 
@@ -130,7 +163,8 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 "Segundo apellido",
                 "Fecha de nacimiento",
                 "Género",
-                "Teléfono"
+                "Teléfono",
+                "Dirección",
         };
 
         String[] validation = {
@@ -141,6 +175,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 "^[a-zA-Z0-9-]*$",
                 "[male | female]",
                 "^[0-9]*$",
+                "^[a-zA-Z0-9,-_ ]*$",
         };
 
         SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(),
@@ -156,6 +191,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
         String birthDate = values.get(4);
         String gender = values.get(5);
         String telephone = values.get(6);
+        String address = values.get(7);
 
         Person p = new Person();
         p.setNif(nif);
@@ -165,6 +201,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
         p.setBirthdate(java.sql.Date.valueOf(birthDate));
         p.setGender(gender);
         p.setTelephone(telephone);
+        p.setAddress(address);
 
         try {
             this.console.getService().getPersonUnit().save(p);
@@ -191,21 +228,19 @@ public class PersonMenu implements Menu<PersonTeacher> {
         }
 
         PersonTeacher p = view(
-            personTeachers,
-            true
-        );
+                personTeachers,
+                true);
 
         if (p == null) {
             return;
-        }        
+        }
 
         // Select the department
-        Department[] departments = this.console.getService(). getDepartmentUnit().getAll();
+        Department[] departments = this.console.getService().getDepartmentUnit().getAll();
 
         Department dep = this.console.getDepartmentMenu().view(
-            new ArrayList<Department>(Arrays.asList(departments)),
-            true
-        );
+                new ArrayList<Department>(Arrays.asList(departments)),
+                true);
 
         Teacher teacher = new Teacher();
         teacher.setPersonId(p.getPerson().getId());
@@ -285,11 +320,11 @@ public class PersonMenu implements Menu<PersonTeacher> {
 
         // Get all persons
         Person[] persons = this.console.getService()
-            .getPersonUnit()
-            .getAll();
+                .getPersonUnit()
+                .getAll();
 
         ArrayList<PersonTeacher> personTeachers = this.getPersonsAsTeachers(persons);
-        
+
         PersonTeacher person = this.view(personTeachers, true);
         Person p = person.getPerson();
 
@@ -307,22 +342,21 @@ public class PersonMenu implements Menu<PersonTeacher> {
     public void removeTeacher() {
         // Get all persons
         Person[] persons = this.console.getService()
-            .getPersonUnit()
-            .getAllPersonTeacher();
+                .getPersonUnit()
+                .getAllPersonTeacher();
 
         ArrayList<PersonTeacher> personTeachers = this.getPersonsAsTeachers(persons);
-        
+
         PersonTeacher person = this.view(personTeachers, true);
         Person p = person.getPerson();
 
         try {
             Teacher[] teacher = this.console.getService()
-                .getTeacherUnit()
-                .getByPersonIds(
-                    new Integer[]{
-                        p.getId()
-                    }
-                );
+                    .getTeacherUnit()
+                    .getByPersonIds(
+                            new Integer[] {
+                                    p.getId()
+                            });
             this.console.getService().getTeacherUnit().delete(teacher[0]);
         } catch (Exception e) {
             e.printStackTrace();
@@ -338,8 +372,8 @@ public class PersonMenu implements Menu<PersonTeacher> {
 
         // Get all persons
         Person[] persons = this.console.getService()
-            .getPersonUnit()
-            .getAll();
+                .getPersonUnit()
+                .getAll();
 
         ArrayList<PersonTeacher> personTeachers = new ArrayList<PersonTeacher>();
 
@@ -347,10 +381,9 @@ public class PersonMenu implements Menu<PersonTeacher> {
             PersonTeacher personTeacher = new PersonTeacher();
             personTeacher.setPerson(p);
             personTeachers.add(
-                personTeacher
-            );
+                    personTeacher);
         }
-        
+
         PersonTeacher person = this.view(personTeachers, true);
         final Person p = person.getPerson();
 
@@ -362,6 +395,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 "Fecha de nacimiento",
                 "Género",
                 "Teléfono",
+                "Dirección",
                 "Ejecutar modificación",
                 "Salir"
         };
@@ -370,10 +404,9 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 options,
                 "",
                 String.format(
-                    "%s %s - MODIFICAR",
-                    p.getName(),
-                    p.getFirstLastname()
-                ),
+                        "%s %s - MODIFICAR",
+                        p.getName(),
+                        p.getFirstLastname()),
                 "%s",
                 1,
                 true);
@@ -384,54 +417,53 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 switch (Integer.parseInt(arg0)) {
                     case 1:
                         String nif = getValue(
-                            "NIF",
-                            "^[A-Z0-9 ]*$"
-                        );
+                                "NIF",
+                                "^[A-Z0-9 ]*$");
                         p.setNif(nif);
                         break;
                     case 2:
                         String name = getValue(
-                            "Nombre",
-                            "^[a-zA-Z0-9 ]*$"
-                        );
+                                "Nombre",
+                                "^[a-zA-Z0-9 ]*$");
                         p.setName(name);
                         break;
                     case 3:
                         String firstLastName = getValue(
-                            "Primer apellido",
-                            "^[a-zA-Z0-9 ]*$"
-                        );
+                                "Primer apellido",
+                                "^[a-zA-Z0-9 ]*$");
                         p.setFirstLastname(firstLastName);
                         break;
                     case 4:
                         String secondLastName = getValue(
-                            "Segundo apellido",
-                            "^[a-zA-Z0-9 ]*$"
-                        );
+                                "Segundo apellido",
+                                "^[a-zA-Z0-9 ]*$");
                         p.setSecondLastname(secondLastName);
                         break;
                     case 5:
                         String birthDate = getValue(
-                            "Fecha de nacimiento",
-                            "^[0-9-]*$"
-                        );
+                                "Fecha de nacimiento",
+                                "^[0-9-]*$");
                         p.setBirthdate(java.sql.Date.valueOf(birthDate));
                         break;
                     case 6:
                         String gender = getValue(
-                            "Género",
-                            "^[a-zA-Z0-9 ]*$"
-                        );
+                                "Género",
+                                "^[a-zA-Z0-9 ]*$");
                         p.setGender(gender);
                         break;
                     case 7:
                         String telephone = getValue(
-                            "Teléfono",
-                            "^[0-9]*$"
-                        );
+                                "Teléfono",
+                                "^[0-9]*$");
                         p.setTelephone(telephone);
                         break;
                     case 8:
+                        String address = getValue(
+                                "Dirección",
+                                "^[a-zA-Z0-9,-_ ]*$");
+                        p.setAddress(address);
+                        break;
+                    case 9:
                         try {
                             console.getService().getPersonUnit().update(p);
                         } catch (Exception e) {
@@ -440,7 +472,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
                         }
                         System.out.println("\nPersona modificada con éxito.");
                         return -1;
-                    case 9:
+                    case 10:
                         return -1;
                 }
                 return 0;
@@ -467,14 +499,15 @@ public class PersonMenu implements Menu<PersonTeacher> {
     private String getValue(String option, String val) {
 
         String[] messages = {
-            option
+                option
         };
 
         String[] validation = {
-            val
+                val
         };
 
-        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(), validation);
+        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(),
+                validation);
         menu.show();
 
         ArrayList<String> values = menu.getOutput();
@@ -492,7 +525,8 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 "^[0-9]*$",
         };
 
-        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(), validation);
+        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(),
+                validation);
         menu.show();
 
         ArrayList<String> values = menu.getOutput();
@@ -526,8 +560,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 }
             }
             personTeachers.add(
-                personTeacher
-            );
+                    personTeacher);
         }
 
         try {
@@ -548,7 +581,8 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 "^[a-zA-Z0-9 ]*$",
         };
 
-        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(), validation);
+        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(),
+                validation);
         menu.show();
 
         ArrayList<String> values = menu.getOutput();
@@ -588,8 +622,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 }
             }
             personTeachers.add(
-                personTeacher
-            );
+                    personTeacher);
         }
 
         try {
@@ -609,7 +642,8 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 "^[a-zA-Z0-9 ]*$",
         };
 
-        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(), validation);
+        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(),
+                validation);
         menu.show();
 
         ArrayList<String> values = menu.getOutput();
@@ -649,8 +683,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 }
             }
             personTeachers.add(
-                personTeacher
-            );
+                    personTeacher);
         }
 
         try {
@@ -670,7 +703,8 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 "^[a-zA-Z0-9 ]*$",
         };
 
-        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(), validation);
+        SequentialMenu menu = new SequentialMenu(messages, this.console.getReader(), "", this.console.getErrorLog(),
+                validation);
         menu.show();
 
         ArrayList<String> values = menu.getOutput();
@@ -710,8 +744,7 @@ public class PersonMenu implements Menu<PersonTeacher> {
                 }
             }
             personTeachers.add(
-                personTeacher
-            );
+                    personTeacher);
         }
 
         try {
@@ -722,15 +755,14 @@ public class PersonMenu implements Menu<PersonTeacher> {
     }
 
     public ArrayList<PersonTeacher> getPersonsAsTeachers(Person[] persons) {
-            ArrayList<PersonTeacher> personTeachers = new ArrayList<PersonTeacher>();
-            for (Person person : persons) {
-                PersonTeacher personTeacher = new PersonTeacher();
-                personTeacher.setPerson(person);
-                personTeachers.add(
-                    personTeacher
-                );
-            }
-            return personTeachers;
+        ArrayList<PersonTeacher> personTeachers = new ArrayList<PersonTeacher>();
+        for (Person person : persons) {
+            PersonTeacher personTeacher = new PersonTeacher();
+            personTeacher.setPerson(person);
+            personTeachers.add(
+                    personTeacher);
+        }
+        return personTeachers;
     }
 
 }

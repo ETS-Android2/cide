@@ -23,6 +23,9 @@
             <basic name="birthdate">
                 <column name="birthdate"/>
             </basic>
+            <basic name="address">
+                <column name="address"/>
+            </basic>
             <basic name="gender">
                 <column name="gender"/>
             </basic>

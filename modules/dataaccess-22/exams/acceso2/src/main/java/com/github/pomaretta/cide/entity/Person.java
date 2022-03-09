@@ -11,6 +11,7 @@ public class Person implements Comparable<Person>{
     private String firstLastname;
     private String secondLastname;
     private Date birthdate;
+    private String address;
     private String gender;
     private String telephone;
     
@@ -60,6 +61,14 @@ public class Person implements Comparable<Person>{
 
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getGender() {
@@ -122,6 +131,7 @@ public class Person implements Comparable<Person>{
                 ", firstLastname='" + firstLastname + '\'' +
                 ", secondLastname='" + secondLastname + '\'' +
                 ", birthdate=" + birthdate +
+                ", address='" + address + '\'' +
                 ", gender=" + gender +
                 ", telephone=" + telephone + 
                 "}";

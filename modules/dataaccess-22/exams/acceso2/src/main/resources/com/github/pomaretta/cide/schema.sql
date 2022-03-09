@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS person (
     first_lastname      VARCHAR(255) NOT NULL,
     second_lastname     VARCHAR(255) NOT NULL,
     birthdate           DATE NOT NULL,
+    address             VARCHAR(255) NOT NULL,
     gender              VARCHAR(255) NOT NUll,
     telephone           VARCHAR(255) NOT NULL,
     UNIQUE (nif),
@@ -32,3 +33,11 @@ CREATE TABLE IF NOT EXISTS teacher (
     FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE CASCADE,
     FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
 );
+
+-- POPULATE MASTER TABLES
+
+INSERT INTO department (name) VALUES ('Informatica'),
+    ('Matematicas'),
+    ('Filosofia'),
+    ('Lengua Castellana'),
+    ('Ingles');

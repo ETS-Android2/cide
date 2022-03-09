@@ -16,6 +16,8 @@ import com.github.pomaretta.termux.Menu.OptionsMenu;
 
 import org.hibernate.Session;
 
+import antlr.collections.List;
+
 public class Console extends DefaultConsole {
 
     private CideService service;
@@ -292,9 +294,27 @@ public class Console extends DefaultConsole {
                 switch (Integer.parseInt(arg0)) {
                     case 1:
                         Person[] persons = service.getPersonUnit().getAll();
-                        ArrayList<PersonTeacher> personsList = personMenu.getPersonsAsTeachers(persons);
+                        Person[] personsThatAreTeachers = service.getPersonUnit().getAllPersonTeacher();
+                        PersonTeacher[] personTeachers = new PersonTeacher[persons.length];
+                        
+                        for (int i = 0; i < persons.length; i++) {
+                            Person personTeacher = null;
+                            for (int j = 0; j < personsThatAreTeachers.length; j++) {
+                                if (persons[i].getId() == personsThatAreTeachers[j].getId()) {
+                                    personTeacher = personsThatAreTeachers[j];
+                                    break;
+                                }
+                            }
+
+                            PersonTeacher person = new PersonTeacher();
+                            person.setPerson(persons[i]);
+                            person.setTeacher(personTeacher != null);
+
+                            personTeachers[i] = person;
+                        }
+
                         personMenu.view(
-                            personsList,
+                            new ArrayList<PersonTeacher>(Arrays.asList(personTeachers)),
                             false
                         );
                         break;
