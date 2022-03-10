@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TicTacToe</string>
+    <string-array name="diff_array">
+        <item>Hard</item>
+        <item>Medium</item>
+        <item>Easy</item>
+    </string-array>
+</resources>

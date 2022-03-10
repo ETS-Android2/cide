@@ -4,68 +4,68 @@ import com.github.pomaretta.tictactoe.board.BoardAI;
 import com.github.pomaretta.tictactoe.board.BoardPiece;
 import com.github.pomaretta.tictactoe.board.GameBoard;
 
-import java.util.ArrayList;
-
-public class MediumAI implements BoardAI {
+public class AdvancedAI implements BoardAI {
 
     private GameBoard board;
+    private boolean hard;
+    private boolean playerTurn;
 
-    public MediumAI(GameBoard board) {
+    public AdvancedAI(GameBoard board, boolean hard, boolean playerTurn) {
         this.board = board;
+        this.hard = hard;
+        this.playerTurn = playerTurn;
     }
 
     @Override
     public int search() throws Exception {
-        return this.search(this.board.getBoardPieces());
+        return this.bestMove(this.board.getBoardPieces());
     }
 
-    private BoardPiece[] getEmptyIndexes(BoardPiece[] boardPieces) {
-        ArrayList<BoardPiece> pieces = new ArrayList<>();
-        for (BoardPiece boardPiece : boardPieces) {
-            if (boardPiece.isClicked()) {
-                pieces.add(null);
-                continue;
-            }
-            pieces.add(boardPiece);
+    private int randomMove(BoardPiece[] pieces) throws Exception {
+        if (!this.board.piecesLeft() || this.board.isGameOver()) throw new Exception("No more pieces");
+        int position = (int) (Math.random() * 9);
+        if (!pieces[position].isClicked()) {
+            return position;
+        } else {
+            return this.randomMove(pieces);
         }
-        return pieces.toArray(new BoardPiece[0]);
     }
 
-    private int search(BoardPiece[] pieces) {
-
-        BoardPiece[] emptyIndexes = this.getEmptyIndexes(pieces);
+    private int bestMove(BoardPiece[] pieces) throws Exception {
 
         int bestMove = -1;
-        for (int i = 0; i < emptyIndexes.length; i++) {
+        for (int i = 0; i < pieces.length; i++) {
 
             // Descartamos si está clickado
-            if (emptyIndexes[i] == null) continue;
+            if (pieces[i].isClicked()) continue;
+
+            int playerFlag = this.playerTurn ? 1 : 0;
+            int aiFlag = this.playerTurn ? 0 : 1;
+
 
             // Clickamos para la AI
-            pieces[i].clickedBy = 0;
-            if (this.board.isWinner(pieces, 0)) {
+            pieces[i].clickedBy = aiFlag;
+            if (this.board.isWinner(pieces, aiFlag)) {
+                bestMove = i;
+                pieces[i].clickedBy = -1;
+                if (hard) break;
+            }
+            pieces[i].clickedBy = -1;
+
+            // Clickamos para el player
+            pieces[i].clickedBy = playerFlag;
+            if (this.board.isWinner(pieces, playerFlag)) {
                 bestMove = i;
                 pieces[i].clickedBy = -1;
                 break;
             }
-
-            // Clickamos para el player
-            pieces[i].clickedBy = 1;
-            if (this.board.isWinner(pieces, 1)) {
-                bestMove = i;
-            }
-
             pieces[i].clickedBy = -1;
         }
 
         if (bestMove != -1) return bestMove;
 
-        for (int i = 0; i < emptyIndexes.length; i++) {
-            if (emptyIndexes[i] == null) continue;
-            return i;
-        }
-
-        return -1;
+        // Random
+        return randomMove(pieces);
     }
 
 }

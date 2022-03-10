@@ -1,4 +1,4 @@
-package com.github.pomaretta.tictactoe;
+package com.github.pomaretta.tictactoe.board;
 
 public enum Difficulty {
     HARD,

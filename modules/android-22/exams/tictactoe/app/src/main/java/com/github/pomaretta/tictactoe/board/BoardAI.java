@@ -1,5 +1,5 @@
-package com.github.pomaretta.tictactoe;
+package com.github.pomaretta.tictactoe.board;
 
 public interface BoardAI {
-    int search();
+    int search() throws Exception;
 }
